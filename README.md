@@ -5,7 +5,7 @@ Getting the code
 ----------------
 
     cd $HOME
-    git clone https://<username>@github.com/SciCrunch/Foundry.git
+    git clone https://<username>@github.com/CINERGI/Foundry
     cd $HOME/Foundry
 
 Building
