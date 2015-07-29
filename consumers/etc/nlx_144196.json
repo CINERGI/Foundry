@@ -1,0 +1,35 @@
+{
+    "SourceInformation": {
+      "ResourceID": "nlx_144196",
+      "Name": "Wired Science",
+      "DataSource": "Wired Science News"
+    },
+    
+    "IngestConfiguration": {
+      "IngestMethod": "RSS",
+      "IngestURL": "http://www.wired.com/wiredscience/feed/",
+      "allowDuplicates": "False",
+      
+      "CrawlFrequency": {
+        "CrawlType": "Frequency",
+        "Hours": "24",
+        "Minutes": "0",
+        "StartDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "StartTime": "0:00",
+        "OperationEndTime": "24:00" 
+      }  
+    },
+        
+    "ContentSpecification": {
+      "KeepMissing": "true",
+      "Locale": "en_US"
+    },
+    
+    "PrimaryKey": {
+      "Fields": ["guid"],
+      "Delimiter": [":"],
+      "Method": "Value"
+    },
+      
+    "DocumentProcessing": ["UUID Generation", "Resource Extraction", "Index"]     
+}

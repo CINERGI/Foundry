@@ -1,0 +1,35 @@
+{
+    "sourceInformation": {
+      "resourceID": "cinergi-0010",
+      "name": "Geoscience_Australia",
+      "dataSource": "Geoscience_Australia"
+    },
+    
+    "ingestConfiguration": {
+      "ingestMethod": "WAF",
+      "ingestURL": "http://hydro10.sdsc.edu/metadata/Geoscience_Australia/",
+      "allowDuplicates": "False",
+      
+      "crawlFrequency": {
+        "crawlType": "Frequency",
+        "hours": "48",
+        "minutes": "0",
+        "startDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "startTime": "0:00",
+        "operationEndTime": "24:00"
+      }  
+    },
+        
+    "contentSpecification": {
+      "keepMissing": "false",
+      "locale": "en_US"
+    },
+    
+    "originalRecordIdentifierSpec": {
+      "fields": ["$.'MD_Metadata'.'fileIdentifier'.'gco:CharacterString'.'_$'"],
+      "delimiter": [":"],
+      "method": "Value"
+    },
+      
+    "documentProcessing": ["UUID Generation", "XML2Cinergi", "Index"]
+}

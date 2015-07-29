@@ -1,0 +1,32 @@
+{
+  "entity": {
+      "sourceId": "nlx_999998",
+      "UUID": "1234-4567-8978",
+      "creationTime": "2014-11-01T00:03:00",
+      "batchId": "20141101",
+      "label":"http://hyrdo10.sdsc.edu/XXX",
+      "version" : "1.0"
+      },		
+  "activity": {
+      "prov:type": "act1",
+      "prov:startTime": "2014-11-01T00:04:00",
+      "prov:endTime": "2014-11-01T00:07:00",
+      "prov:how":"Added|Modified|Deleted and the text/xml elments affected <key/value>"
+    },
+  "wasGeneratedBy": {
+      "prov:entity": "foundry:en2",
+      "prov:activity": "foundry:ac1"      
+    },
+  "used": {
+      "prov:entity": "foundry:en1",      
+      "prov:activity": "foundry:ac1"
+    }, 
+   "wasDerivedFrom": {
+      "prov:generatedEntity": "foundry:en10"
+      "prov:usedEntity" : "foundry:en9",      
+    },
+   "wasInvalidatedBy": {
+      "prov:entity": "foundry:en3",
+      "prov:activity": "foundry:ac5"      
+    }
+}

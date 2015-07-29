@@ -1,0 +1,446 @@
+{
+    "$schema": "http://resources.usgin.org/uri-gin/cinergi/schema/metadataobjectschema/1.0",
+    "@context": {
+        "@base": "http://resources.usgin.org/uri-gin/cinergi/schema/metadataobjectschema"
+    },
+    "metadataObject": {
+        "primaryKey": "GUIDstring",
+        "harvestInformation": {
+            "version": 1,
+            "crawlDate": "2014-10-30T18:34:00Z",
+            "batchId": "HarvestBatchIdentfierString",
+            "indexDate": "2014-10-30T21:14:00Z",
+            "originalRecordIdentifier": "resolvable URI for harvested source doc.",
+            "originalFormat": "string specifying the encoding scheme and profile",
+            "harvestURL": "http://URL.of/harvested/endpoint",
+            "sourceInfo": {
+                "harvestSourceID": "string to uniquely identifiy harvest configuration",
+                "viewID": "NIF specific property",
+                "harvestSourceName": "Text label to identify this source for people"
+            }
+        },
+        "originalDoc": "this should be a JSON object created from the harvested document",
+        "processing": {
+            "status": "processingStatusFlagTerm",
+            "issueObjects": [
+                {
+                    "issueType": "term to categorize first issue",
+                    "enhancerSource": {
+                        "enhancerName": "string that indentifies the enhancer"
+                    },
+                    "issueDescription": "text description of the problem",
+                    "issueSeverity": "term to categorize how important it is to fix issue"
+                        },
+                {
+                    "issueType": "term to categorize second issue",
+                    "enhancerSource": {
+                        "enhancerName": "string that identifies the enhancer"
+                    },
+                    "issueDescription": "text description of the problem",
+                    "issueSeverity": "term to categorize importance"
+                        }
+                    ]
+        },
+        "metadataProperties": {
+            "metadataContact": {
+                "agentRoleURI": "http://URI.uniquely.indentify/agent/role",
+                "agentRoleLabel": "string that users will understand to present role",
+                "agentRoleVocabularyURI": "http://URI for vocabulary",
+                "agent": {
+                    "agentURI": "http://URI for the agent",
+                    "personName": "The name of an individual; format--Last Name,First name MI",
+                    "personPosition": "named position in context of an organization",
+                    "organizationName": ["name1", "name2", "acronym", "otherNamesForOrg"],
+                    "organizationLink": "http://URI for organization",
+                    "phoneNumber": "use registered tel URI scheme http://tools.ietf.org/html/rfc3966",
+                    "contactEmail": ["email1@emial.com", "another@email.com"],
+                    "cmd:contactAddress": "postal address,ideally formatted appropriate to the target country"
+                }
+            },
+            "metadataUpdateDate": "2014-11-17T12:12:01Z",
+            "metadataRecordHistory": [
+                {
+                    "stepSequenceNo": 1,
+                    "processStepStatement": "first recorded processing step",
+                    "provenanceLink": {
+                        "linkTitle": "text to label this link in a UI",
+                        "linkDescription": "free text description of the target. This is a complete linkObject, with all optional properties",
+                        "linkURL": "http://uri that locates the link target",
+                        "linkRelation": [
+                            {
+                                "relLabel": "text to identify reference relation type",
+                                "relURI": "http://host1.uri for the relation type",
+                                "relVocabularyURI": "http://uri for vocabulary1 for relLabel"
+                        },
+                            {
+                                "relLabel": "text to identify second reference relation type",
+                                "relURI": "http://host2.uri for the relation type",
+                                "relVocabularyURI": "http://uri for vocabulary for second relLabel"
+                        }
+      ],
+                        "linkTargetResourceType": "typically use MIME type ",
+                        "linkContentResourceType": "File type (e.g. MIME) for the actual resource content",
+                        "linkOverlayAPI": {
+                            "APILabel": "text to identify the overlay API",
+                            "API-URI": "http://URI for overly API"
+                        },
+                        "linkProfile": {
+                            "profileLabel": "text to identify the profile",
+                            "profileURI": "http://URI for the profile"
+                        },
+                        "linkParameters": [
+                            {
+                                "linkParameterLabel": "string to display for link parameter1",
+                                "linkParameterURI": "identifier for parameter1 from a controlled vocabulary",
+                                "linkParameterValue": "string1"
+                        },
+                            {
+                                "linkParameterLabel": "string to display for link parameter2",
+                                "linkParameterURI": "identifier for the parameter2 from a controlled vocabulary",
+                                "linkParameterValue": "string2"
+                        }
+                    ],
+                        "linkTransferSize": 1001
+                    }
+
+        },
+                {
+                    "stepSequenceNo": 2,
+                    "processStepStatement": "second recorded processing step",
+                    "cmd:provenanceLink": {
+                        "LinkObject": {
+                            "linkDescription": "free text description of the target. This is a minimal linkObject, with only required properties (description is optional, but included in this example to explain",
+                            "linkURL": "http://uri that locates the link target"
+                        }
+                    }
+            }],
+            "metadataConformanceTests": [
+                {
+                    "conformanceTestName": "name of first test",
+                    "conformanceTestURI": "http://URI identifies test1",
+                    "conformanceResult": "either Pass or Fail",
+                    "conformanceTestNote": "output from conformance test1; if test fails this should provide information about what went wrong"
+                    },
+                {
+                    "conformanceTestName": "name of second test",
+                    "conformanceTestURI": "http://URI identifies test2",
+                    "conformanceResult": "either Pass or Fail",
+                    "conformanceTestNote": "output from conformance test2; if test fails this should provide information about what went wrong"
+                    }]
+        },
+        "resourceDescription": {
+            "resourceTitle": "Title that identifies the resource for human users",
+            "resourceDescription": "Free text description of the resource. May summarize intellectual content, as well as describe various metadata aspects such as lineage, quality, use constraints, maintenance.",
+            "resourceURI": "URI",
+            "resourceURI": [
+                {
+                    "citationIdentifier": "identifier1String",
+                    "scopedIdentifierAuthority": {
+                        "authorityURI": "URIforID1AuthorityAgent",
+                        "authorityLabel": "string that specifies ID1authority for people"
+                    }
+    }],
+            "resourceIndexTerms": [
+                {
+                    "keywordType": {
+                        "keywordTypeLabel": "label for keyword type1",
+                        "keywordTypeURI": "http://identifier.for.keyword/type1",
+                        "keywordTypeVocabularyURI": "http://identifier.for.keyword/type/vocabulary"
+                    },
+                    "keywords": ["type1keyword1", "type1keyword2", "type1keyword3"],
+                    "keywordSourceReference": {
+                        "keywordSourceLabel": "label to identify the keyword type in a user interface",
+                        "keywordSourceURI": "http://identifier.for.keyword/source"
+                    }
+                        },
+                {
+                    "keywordType": {
+                        "keywordTypeLabel": "label for keyword type2",
+                        "keywordTypeURI": "http://identifier.for.keyword/type2",
+                        "keywordTypeVocabularyURI": "http://identifier.for.keyword/type/vocabulary"
+                    },
+                    "keywords": ["type2keyword1", "type2keyword2", "type2keyword3"],
+                    "keywordSourceReference": {
+                        "keywordSourceLabel": "label to identify the keyword type in a user interface",
+                        "keywordSourceURI": "http://identifier.for.keyword/source"
+                    }
+                        },
+                {
+                    "keywordType": {
+                        "keywordTypeLabel": "facet=instrument",
+                        "keywordTypeVocabularyURI": "http://cinergi.nsf.org/conceptscheme/standardfacets"
+                    },
+                    "keywords": ["Earth Remote Sensing Instruments", "Active Remote Sensing", "Imaging Radars", "", "GEOSAR", "Geographic Synthetic Aperture Radar"],
+                    "keywordSourceReference": {
+                        "keywordSourceLabel": "GCMD Instrument keywords",
+                        "keywordSourceURI": "http://gcmdservices.gsfc.nasa.gov/kms/concepts/concept_scheme/instruments/"
+                    },
+                    "keywordProvenance": [{
+                        "keywordProvenance": "Keywords inserted by SciCrunch Keyword Enhancer",
+                        "keywordProvenanceLink": "http://cinergi.nsf.org/provenance/34637bgr4w3g"
+                }]
+            }],
+            "citedSourceAgents": [{
+                "agentRoleURI": "http://URI.uniquely.indentify/agent/role/e.g.author",
+                "agentRoleLabel": "string that users will understand to present role",
+                "agentRoleVocabularyURI": "http://URI for vocabulary",
+                "agent": {
+                    "agentURI": "http://URI for the agent",
+                    "personName": "The name of an individual; format--Last Name,First name MI",
+                    "personPosition": "named position in context of an organization",
+                    "organizationName": ["name1", "name2", "acronym", "otherNamesForOrg"],
+                    "organizationLink": "http://URI for organization",
+                    "phoneNumber": "use registered tel URI scheme http://tools.ietf.org/html/rfc3966",
+                    "contactEmail": ["email1@emial.com", "another@email.com"],
+                    "contactAddress": "postal address,ideally formatted appropriate to the target country"
+                }
+        }],
+            "citationDates": [
+                {
+                    "eventType": [
+                        {
+                            "datetypeLabel": "First edition",
+                            "datetypeURI": "http://identifier.vocab.org/cocepts/firstEditionDate",
+                            "datetypeVocabularyURI": "http://vocab.org/conceptSchema/dateType"
+                }
+            ],
+                    "dateTime": "2011-10-11T14:30"
+ }, {
+                    "eventType": [
+                        {
+                            "datetypeLabel": "Revised Version",
+                            "datetypeURI": "http://identifier.vocab.org/cocepts/RevisionDate",
+                            "datetypeVocabularyURI": "http://vocab.org/conceptSchema/dateType"
+                }
+            ],
+                    "dateTime": "2014-10-11T14:30"
+ }],
+            "recommendedCitation": "a suggested full text citation to use when citing the resource; include standard bibliographic content like edition, publisher, series title, series issue, page numbers, other information appropriate to the described resource",
+            "resourceContacts": [
+                {
+                    "agentRoleURI": "http://cinergi.nsf.org/concept/agentrole/resourcesteward",
+                    "agentRoleLabel": "Resource Steward1",
+                    "agentRoleVocabularyURI": "http://cinergi.nsf.org/conceptscheme/agentrole",
+                    "agent": {
+                        "agentURI": "http://orcid.org/3427278",
+                        "personName": "Montiovina,Alfred X.",
+                        "personPosition": "Repository Manager",
+                        "organizationName": ["The Big Organization", "TBO"],
+                        "organizationLink": "http://orcid.org/20892356",
+                        "contactEmail": ["montioax@tbo.com", "repository@tbo.com"]
+                    }
+            },
+                {
+                    "agentRoleURI": "http://cinergi.nsf.org/concept/agentrole/resourcesteward",
+                    "agentRoleLabel": "Resource Steward",
+                    "agentRoleVocabularyURI": "http://cinergi.nsf.org/conceptscheme/agentrole",
+                    "agent": {
+                        "agentURI": "http://orcid.org/12356127",
+                        "personName": "Goodkeep, Sarah H.",
+                        "personPosition": "Repository Manager",
+                        "organizationName": ["The Big Organization", "TBO"],
+                        "organizationLink": "http://orcid.org/20892356",
+                        "contactEmail": ["goodkeep@tbo.com"]
+                    }
+            }],
+            "resourceAccessOptions": [
+                {
+                    "distributor": {
+                        "$ref": "#/definitions/RelatedAgent"
+                    },
+                    "accessLinks": [{
+                        "$ref": "#/definitions/Link"
+                            }]
+                    }],
+            "resourceGeographicExtent": {
+                "extentLabel": "string to label this extent in UI",
+                "extentStatement": "free text description of extent",
+                "extentStatement": "free text description of extent",
+                "extentReference": {
+                    "referencedExtentLabel": "label to identify the date type in a user interface",
+                    "referencedExtentURI": "http://identifier for referenced extent",
+                    "extentVocabularyURI": "http://identifier for the containing vocabulary (thesaurus, ontology...). Analogous to codelist in ISO19115 or codespace in GML."
+                },
+                "boundingBoxWGS84": [
+                    {
+                        "northBoundLatitude": 33,
+                        "southBoundLatitude": 27,
+                        "eastBoundLongitude": 12,
+                        "westBoundLongitude": 24
+                                },
+                    {
+                        "northBoundLatitude": 32,
+                        "southBoundLatitude": 30,
+                        "eastBoundLongitude": -15,
+                        "westBoundLongitude": -19
+                                }],
+                "geoJSONgeometry": {
+                    "extentGeometryType": {
+                        "geometrytypeLabel": "label to identify the geometry type in a user interface",
+                        "geometrytypeURI": "http://identifier for referenced resource",
+                        "geometrytypeVocabularyURI": "http://identifier for the containing vocabulary "
+                    },
+                    "extentGeometry": [{
+
+                        "$ref": "https://raw.githubusercontent.com/fge/sample-json-schemas/master/geojson/geojson.json  GeoJSON string here..."
+                                    }]
+                },
+                "verticalExtent": {
+                    "verticalExtentMinimum": 0,
+                    "verticalExtentMaximum": 1000,
+                    "verticalExtentCRS": {
+                        "verticalCRSLabel": "label to identify the date type in a user interface",
+                        "verticalCRS-URI": "http://identifier for referenced resource",
+                        "verticalCRSVocabularyURI": "http://identifier for the containing vocabulary"
+                    }
+                }
+            },
+            "resourceTemporalExtent": [
+                {
+                    "temporalExtentBegin": "ISO-8601 DateTime1",
+                    "temporalExtentEnd": "ISO-8601 DateTime1"
+        }, {
+                    "temporalExtentBegin": "ISO-8601 DateTime2",
+                    "temporalExtentEnd": "ISO-8601 DateTime2"
+        }],
+            "resourceUsageConstraints": [
+                {
+                    "constraintsStatement": "free text description of legal, technical, and security-related constraint on access to or use of a resource",
+                    "constraintTerms": [
+                        {
+                            "constrainttypeLabel": "label  constraint type1",
+                            "constrainttypeURI": "http://identifier for constraint type value",
+                            "constrainttypeVocabularyURI": "http://identifier for the constraint-type vocabulary",
+                            "constraintTerm": "label to identify the constraint",
+                            "constraintURI": "http://identifier for the  constraint",
+                            "constraintVocabularyURI": "http://identifier for the constraint vocabulary"
+            }],
+                    "license": [{
+                        "licenseURI": "identifier for license1.",
+                        "licenseName": "Name used to identify the license1 to users"
+                                      }]
+                        }],
+            "resourceBrowseGraphic": {
+                "resourceBrowseGraphicURL": "URL locator for the image",
+                "linkRelation": [
+                    {
+                        "linkRelationLabel": "label to identify the link relation1 in a user interface",
+                        "linkRelationURI": "http://identifier for link relation1",
+                        "linkRelationVocabularyURI": "http://identifier for the link relation vocabulary"
+                },
+                    {
+                        "linkRelationLabel": "label to identify the link relation2 in a user interface",
+                        "linkRelationURI": "http://identifier for link relation2",
+                        "linkRelationVocabularyURI": "http://identifier for the link relation vocabulary"
+                }],
+                "linkTitle": "text to label this link in a UI",
+                "linkContentResourceType": "File type for the actual resource content. Typically use MIME type string from IANA registry http : //www.iana.org/assignments/media-types/application/index.html"
+            },
+            "resourceLanguage": ["ISO-639string",
+                {
+                    "resourceLanguageLabel": "label to identify the language of resource content in a user interface",
+                    "resourceLanguageURI": "http://identifier for Language",
+                    "resourceLanguageVocabularyURI": "http://identifier for the language vocabulary"
+            }, {
+                    "resourceLanguageLabel": "label to identify the language2 of resource content in a user interface",
+                    "resourceLanguageURI": "http://identifier for Language2",
+                    "resourceLanguageVocabularyURI": "http://identifier for the language vocabulary"
+            }],
+            "resourceSpatialDescription": {
+                "resourceSpatialRepresentationType": {
+                    "resourceSpatialRepresentationTypeLabel": "label to identify the Spatial Representation type in a user interface",
+                    "resourceSpatialRepresentationTypeURI": "http://identifier for resource Spatial Representation type",
+                    "resourceSpatialRepresentationTypeVocabularyURI": "http://identifier for the spatial representation vocabulary"
+                },
+                "resourceSpatialReferenceSystem": {
+                    "resourceSpatialReferenceSystemLabel": "label to identify the spaatial reference system in a user interface",
+                    "resourceSpatialReferenceSystemURI": "http://identifier for resource spatial reference system",
+                    "resourceSpatialReferenceSystemVocabularyURI": "identifier for the containing vocabulary "
+                }
+            },
+            "relatedResources": [
+                {
+                    "linkURL": "http://uri that locates related resource1",
+                    "linkRelation": [
+                        {
+                            "relLabel": "text to identify reference relation type",
+                            "relURI": "http://host1.uri for the relation type",
+                            "relVocabularyURI": "http://uri for vocabulary1 in which the relLabel is defined."
+                    },
+                        {
+                            "relLabel": "text to identify second reference relation type",
+                            "relURI": "http://host2.uri for the relation type",
+                            "relVocabularyURI": "http://uri for vocabulary for second relLabel"
+                    }
+      ],
+                    "linkTitle": "text to label this link in a UI",
+                    "linkTargetResourceType": "typically use MIME type ",
+                    "linkContentResourceType": "File type (e.g. MIME) for the actual resource content",
+                    "linkOverlayAPI": {
+                        "APILabel": "text to identify the overlay API",
+                        "API-URI": "http://URI for overly API"
+                    },
+                    "linkProfile": {
+                        "profileLabel": "text to identify the profile",
+                        "profileURI": "http://URI for the profile"
+                    },
+                    "linkParameters": [
+                        {
+                            "linkParameterLabel": "string to display for link parameter1",
+                            "linkParameterURI": "identifier for parameter1 from a controlled vocabulary",
+                            "linkParameterValue": "string1"
+                    },
+                        {
+                            "linkParameterLabel": "string to display for link parameter2",
+                            "linkParameterURI": "identifier for the parameter2 from a controlled vocabulary",
+                            "linkParameterValue": "string2"
+                    }
+                    ],
+                    "linkDescription": "free text description of the target to help UI",
+                    "linkTransferSize": 1001
+       },
+                {
+                    "linkURL": "http://uri that locates the link target",
+                    "linkRelation": [
+                        {
+                            "relLabel": "text to identify reference relation type",
+                            "relURI": "http://host1.uri for the relation type",
+                            "relVocabularyURI": "http://uri for vocabulary1 in which the relLabel is defined."
+                    },
+                        {
+                            "relLabel": "text to identify second reference relation type",
+                            "relURI": "http://host2.uri for the relation type",
+                            "relVocabularyURI": "http://uri for vocabulary for second relLabel"
+                    }
+      ],
+                    "linkTitle": "text to label this link in a UI",
+                    "linkTargetResourceType": "typically use MIME type ",
+                    "linkContentResourceType": "File type (e.g. MIME) for the actual resource content",
+                    "linkOverlayAPI": {
+                        "APILabel": "text to identify the overlay API",
+                        "API-URI": "http://URI for overly API"
+                    },
+                    "linkProfile": {
+                        "profileLabel": "text to identify the profile",
+                        "profileURI": "http://URI for the profile"
+                    },
+                    "linkParameters": [
+                        {
+                            "linkParameterLabel": "string to display for link parameter1",
+                            "linkParameterURI": "identifier for parameter1 from a controlled vocabulary",
+                            "linkParameterValue": "string1"
+                    },
+                        {
+                            "linkParameterLabel": "string to display for link parameter2",
+                            "linkParameterURI": "identifier for the parameter2 from a controlled vocabulary",
+                            "linkParameterValue": "string2"
+                    }
+                    ],
+                    "linkDescription": "free text description of the target to help UI",
+                    "linkTransferSize": 1001
+}],
+            "extras": {}
+
+        }
+    }
+}

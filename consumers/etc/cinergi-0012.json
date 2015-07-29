@@ -1,0 +1,35 @@
+{
+    "sourceInformation": {
+      "resourceID": "cinergi-0012",
+      "name": "NOAA_NGDC_Collection",
+      "dataSource": "NOAA_NGDC_Collection"
+    },
+    
+    "ingestConfiguration": {
+      "ingestMethod": "WAF",
+      "ingestURL": "http://hydro10.sdsc.edu/metadata/NOAA_NGDC_Collection/",
+      "allowDuplicates": "False",
+      
+      "crawlFrequency": {
+        "crawlType": "Frequency",
+        "hours": "48",
+        "minutes": "0",
+        "startDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "startTime": "0:00",
+        "operationEndTime": "24:00"
+      }  
+    },
+        
+    "contentSpecification": {
+      "keepMissing": "false",
+      "locale": "en_US"
+    },
+    
+    "originalRecordIdentifierSpec": {
+      "fields": ["$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"],
+      "delimiter": [":"],
+      "method": "Value"
+    },
+      
+    "documentProcessing": ["UUID Generation", "XML2Cinergi", "Index"]
+}

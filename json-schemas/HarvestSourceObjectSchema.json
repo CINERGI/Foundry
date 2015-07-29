@@ -1,0 +1,361 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "@context": {
+        "chs": "http://resources.usgin.org/uri-gin/cinergi/schema/harvestsourceschema",
+        "cmd": "http://resources.usgin.org/uri-gin/cinergi/schema/metadataobjectschema",
+        "@vocab": "http://json-schema.org/draft-04/schema",
+        "@base": "http://resources.usgin.org/uri-gin/cinergi/schema/harvestsourceschema",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "dct": "http://purl.org/dc/terms/",
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "description": "JSON schema for use in a MongoDb for metadata management. This schema defines a document that describes a harvest source and processing workflow for the CINERGI Metadata manamgement system. This schema expands the original source JSON object defined by Burak O. (see doc/doc_injection.md in the Foundry GitHub repository)",
+    "id": "http://resources.usgin.org/uri-gin/cinergi/harvestsourceschema/json",
+    "chs:CINERGI_HarvestSource": {
+        "description": "This document type documents a harvest configuration",
+        "type": "object",
+        "properties": {
+            "chs:configurationID": {
+                "description": "Identifier for this harvest configuration; must be unique across all configurations in system. Might be used with harvested metadata identifier to produce a fingerprint hash identifying the file.",
+                "type": "string"
+            },
+            "chs:harvestSourceLabel":{
+             "description":"a text string to identify this harvest source in user interfaces",
+                "type":"string"
+            },
+            "chs:harvestSourceDescription":{
+              "description":"text description of the harvest source",
+                "type":"string"
+            },
+            "chs:sourceContact":{
+              "description":"contact information for agent who maintains the harvest source, in case of problems",
+                "$ref":"definitions/RelatedAgent"
+            },
+            "chs:fingerprintMethod": {
+                "description": "how are harvested records fingerprinted for this source. e.g. 1) use existing fileIdentifierUUID with configurationID to make hash (UUID v5 hash algorithm); 2) hash configurationID and title and author",
+                "type": "string"
+            },
+            "chs:harvestURL":{
+              "description":"URL for harvest end point",
+                "type":"string",
+                "format":"uri"
+            },
+            "chs:sourceContentSpecification":{
+              "description":"a string that identifies the content specification and interchange format for the harvested records.  Some sources might have multiple formats (multiple occurrences of this key), in which case the processing workflow must include an interrogation step in which it identifies the incoming format to process correctly",
+                "type":"object",
+                "required":["chs:formatName"],
+                "properties":{
+                  "chs:formatName":{
+                      "description":"text name that identifies the format (content model and encoding scheme) for people.",
+                      "type":"string"
+                  },
+                    "chs:formatURI":{
+                      "description":"text string that unambiguously identifies the format, for use in machine processing to determine how to process incoming records.",
+                      "type":"uri"
+                    },
+                    "chs:profileName":{
+                      "description":"text name of a specification that dictates additional conventions and practices that extend the format specification for better interoperability",
+                      "type":"string"
+                    },
+                    "chs:profileURI":{
+                      "description":"text string that unambiuously identifies the profile, for machine processing",
+                      "type":"uri"
+                    }
+                }
+            },
+            "chs:mappingToCMO": {
+                "description": "Link to a file that provides a mapping from the input schema to the CINERGI metadata object (CMO). Provides Xpath or JSONpath from input file to JSONpath in CMO.",
+                "$ref": "definitions/#Link"
+            },
+            "chs:processingWorkflow":{
+              "description":"link to (web accessible) object that defines the procssing workflow for documents obtained form this harvest source. List pipeline processing step sequence to apply to records from this source: --mandatory, optional steps; --validation processes to run; --each step should include necessary service invocation information to run process; --what to do if enhancer in chain throws error; --preconditions for each enhancer",
+              "$ref": "definitions/#Link"
+            },
+            "chs:extrasProcessing":{
+                "description":"specification of what to do with content in source records that is not mapped into the CMO scheme.  We'll have to figure out what this specification needs to look like as we go",
+                "type":"string"
+            },
+            "chs:crawlFrequencyHours": {
+                "description": "The number of hours between scheduled executions of this harvest. If the current time is greated than (lastHarvestDateTime + crawlFrequencyHours) then the harvest is run again. Negative value indicates that this configuration is only run by manual job start.",
+                "type": "number"
+            },
+            "chs:lastHarvestDateTime": {
+                "description": "Date and time that the last execution of this harvest configuration completed",
+                "type":"string",
+                "format":"ISO8601"
+            },
+            "chs:lastHarvestCount": {
+                "description": "Number of records acquired in the last harvest run (whether they validated or not.",
+                "type":"number",
+                "format":"integer"
+            },
+            "chs:harvestLog": {
+                "description": " record of events from last harvest; includes a temporary log for last harvest, and a running log of all harvests. completed and current uncompleted in the temporary section. When job completes, the old completed section gets archived somewhere else (a harvest log archive mongo collection)",
+                "type": "object",
+                "properties": {
+                    "chs:currentHarvestLog": {
+                        "description": "Log of events in most recent harvest run for this configuration. The EventDate records the DateTime of each event as is is added to the log.",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "$ref": "definitions/#EventDate",
+                                "chs:currentLogItem": {
+                                    "description": "text description of logged event",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "chs:harvestHistory": {
+                        "description": "collection of summaries for each previous log run. This is an array of objects, with one object for each harvest run; each of these objects is an array of strings summarizing items of interest from that run. The EventDate for each item is the DateTime when the Harvest was completed.",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "$ref": "definitions/#EventDate",
+                                "chs:harvestHistoryItem": {
+                                    "description": "array of harvest run summary objects, these are simple strings for now",
+                                    "type": "array",
+                                    "items": "string"
+                                }
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
+    },
+    "definitions": {
+        "cmd:relatedAgent": {
+            "description": "this needs to be updated to use FOAF agent, with an associated role; have to figure out how to do with JSON-LD in JSON schema. The scheme has been worked over to minimize nesting and simplify.",
+            "id": "#RelatedAgent",
+            "type": "object",
+            "properties": {
+                "cmd:agentRoleURI": {
+                    "description": "string to uniquely indentify the agent role for interperability",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "cmd:agentRoleLabel": {
+                    "type": "string",
+                    "description": "string that users will understand to present role"
+                },
+                "cmd:agentRoleVocabularyURI": {
+                    "description": "identifier for vocabulary in which the agent role is defined.",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "cmd:agent": {
+                    "description": "Agent as an identifiable object; could be just an organization, or an individual who may or may not be assoicated with an organization. If the Agent is a person, this should be the same as the PersonURI",
+                    "type": "object",
+                    "properties": {
+                        "cmd:agentURI": {
+                            "description": "If we have an external URI for the agent, that should go here; otherwise this should be a unique identifier assigned in the CINERGI namespace. At least follow URI syntax (e.g. a prefix for the 'protocol'), even if they are local identifiers.",
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "anyOf": [
+                            {
+                                "cmd:personName": {
+                                    "type": "string",
+                                    "description": "The name of an individualformat--Last Name,First name MI"
+                                }
+                            },
+                            {
+                                "cmd:personPosition": {
+                                    "type": "string",
+                                    "description": "identifies an individual who currently holds the named position in context of an organization"
+                                }
+                                    },
+                            {
+                                "cmd:organizationName": {
+                                    "type": "array",
+                                    "description": "this is an array to allow synonyms to be included (acronyms, abbreviations).",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "minItems": 1
+                                }
+                        }],
+                        "cmd:organizationLink": {
+                            "description": "unique identifier for organization; use to link to the organization that the person is affiliated with, in the case that the AgentURI is for the person and they have an organization affiliation. In this case the organizationName is equivalent to the linkLabel property",
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "anyOf": [
+                            {
+                                "cmd:phoneNumber": {
+                                    "description": "use registered tel URI scheme for encoding. See http://tools.ietf.org/html/rfc3966",
+                                    "type": "string"
+                                }
+                        },
+                            {
+                                "cmd:contactEmail": {
+                                    "description": "map to foaf:mbox",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "format": "email"
+                                    }
+                                }
+                    }],
+                        "cmd:contactAddress": {
+                            "type": "string",
+                            "description": "postal address,ideally formatted appropriate to the target country. One field because there is no clear reason to disaggregate the address into street, city, country, postal code, etc..."
+                        }
+                    }
+                }
+            }
+        },
+        "cmd:LinkObject": {
+            "id": "#Link",
+            "description": "used for situations that need a link (hypermedia affordance) to an online resource, typically for navigating linked data space.  The link is a locator--an identifier for a location that can provide a digital object.",
+            "type": "object",
+            "required": ["cmd:linkURL"],
+            "properties": {
+                "cmd:linkURL": {
+                    "description": "a web-derferencable identifier that locates the link target; typically an HTTP URI. URI syntax specifies that the identifier string includes a prefix that specifies the base protocol for the identifier",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "cmd:linkRelation": {
+                    "type": "array",
+                    "description": "Term from IANA rel vocabulary for consistency with IETF5988. Specifies relationship between resources. Use to assign semantics to the relationship between the linked resources.",
+                    "required": ["cmd:relLabel"],
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "cmd:relLabel": {
+                                "description": "text to identify the reference in a UI",
+                                "type": "string"
+                            },
+                            "cmd:relURI": {
+                                "description": "identifier for the reltaion type.",
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "cmd:relVocabularyURI": {
+                                "description": "identifier for vocabulary in which the relLabel is defined.",
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    }
+                },
+                "cmd:linkTitle": {
+                    "type": "string",
+                    "description": "text to label this link in a UI"
+                },
+                "cmd:linkTargetResourceType": {
+                    "type": "string",
+                    "description": "typically use MIME type string from IANA registry http : //www.iana.org/assignments/media-types/application/index.html. This is the type of the file that will be accessed directly by the link URL; if this is a container file (e.g. zip archive), the innerResourceType property is used to specify the type of file with actual resource content."
+                },
+                "cmd:linkContentResourceType": {
+                    "description": "File type for the actual resource content. Typically use MIME type string from IANA registry http : //www.iana.org/assignments/media-types/application/index.html",
+                    "type": "string"
+                },
+                "cmd:linkOverlayAPI": {
+                    "description": "Reference that identifies the API for messages tunneled to a component on the target server.  Optional, provide if such scheme or protocol is necessary to utilize the link. The URI should be defined by the service specification for the protocol or service type; version information should be included if applicable.  E.g. OGC WMS, WS-services. This property is typically used for services that encode remote procedure calls using identifiers dereferenced using standard HTTP methods (GET, POST).",
+                    "type": "object",
+                    "required": ["cmd:APILabel"],
+                    "properties": {
+                        "cmd:APILabel": {
+                            "description": "text to identify the overlay API in a UI",
+                            "type": "string"
+                        },
+                        "cmd:API-URI": {
+                            "description": "identifier for overly API",
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                },
+                "cmd:linkProfile": {
+                    "description": "Identifier for profile of specifications identified by type, overlayAPI, and template attributes. Optional, provide if additional conventions are necessary for content contained in messages through this link. Note that the same output scheme might be encoded using different types. Profiles typically add usage conventions when the interchange scheme offers alternate approaches, restrict cardinality for elements in the interchange format, or specify usage of particular vocabularies.",
+                    "type":"object",
+                    "required": ["cmd:profileLabel"],
+                    "properties": {
+                        "cmd:profileLabel": {
+                            "description": "text to identify the profile in a UI",
+                            "type": "string"
+                        },
+                        "cmd:profileURI": {
+                            "description": "identifier for the profile",
+                            "type": "string",
+                            "format": "uri"
+                        }
+                    }
+                },
+                "cmd:linkParameters": {
+                    "type": "array",
+                    "description": "a dictionary (key-value pairs) of other paramters or properties that need to be associated with the link, e.g. WFS feature typeNames, WMS layer names",
+                    "items": {
+                        "type": "object",
+                        "required": ["cmd:linkParameterLabel", "cmd:linkParameterValue"],
+                        "properties": {
+                            "cmd:linkParameterLabel": {
+                                "type": "string",
+                                "description": "string to display, and identifier to link parameter to registry"
+                            },
+                            "cmd:linkParameterURI": {
+                                "description": "identifier for the parameter from a controlled vocabulary",
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "cmd:linkParameterValue": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "cmd:linkDescription": {
+                    "type": "string",
+                    "description": "free text description of the target to help UI"
+                },
+                "cmd:linkTransferSize": {
+                    "type": "integer",
+                    "description": "advisory length of the linked content in octets"
+                }
+            }
+        },
+        "cmd:EventDateObject": {
+            "id": "#EventDate",
+            "type": "object",
+            "required": ["cmd:dateTime"],
+            "properties": {
+                "cmd:eventType": {
+                    "description": "0..N  event may be categorized in various ways...",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "cmd:datetypeLabel": {
+                                "description": "label to identify the date type in a user interface",
+                                "type": "string"
+                            },
+                            "cmd:datetypeURI": {
+                                "description": "identifier for referenced resource",
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "cmd:datetypeVocabularyURI": {
+                                "description": "identifier for the containing vocabulary (thesaurus, ontology...). Analogous to codelist in ISO19115 or codespace in GML.",
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    }
+                },
+                "cmd:dateTime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Use ISO 8601: 2011-10-11T14:30"
+                }
+            }
+        }
+    }
+}

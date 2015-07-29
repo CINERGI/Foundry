@@ -1,0 +1,10 @@
+ "cmd:EventDateObject": {
+     "cmd:eventType": [{
+         "cmd:datetypeLabel": "label to identify the date type in a user interface",
+         "cmd:datetypeURI": "http://identifier for date type",
+         "cmd:datetypeVocabularyURI": "http://identifier for the containing vocabulary",
+         "type": "string",
+         "format": "URI"
+                        }],
+     "cmd:dateTime": "2011-10-11T14:30"
+ }

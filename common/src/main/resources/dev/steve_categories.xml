@@ -1,0 +1,83 @@
+<tree>
+    <level1>Science Domain
+        <level2>Biology</level2>
+        <level2>Chemistry</level2>
+        <level2>Earth Science</level2>
+        <level2>Agriculture</level2>
+        <level2>Climate Science</level2>
+        <level2>Computer Science</level2>
+        <level2>Medicine</level2>
+        <level2>Physics</level2>
+        <level2>Ecology</level2>
+        <level2 mapTo="Science Domain">Other</level2>
+    </level1>
+    <level1>Process
+        <level2 mapTo="atmospheric process">Atmospheric Process</level2>
+        <level2 mapTo="hydrologic process">Hydrologic Process</level2>
+        <level2 mapTo="Process">Other</level2>
+        <level2 mapTo="chemical process">Chemical Process</level2>
+        <level2 mapTo="ocean process">Ocean Process</level2>
+        <level2 mapTo="Glacial process">Glacial Process</level2>
+        <level2 mapTo="tectonic process">Tectonic Process</level2>
+    </level1>
+    <level1>Material
+        <level2 mapTo="Biological material">Biological Material</level2>
+        <level2 mapTo="Chemical entity">Chemical Substance</level2>
+        <level2>Mineral</level2>
+        <level2>Rock Material</level2>
+        <level2>Sediment</level2>
+        <level2>Soil</level2>
+        <level2 mapTo="Environmental material,Material entity">Other</level2>
+    </level1>
+    <level1>Realm
+        <level2>Hydrosphere</level2>
+        <level2>Atmosphere</level2>
+        <level2>Habitat</level2>
+        <level2>Geosphere</level2>
+        <level2>Earth Surface</level2>
+        <level2 mapTo="Location">Other</level2>
+    </level1>
+    <level1>Feature
+        <level2 mapTo="Geologic feature">Geologic Feature</level2>
+        <level2>Physiographic Feature</level2>
+        <level2 mapTo="Water body">Hydrologic Feature</level2>
+        <level2>Atmospheric Feature</level2>
+        <level2>Human Feature</level2>
+        <level2>Marine Feature</level2>
+        <level2>Other</level2>
+    </level1>
+    <level1 mapTo="Observed Property">Property</level1>
+    <level1>Geographic Location</level1>
+    <level1>Geologic Age
+        <level2>Cenozoic</level2>
+        <level2>Mesozoic</level2>
+        <level2>Paleozoic</level2>
+        <level2>Proterozoic</level2>
+        <level2>Archean</level2>
+        <level2>Pre-Archean</level2>
+    </level1>
+    <level1>Activity
+        <level2>Experiment</level2>
+        <level2>Observation</level2>
+        <level2>Project</level2>
+        <level2>Meeting</level2>
+        <level2 mapTo="Human activity">Other</level2>
+    </level1>
+    <level1>Resource Type
+        <level2 mapTo="dataset">Dataset</level2>
+        <level2>Document</level2>
+        <level2>Repository</level2>
+        <level2 mapTo="web service">Web Service</level2>
+        <level2 mapTo="Software resource">Software Resource</level2>
+        <level2>Specification</level2>
+    </level1>
+    <level1>Equipment
+        <level2>Sensor</level2>
+        <level2>Instrument</level2>
+        <level2>Platform</level2>
+        <level2>Platform-Satellite</level2>
+        <level2 mapTo="Equipment">Other</level2>
+    </level1>
+    <level1>Organization</level1>
+    <level1>Event</level1>
+</tree>

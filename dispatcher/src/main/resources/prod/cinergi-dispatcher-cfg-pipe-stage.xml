@@ -1,0 +1,68 @@
+<dispatcher-cfg>
+    <mongo-config db="discotest" collection="records">
+        <servers>
+            <server host="ec-pipe-stage" port="27017"/>
+            <server host="ec-pipe-stage" port="27018"/>
+        </servers>
+    </mongo-config>
+    <activemq-config>
+        <brokerURL>tcp://localhost:61616</brokerURL>
+    </activemq-config>
+    <checkpoint-file>/var/data/foundry/mongo-dispatcher-cp.xml</checkpoint-file>
+    <queues>
+        <queue name="foundry.indexCheckpoint" headerFields="History.batchId,SourceInfo.SourceID"></queue>
+    </queues>
+    <wf-mappings>
+        <wf-mapping name="CINERGI Test Workflow" ingestorOutStatus="new.1" updateOutStatus="id_assigned.1">
+            <step>UUID Generation</step>
+            <step>XML2Cinergi</step>
+            <step>Index</step>
+        </wf-mapping>
+    </wf-mappings>
+    <workflows>
+
+        <workflow name="CINERGI Test workflow">
+            <routes>
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="new.1"/>
+                    </condition>
+                    <to>foundry.uuid.1</to>
+                </route>
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="id_assigned.1"/>
+                    </condition>
+                    <to>foundry.spatial.1</to>
+                </route>
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="spatially_enhanced.1"/>
+                    </condition>
+                    <to>foundry.keyword.1</to>
+                </route>
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="keyword_enhanced.1"/>
+                    </condition>
+                    <to>foundry.org.1</to>
+                </route>
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="org_enhanced.1"/>
+                    </condition>
+                    <to>foundry.export.1</to>
+                </route>
+                <!-- for human annotation -->
+                <route>
+                    <condition>
+                        <predicate name="processing.status" op="eq" value="annotated.1"/>
+                    </condition>
+                    <to>foundry.annotated.1</to>
+                </route>
+            </routes>
+        </workflow>
+
+    </workflows>
+</dispatcher-cfg>
+

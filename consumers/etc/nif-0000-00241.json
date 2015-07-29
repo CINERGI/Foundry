@@ -1,0 +1,40 @@
+{
+    "SourceInformation": {
+      "ResourceID": "nif-0000-00241",
+      "Name": "Bloomington Drosophila Stock Center",
+      "DataSource": "nif-0000-00241"
+    },
+    
+    "IngestConfiguration": {
+      "IngestMethod": "CSV",
+      "IngestURL": "http://flystocks.bio.indiana.edu/bloomington.csv",
+      "allowDuplicates": "False",
+      
+      "CrawlFrequency": {
+        "CrawlType": "Frequency",
+        "Hours": "48",
+        "Minutes": "0",
+        "StartDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "StartTime": "0:00",
+        "OperationEndTime": "24:00" 
+      }  
+    },
+        
+    "ContentSpecification": {
+      "KeepMissing": "false",
+      "IgnoreLines": "1",
+      "HeaderLine": "1",
+      "Delimiter": ",",
+      "TextQuote": "&#034;",
+      "EscapeCharacter": "&#092;",
+      "Locale": "en_US"
+    },
+    
+    "PrimaryKey": {
+      "Fields": ["Stk #"],
+      "Delimiter": [":"],
+      "Method": "Value"
+    },
+      
+    "DocumentProcessing": ["UUID Generation", "Index"]     
+}

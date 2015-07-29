@@ -1,0 +1,96 @@
+<consumers-cfg>
+    <mongo-config db="discotest" collection="records">
+        <servers>
+            <server host="burak.crbs.ucsd.edu" port="27017"/>
+            <server host="burak.crbs.ucsd.edu" port="27018"/>
+        </servers>
+    </mongo-config>
+    <activemq-config>
+        <brokerURL>tcp://localhost:61616</brokerURL>
+    </activemq-config>
+    <pluginDir>/home/bozyurt/etc/foundry_plugins/plugins</pluginDir>
+    <libDir>/home/bozyurt/etc/foundry_plugins/lib</libDir>
+    <consumers>
+        <consumer-cfg name="uuidGen.1" type="native" listeningQueueName="foundry.uuid.1"
+                      successMessageQueueName="foundry.uuid.1" failureMessageQueueName="foundry.error"
+                      inStatus="new.1" outStatus="id_assigned.1" collection="records">
+        </consumer-cfg>
+        <consumer-cfg name="xml2cinergi.1" type="generic" listeningQueueName="foundry.xml2cinergi.1"
+                      successMessageQueueName="foundry.enhanced.1" failureMessageQueueName="foundry.error"
+                      inStatus="id_assigned.1" outStatus="xml2cinergi_finished.1" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.XML2CinergiPlugin</pluginClass>
+        </consumer-cfg>
+        <consumer-cfg name="index.1" type="generic" listeningQueueName="foundry.index.1"
+                      successMessageQueueName="foundry.indexed.1" failureMessageQueueName="foundry.error"
+                      inStatus="xml2cinergi_finished.1" outStatus="finished" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.CinergiElasticSearchIndexPreparer
+            </pluginClass>
+            <params>
+                <param name="serverURL" value="http://localhost:9200"/>
+                <!--  <param name="serverURL" value="http://103d9c3a0535d33e000.qbox.io"/> -->
+                <param name="indexPath" value="/cinergi/record"/>
+            </params>
+        </consumer-cfg>
+        <consumer-cfg name="spatial.1" type="generic" listeningQueueName="foundry.spatial.1"
+                      successMessageQueueName="" failureMessageQueueName="foundry.error"
+                      inStatus="xml2cinergi_finished.1" outStatus="spatially_enhanced.1" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer</pluginClass>
+            <params>
+                <param name="serverURL" value="http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer"/>
+            </params>
+        </consumer-cfg>
+        <consumer-cfg name="keyword.1" type="generic" listeningQueueName="foundry.keyword.1"
+                      successMessageQueueName="" failureMessageQueueName="foundry.error"
+                      inStatus="spatially_enhanced.1" outStatus="keyword_enhanced.1" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer</pluginClass>
+            <params>
+                <param name="serviceURL" value="http://tikki.neuinfo.org:9000/scigraph/annotations/entities"/>
+            </params>
+        </consumer-cfg>
+
+        <consumer-cfg name="org.1" type="generic" listeningQueueName="foundry.org.1"
+                      successMessageQueueName="" failureMessageQueueName="foundry.error"
+                      inStatus="keyword_enhanced.1" outStatus="org_enhanced.1" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer</pluginClass>
+            <params>
+                <param name="workDir" value="/tmp/cinergi/org"/>
+                <param name="scriptPath" value="/home/bozyurt/dev/python/some_cinergi_enhancers"/>
+            </params>
+        </consumer-cfg>
+        <consumer-cfg name="export.1" type="generic" listeningQueueName="foundry.export.1"
+                      successMessageQueueName="" failureMessageQueueName="foundry.error"
+                      inStatus="org_enhanced.1" outStatus="finished" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.WAFExporter</pluginClass>
+            <params>
+                <param name="outDirectory" value="/tmp/waf"/>
+            </params>
+        </consumer-cfg>
+        <consumer-cfg name="annotate_export.1" type="generic" listeningQueueName="foundry.annotated.1"
+                      successMessageQueueName="" failureMessageQueueName="foundry.error"
+                      inStatus="annotated.1" outStatus="finished" collection="records">
+            <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.WAFExporter</pluginClass>
+            <params>
+                <param name="outDirectory" value="/tmp/waf"/>
+            </params>
+        </consumer-cfg>
+         <consumer-cfg name="scicrunchIn.1" type="native" listeningQueueName="foundry.scicrunchIn"
+                      successMessageQueueName="foundry.scicrunchIn" failureMessageQueueName="foundry.error"
+                      inStatus="" outStatus="new.1" collection="records">
+        </consumer-cfg>
+        <!--
+           <consumer-cfg name="uuidGen.1" type="native" listeningQueueName="foundry.uuid.1"
+                         successMessageQueueName="foundry.uuid.1" failureMessageQueueName="foundry.error"
+                         inStatus="new.1" outStatus="id_assigned.1" collection="records">
+           </consumer-cfg>
+           <consumer-cfg name="index.1" type="generic" listeningQueueName="foundry.index.1"
+                         successMessageQueueName="foundry.indexed.1" failureMessageQueueName="foundry.error"
+                         inStatus="id_assigned.1" outStatus="finished" collection="records">
+               <pluginClass>org.neuinfo.consumers.ElasticSearchIndexDocWithResourcePreparer</pluginClass>
+               <params>
+                   <param name="serverURL" value="http://103d9c3a0535d33e000.qbox.io"/>
+                   <param name="indexPath" value="/cinergi/record"/>
+               </params>
+           </consumer-cfg>
+           -->
+    </consumers>
+</consumers-cfg>

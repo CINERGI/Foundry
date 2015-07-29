@@ -1,0 +1,14 @@
+    "relatedAgent": {
+	"agentRoleURI": "http://URI.uniquely.indentify/agent/role",
+	"agentRoleLabel": "string that users will understand to present role",
+            "agentRoleVocabularyURI": "http://URI for vocabulary",
+            "agent": {
+			"agentURI": "http://URI for the agent",
+                    "personName": "The name of an individual; format--Last Name,First name MI",
+                    "personPosition": "named position in context of an organization",
+                    "organizationName": ["name1","name2","acronym","otherNamesForOrg"],
+                    "organizationLink": "http://URI for organization",
+                    "phoneNumber": "use registered tel URI scheme http://tools.ietf.org/html/rfc3966",
+                     "contactEmail": ["email1@emial.com","another@email.com"],
+                    "cmd:contactAddress": "postal address,ideally formatted appropriate to the target country",
+}

@@ -1,0 +1,126 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "@context": {
+        "cpo": "http://resources.usgin.org/uri-gin/cinergi/schema/processingobjectschema/1.0",
+        "cmd": "http://resources.usgin.org/uri-gin/cinergi/schema/metadataobjectschema/1.0",
+        "@vocab": "http://json-schema.org/draft-04/schema",
+        "@base": "http://resources.usgin.org/uri-gin/cinergi/schema/processingobjectschema/1.0",
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "dct": "http://purl.org/dc/terms/",
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+    },
+    "description": "JSON schema for use in a CINERGI MongoDb pipeline to track processing of metadata object. This scheme represents brainstorming by Steve Richard based on fall 2014 version of pipeline; actual JSON object in MongoDb has evolved independently since then, so this is mostly historical and a recommendation. 2015-03-07",
+    "id": "http://resources.usgin.org/uri-gin/cinergi/metadataobjectschema/1.0/json",
+    "cpo:processingObject": {
+        "id": "#ProcessingObject",
+        "description": "root element; for data management overhead in CINGERGI pipeline. The cpo:harvestInformation, and cpo:processingStatus are considered the 'document wrapper'. ",
+        "type": "object",
+        "required": ["cmd:primaryKey"],
+
+        "properties": {
+            "cmd:primaryKey": {
+                "description": "unique identifier string for this metadataObject. This is the link to the actual resource metadata",
+                "type": "string"
+            },
+            "cpo:harvestInformation": {
+                "type": "object",
+                "description": "information for internal bookeeping in the CINERGI system",
+                "properties": {
+                    "cpo:version": {
+                        "description": "integer, starts at 1 when a new record is brought into the db; increment when the record is updated by harvesting a newer version from the source",
+                        "type": "integer"
+                    },
+                    "cpo:crawlDate": {
+                        "description": "date and time that the record was acquired or most recently updated",
+                        "type": "string",
+                        "format": "ISO8601"
+                    },
+                    "cpo:batchId": {
+                        "description": "identifier for a collection of metadata records harvested as part of a particular harvest batch run. If a new harvest completely replaces the existing harvested record, the processing steps should logically be imported as part of the harvest to replace the existing sequence of steps, starting the version sequence again",
+                        "type": "string"
+                    },
+                    "cpo:indexDate": {
+                        "description": "data of most recent indexing run executed on this record",
+                        "type": "string",
+                        "format": "ISO8601"
+                    },
+                    "cpo:originalRecordIdentifier": {
+                        "description": "URL or resolvable URI for the harvested source doc. e.g. individual file name in WAF. IF records are being pulled from a table source, this would be the primary key for the record from the original source. Only unique within a particular harvest source.",
+                        "type": "string"
+                    },
+                    "cpo:originalFormat": {
+                        "description": "string specifying the encoding scheme and profile. Produced by interrogation that selects wihch metadataLoader enhancer will run.",
+                        "type": "string"
+                    },
+                    "cpo:harvestURL": {
+                        "type": "string"
+                    },
+                    "cpo:sourceInfo": {
+                        "description": "Information to identify the harvest configuration information, including where the record came from-- either a harvest source, single record upload, or form- based editor",
+                        "type": "object",
+                        "properties": {
+                            "cpo:harvestSourceID": {
+                                "description": "<nif-id of the source>. This string should uniquely identifiy the harvest configuration, which includes the source URL, the encoding scheme and metadata dialect used by that source, and a CINERGI 'enhancement' workflow that has been executed on each record from that source.",
+                                "type": "string"
+                            },
+                            "cpo:viewID": {
+                                "description": "NIF specific property",
+                                "type": "string"
+                            },
+                            "cpo:harvestSourceName": {
+                                "description": "<source-name> name in Burak's original implementaiton. A text label to identify this source for people",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "cpo:originalDoc": {
+                "description": "<original doc as JSON>. A JSON blob will get added, we don't know what the schema for that will be--its an open world",
+                "type": "object",
+                "properties": {}
+            },
+            "cpo:processing": {
+                "description": "object to record information about record processing, eg. to mark broken links, record progress through a workflow",
+                "type": "object",
+                "properties": {
+                    "cpo:status": {
+                        "description": "flag used to track the next process in the enhancement workflow for a record; <process-status used to guide message oriented document processors>",
+                        "type": "string"
+                    },
+                    "cpo:issueObjects": {
+                        "description": "container for listing issues discovered by validation or review that need further work",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "cpo:issueType": {
+                                    "description": "term to categorize the issue, e.g. 'broken link','missing field'",
+                                    "type": "string"
+                                },
+                                "cpo:enhancerSource": {
+                                    "description": "object to identify the enhancer component that generated the issue",
+                                    "type": "object",
+                                    "properties": {
+                                        "enhancerName": {
+                                            "description": "string that indentifies the enhancer; this should uniquely identify the specific enhancer code that was run",
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "cpo:issueDescription": {
+                                    "description": "text description of the problem",
+                                    "type": "string"
+                                },
+                                "cpo:issueSeverity": {
+                                    "description": "term to categorize how important it is to fix issue, e.g. 'critical','normal','minor'",
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

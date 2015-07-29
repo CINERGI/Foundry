@@ -1,0 +1,72 @@
+<consumers-cfg>
+    <mongo-config db="discotest" collection="nifRecords">
+        <servers>
+            <server host="burak.crbs.ucsd.edu" port="27017"/>
+            <server host="burak.crbs.ucsd.edu" port="27018"/>
+        </servers>
+    </mongo-config>
+    <activemq-config>
+        <brokerURL>tcp://localhost:61616</brokerURL>
+    </activemq-config>
+    <pluginDir>/home/bozyurt/etc/foundry_plugins/plugins</pluginDir>
+    <libDir>/home/bozyurt/etc/foundry_plugins/lib</libDir>
+    <consumers>
+        <consumer-cfg name="uuidGen.1" type="native" listeningQueueName="foundry.uuid.1"
+                      successMessageQueueName="foundry.uuid.1" failureMessageQueueName="foundry.error"
+                      inStatus="new.1" outStatus="id_assigned.1" collection="nifRecords">
+        </consumer-cfg>
+
+        <consumer-cfg name="uuidGen.2" type="native" listeningQueueName="foundry.uuid.2"
+                      successMessageQueueName="foundry.uuid.2" failureMessageQueueName="foundry.error"
+                      inStatus="new.2" outStatus="id_assigned.2" collection="nifRecords">
+        </consumer-cfg>
+
+        <consumer-cfg name="ner.1" type="generic" listeningQueueName="foundry.extraction.1"
+                      successMessageQueueName="foundry.extraction.1" failureMessageQueueName="foundry.error"
+                      inStatus="id_assigned.1" outStatus="annotated.1" collection="nifRecords">
+            <pluginClass>org.neuinfo.consumers.ResourceNER</pluginClass>
+        </consumer-cfg>
+
+        <consumer-cfg name="index.1" type="generic" listeningQueueName="foundry.index.1"
+                      successMessageQueueName="foundry.indexed.1" failureMessageQueueName="foundry.error"
+                      inStatus="annotated.1" outStatus="finished" collection="nifRecords">
+            <pluginClass>org.neuinfo.consumers.ElasticSearchIndexDocWithResourcePreparer</pluginClass>
+            <params>
+                <param name="serverURL" value="http://localhost:9200"/>
+                <param name="indexPath" value="/nif/record"/>
+            </params>
+        </consumer-cfg>
+
+        <consumer-cfg name="index.2" type="generic" listeningQueueName="foundry.index.2"
+                      successMessageQueueName="foundry.indexed.2" failureMessageQueueName="foundry.error"
+                      inStatus="id_assigned.2" outStatus="finished" collection="nifRecords">
+            <pluginClass>org.neuinfo.consumers.ElasticSearchIndexDocWithResourcePreparer</pluginClass>
+            <params>
+                <param name="serverURL" value="http://localhost:9200"/>
+                <param name="indexPath" value="/nif/record"/>
+            </params>
+        </consumer-cfg>
+
+
+        <consumer-cfg name="harvest-iso" type="cli" listeningQueueName="foundry.new"
+                      successMessageQueueName="foundry.harvested"
+                      failureMessageQueueName="foundry.error">
+            <handlers>
+                <handler-cfg name="iso-to-cinergi" version="0.0.1">
+                    <handler>iso-to-cinergi</handler>
+                    <description></description>
+                    <params>
+                        <param name="no-args" value="2"/>
+                        <param name="arg1-type" value="file"/>
+                        <param name="arg1-format" value="xml"/>
+                        <param name="arg1-name" value="-f"/>
+                        <param name="arg2-type" value="file"/>
+                        <param name="arg2-name" value="-o"/>
+                        <param name="arg2-format" value="json"/>
+                    </params>
+                </handler-cfg>
+            </handlers>
+        </consumer-cfg>
+    </consumers>
+</consumers-cfg>
+

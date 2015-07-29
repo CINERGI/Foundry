@@ -1,0 +1,11 @@
+<ingestor-cfg>
+    <mongo-config db="discotest">
+       <servers>
+         <server host="pipeline" port="27017"/>
+         <server host="pipeline" port="27018"/>
+         </servers>
+    </mongo-config>
+    <source nifId="nlx_152590">
+       <xml-file path="/home/bozyurt/etc/foundry/open_source_brain_projects.xml" rootEl="projects" docEl="project"/>
+    </source>
+</ingestor-cfg>
