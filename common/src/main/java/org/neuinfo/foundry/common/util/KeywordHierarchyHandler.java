@@ -327,6 +327,18 @@ public class KeywordHierarchyHandler {
             children.add(child);
         }
 
+        public Node getChild(String label) {
+            if (!hasChildren()) {
+                return null;
+            }
+            for(Node c : children) {
+                if (c.label.equalsIgnoreCase(label)) {
+                    return c;
+                }
+            }
+            return null;
+        }
+
         public boolean hasChildren() {
             return children != null && !children.isEmpty();
         }

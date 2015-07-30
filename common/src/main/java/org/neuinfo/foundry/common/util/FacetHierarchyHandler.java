@@ -27,9 +27,16 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
     Map<String, String> cinergi2ScigraphCategoryMap = new HashMap<String, String>();
     List<String> sortedCinergiCategories;
     Map<String,Node> label2NodeMap = new HashMap<String, Node>();
+    static Map<String,String> exceptionMap = new HashMap<String, String>();
 
     String serviceURL = "http://tikki.neuinfo.org:9000/";
     private static FacetHierarchyHandler instance;
+    static {
+        exceptionMap.put("water body","hydrosphere feature");
+        exceptionMap.put("observed property","property"); //"measure");
+        exceptionMap.put("named property","property");
+        exceptionMap.put("material entity","material");
+    }
 
 
     public static synchronized FacetHierarchyHandler getInstance() throws Exception {
@@ -113,6 +120,23 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
                 populateUsedSet(n, usedNodeSet);
             }
         }
+
+
+        root = new Node("Root", "Root");
+        for(Node n : topLevelNodeMap.values()) {
+            root.addChild(n);
+            fixHierarchy(n);
+            prepMapping(n);
+        }
+        for(Node n : nodeMap.values()) {
+            label2NodeMap.put(n.label.toLowerCase(), n);
+        }
+
+        topLevelNodeMap.clear();
+        for(Node c : root.getChildren()) {
+            topLevelNodeMap.put(c.id, c);
+        }
+
         showHierarchy(topLevelNodeMap);
         System.out.println("# nodes:" + nodeMap.size() + " usedNodeSet:" + usedNodeSet.size());
         for (Node n : nodeMap.values()) {
@@ -120,14 +144,35 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
                 System.out.println(n);
             }
         }
+    }
 
-        root = new Node("Root", "Root");
-        for(Node n : topLevelNodeMap.values()) {
-            root.addChild(n);
-            prepMapping(n);
+    private void fixHierarchy(Node parent) {
+        if (parent.label.equalsIgnoreCase("equipment")) {
+            Node grandParent = parent.getParent();
+            if (grandParent != null) {
+                grandParent.getChildren().remove(parent);
+                parent.setParent(this.root);
+                this.root.addChild(parent);
+            }
+
+        } else if (parent.label.equalsIgnoreCase("resource type")) {
+            Node softwareNode = new Node("http://www.ebi.ac.uk/swo/SWO_0000001","Software");
+            if (parent.getChild(softwareNode.label) == null) {
+                softwareNode.setParent(parent);
+                parent.addChild(softwareNode);
+            }
+        } else if (parent.label.equalsIgnoreCase("property")) {
+            Node otherNode = new Node("","Property (Other)");
+            if (parent.getChild(otherNode.label) == null) {
+                otherNode.setParent(parent);
+                parent.addChild(otherNode);
+            }
         }
-        for(Node n : nodeMap.values()) {
-            label2NodeMap.put(n.label.toLowerCase(), n);
+        if (parent.hasChildren()) {
+            List<Node> children = new ArrayList<Node>(parent.getChildren());
+            for (Node c : children) {
+                   fixHierarchy(c);
+            }
         }
     }
 
@@ -164,8 +209,11 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
 
     public String getCinergiCategory(String category) {
         String key = category;
+        if (exceptionMap.containsKey(key)) {
+            key = exceptionMap.get(key);
+        }
 
-        Node n = label2NodeMap.get(category);
+        Node n = label2NodeMap.get(key);
         if (n != null && n.hasChildren()) {
             Node otherNode = null;
             for(Node c : n.getChildren()) {
