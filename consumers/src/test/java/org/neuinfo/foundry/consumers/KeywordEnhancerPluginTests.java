@@ -101,6 +101,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
         Helper helper = new Helper("");
+        boolean filter = false;
         try {
             helper.startup("cinergi-consumers-cfg.xml");
 
@@ -110,11 +111,11 @@ public class KeywordEnhancerPluginTests extends TestCase {
             Map<String, String> optionMap = new HashMap<String, String>();
             optionMap.put("stopwordsUrl", "file:///var/data/cinergi/stopwords.txt");
             plugin.initialize(optionMap);
-            ((KeywordEnhancer) plugin).setUseNER(true);
+            ((KeywordEnhancer) plugin).setUseNER(false);
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
-                if (primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                if (!filter || primaryKey.equalsIgnoreCase(thePrimaryKey)) {
                     Result result = plugin.handle(docWrapper);
                     if (result.getStatus() == Result.Status.OK_WITH_CHANGE) {
                         DBObject dw = result.getDocWrapper();
@@ -125,12 +126,20 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             System.out.println(jsArr.toString(2));
                             ISOXMLGenerator generator = new ISOXMLGenerator();
                             Element docEl = generator.generate(docWrapper);
-                            File enhancedXmlFile = new File("/tmp/kwd_test.xml");
+                            File enhancedXmlFile = null;
+                            if (filter) {
+                               enhancedXmlFile = new File("/tmp/kwd_test.xml");
+                            } else {
+                                new File("/tmp/kw").mkdir();
+                                enhancedXmlFile = new File("/tmp/kw/" + primaryKey + "_test.xml");
+                            }
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
                             System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
                         }
                     }
-                    break;
+                    if (filter) {
+                        break;
+                    }
                 }
                 count++;
 
