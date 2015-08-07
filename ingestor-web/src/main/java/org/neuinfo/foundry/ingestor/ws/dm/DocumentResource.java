@@ -112,7 +112,7 @@ public class DocumentResource {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with id:" + docId + " is not found!").build();
             }
-            KeywordHierarchyHandler handler =  KeywordHierarchyHandler.getInstance();
+            KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance();
             JSONObject result = new JSONObject();
             BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
             BasicDBList keywords = (BasicDBList) data.get("keywords");
@@ -226,10 +226,18 @@ public class DocumentResource {
         if (ei != null && !Utils.isEmpty(ei.getId())) {
             String ontologyID = getOntologyID(ei.getId());
             try {
-                String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID);
-                if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
+                String[] toks = ei.getCategory().split("\\s+>\\s+");
+                String lastTerm = toks[toks.length - 1];
+                String cinergiCategory = chh.getCinergiCategory(lastTerm.toLowerCase());
+                if (cinergiCategory != null) {
                     json.put("keyword", keyword.getTerm());
-                    json.put("hierarchy", keywordHierarchy);
+                    json.put("hierarchy", cinergiCategory);
+                } else {
+                    String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID);
+                    if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
+                        json.put("keyword", keyword.getTerm());
+                        json.put("hierarchy", keywordHierarchy);
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
