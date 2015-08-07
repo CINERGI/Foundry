@@ -80,7 +80,7 @@ public class ConsumerCoordinator implements MessageListener {
         }
         for (ConsumerWorker worker : consumerWorkers) {
             Assertion.assertNotNull(worker.consumer);
-            logger.info("starting consumer " + worker.consumer.getClass().getName());
+            logger.info("starting consumer " + worker.consumer);
             executorService.submit(worker);
         }
 

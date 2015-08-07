@@ -87,6 +87,9 @@ public class Inflector {
                 break;
             }
         }
+        if (result == null) {
+            result = term;
+        }
         return result;
     }
 

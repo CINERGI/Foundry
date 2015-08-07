@@ -111,7 +111,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
             Map<String, String> optionMap = new HashMap<String, String>();
             optionMap.put("stopwordsUrl", "file:///var/data/cinergi/stopwords.txt");
             plugin.initialize(optionMap);
-            ((KeywordEnhancer) plugin).setUseNER(false);
+            ((KeywordEnhancer) plugin).setUseNER(true);
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
@@ -130,8 +130,8 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             if (filter) {
                                enhancedXmlFile = new File("/tmp/kwd_test.xml");
                             } else {
-                                new File("/tmp/kw").mkdir();
-                                enhancedXmlFile = new File("/tmp/kw/" + primaryKey + "_test.xml");
+                                new File("/tmp/kw2").mkdir();
+                                enhancedXmlFile = new File("/tmp/kw2/" + primaryKey + "_test.xml");
                             }
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
                             System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);

@@ -3,6 +3,7 @@ package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
@@ -26,10 +27,19 @@ public class EnhancerUtils {
 
     public static Map<String, List<KeywordInfo>> getKeywordsToBeAdded(JSONArray keywordsJson,
                                                                       JSONObject originalDocJson) {
+        Inflector inflector = new Inflector();
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         for (int i = 0; i < keywordsJson.length(); i++) {
             JSONObject kwJson = keywordsJson.getJSONObject(i);
             Keyword kw = Keyword.fromJSON(kwJson);
+            String singularCCTerm =  Inflector.toCamelCase(inflector.toSingular(kw.getTerm()));
+            if (!singularCCTerm.equals(kw.getTerm())) {
+                Keyword kwNew = new Keyword(singularCCTerm);
+                for(EntityInfo ei : kw.getEntityInfos()) {
+                    kwNew.addEntityInfo(ei);
+                }
+                kw = kwNew;
+            }
 
             String category = kw.getTheCategory(chh);
             Assertion.assertNotNull(category);

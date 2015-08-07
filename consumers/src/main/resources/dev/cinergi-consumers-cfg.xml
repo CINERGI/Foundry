@@ -45,6 +45,8 @@
             <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer</pluginClass>
             <params>
                 <param name="serviceURL" value="http://tikki.neuinfo.org:9000/scigraph/annotations/entities"/>
+                <param name="stopwordsUrl" value="file:///var/data/cinergi/stopwords.txt"/>
+                <param name="useNER"  value="true" />
             </params>
         </consumer-cfg>
 

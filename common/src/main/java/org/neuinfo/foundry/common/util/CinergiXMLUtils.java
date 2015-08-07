@@ -5,6 +5,9 @@ import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 
+import java.text.DateFormat;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -64,7 +67,7 @@ public class CinergiXMLUtils {
         return kwdEl;
     }
 
-    public static Element createKeywords(List<Element> keywords, String category, KeywordType keywordType) {
+    public static Element createKeywords(List<Element> keywords, String category, KeywordType keywordType, Date date) {
         Element mdKWEl = new Element("MD_Keywords", gmd);
         Element typeCodeEl = new Element("MD_KeywordTypeCode", gmd);
         typeCodeEl.setAttribute("codeList", "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode");
@@ -82,10 +85,47 @@ public class CinergiXMLUtils {
         } else if (keywordType == KeywordType.Organization) {
             titleEl.addContent(createCharString(thesaurusMap.get("organization")));
         }
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ") {
+            public Date parse(String source, ParsePosition pos) {
+                return super.parse(source.replaceFirst(":(?=[0-9]{2}$)", ""), pos);
+            }
+        };
+
+        /*
+         <gmd:CI_Date>
+                  <gmd:date>
+                    <gco:DateTime>2015-07-30T16:04:37</gco:DateTime>
+                  </gmd:date>
+                  <gmd:dateType>
+                    <gmd:CI_DateTypeCodecodeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"codeListValue="publication">publication</gmd:CI_DateTypeCode>
+                  </gmd:dateType>
+                             
+               </gmd:CI_Date>
+         */
+
         citationEl.addContent(titleEl);
+
+        Element ciDateEl = new Element("CI_Date", gmd);
+
         Element dateEl = new Element("date", gmd);
-        dateEl.setAttribute("nilReason", "unknown", gco);
-        citationEl.addContent(dateEl);
+       // dateEl.setAttribute("nilReason", "unknown", gco);
+        Element gcoDateEl = new Element("Date", gco);
+        gcoDateEl.setText(df.format(date));
+        dateEl.addContent(gcoDateEl);
+        ciDateEl.addContent(dateEl);
+        Element dateTypeEl = new Element("dateType", gmd);
+        Element dateTypeCodeEl = new Element("CI_DateTypeCode", gmd);
+        dateTypeCodeEl.setAttribute("codeList", "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode", gmd);
+        dateTypeCodeEl.setAttribute("codeListValue", "publication", gmd);
+        dateTypeCodeEl.setText("publication");
+        dateTypeEl.addContent(dateTypeCodeEl);
+        ciDateEl.addContent(dateTypeEl);
+
+        Element otherCitationDetailsEl = new Element("otherCitationDetails", gmd);
+        otherCitationDetailsEl.addContent(createCharString("Cinergi keyword enhanced at " + date));
+        ciDateEl.addContent(otherCitationDetailsEl);
+
+        citationEl.addContent(ciDateEl);
 
         for (Element keyword : keywords) {
             mdKWEl.addContent(keyword);
@@ -292,7 +332,8 @@ public class CinergiXMLUtils {
         for (String category : category2KwiListMap.keySet()) {
             List<KeywordInfo> kwiList = category2KwiListMap.get(category);
             Element dkEl = new Element("descriptiveKeywords", gmd);
-            Comment comment = new Comment("Cinergi keyword enhanced at " + new Date());
+            Date now = new Date();
+            Comment comment = new Comment("Cinergi keyword enhanced at " + now);
             dkEl.addContent(comment);
             List<Element> keywords = new ArrayList<Element>(kwiList.size());
             for (KeywordInfo kwi : kwiList) {
@@ -300,7 +341,7 @@ public class CinergiXMLUtils {
                 // descriptiveKeywords.add(dkEl);
             }
             KeywordType type = kwiList.get(0).getType();
-            Element keywordEl = createKeywords(keywords, category, type);
+            Element keywordEl = createKeywords(keywords, category, type, now);
             dkEl.addContent(keywordEl);
             contents.add(pivot + 1, dkEl);
         }

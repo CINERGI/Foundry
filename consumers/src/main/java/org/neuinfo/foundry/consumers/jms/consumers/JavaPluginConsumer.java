@@ -99,4 +99,11 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
     public IPlugin getPlugin() {
         return this.plugin;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(plugin.getPluginName());
+        return sb.toString();
+    }
 }

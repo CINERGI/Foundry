@@ -45,7 +45,9 @@ public class KeywordEnhancer implements IPlugin {
             this.serviceURL = options.get("serviceURL");
         }
         String stopwordsUrl = options.get("stopwordsUrl");
-        Assertion.assertNotNull(stopwordsUrl,"stopwordsUrl");
+        Assertion.assertNotNull(stopwordsUrl, "stopwordsUrl");
+
+        this.useNER = options.containsKey("useNER") ? Boolean.parseBoolean(options.get("useNER")) : false;
 
         jsonPaths.add("$..'gmd:abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'gmd:title'.'gco:CharacterString'.'_$'");
@@ -148,9 +150,11 @@ public class KeywordEnhancer implements IPlugin {
             }
             if (jsArr.length() > 0) {
                 // apply Cinergi specific stop word/phrase filtering
-                for(String text2Annotate : text2AnnotateList) {
+                for (String text2Annotate : text2AnnotateList) {
                     stopWordsHandler.postFilter(text2Annotate, keywordMap);
                 }
+
+
                 Set<String> excludeCategorySet = new HashSet<String>(3);
                 excludeCategorySet.add("platform");
                 DBObject data = (DBObject) docWrapper.get("Data");
