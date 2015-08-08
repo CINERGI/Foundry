@@ -19,6 +19,7 @@ import java.util.*;
  */
 public class ISOXMLGenerator {
     private Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
+    private Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
 
     public Element generate(DBObject docWrapper) throws Exception {
         DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
@@ -28,6 +29,14 @@ public class ISOXMLGenerator {
         JSONObject originalDocJson = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
         XML2JSONConverter converter = new XML2JSONConverter();
         Element docEl = converter.toXML(originalDocJson);
+        // MI_Metadata
+        if (!docEl.getName().equals("MI_Metadata")) {
+            docEl.setName("MI_Metadata");
+            docEl.setNamespace(gmi);
+            if (docEl.getNamespace("gmd") == null) {
+                docEl.addNamespaceDeclaration(gmd);
+            }
+        }
         if (spatial != null) {
             JSONObject spatialJson = JSONUtils.toJSON((BasicDBObject) spatial, false);
             docEl = addSpatialExtent(docEl, spatialJson);

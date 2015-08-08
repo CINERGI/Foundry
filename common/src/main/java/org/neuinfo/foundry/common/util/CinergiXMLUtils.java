@@ -17,6 +17,8 @@ public class CinergiXMLUtils {
     static Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     static Namespace gco = Namespace.getNamespace("gco", "http://www.isotc211.org/2005/gco");
     static Namespace gmx = Namespace.getNamespace("gmx", "http://www.isotc211.org/2005/gmx");
+    static Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
+
 
     static Map<String, String> thesaurusMap = new HashMap<String, String>(7);
 
@@ -62,8 +64,16 @@ public class CinergiXMLUtils {
     }
 
     public static Element createKeywordTag(String keyword, String category) {
+      /*  <gmx:Anchor xlink:href="http://example.com/cinergi/vocabulary/term"
+                 xlink:actuate="onRequest">Geothermal</gmx:Anchor>
+        */
         Element kwdEl = new Element("keyword", gmd);
-        kwdEl.addContent(createCharString(keyword));
+        //kwdEl.addContent(createCharString(keyword));
+        Element anchorEl = new Element("Anchor",gmx);
+        anchorEl.setAttribute("href","http://example.com/cinergi/vocabulary/term", xlink);
+        anchorEl.setAttribute("actuate","onRequest", xlink);
+        anchorEl.setText(keyword);
+        kwdEl.addContent(anchorEl);
         return kwdEl;
     }
 
@@ -108,7 +118,7 @@ public class CinergiXMLUtils {
         Element ciDateEl = new Element("CI_Date", gmd);
 
         Element dateEl = new Element("date", gmd);
-       // dateEl.setAttribute("nilReason", "unknown", gco);
+        // dateEl.setAttribute("nilReason", "unknown", gco);
         Element gcoDateEl = new Element("Date", gco);
         gcoDateEl.setText(df.format(date));
         dateEl.addContent(gcoDateEl);
@@ -121,11 +131,31 @@ public class CinergiXMLUtils {
         dateTypeEl.addContent(dateTypeCodeEl);
         ciDateEl.addContent(dateTypeEl);
 
+        /*
+        <gmd:identifier>
+            <gmd:MD_Identifier>
+              <gmd:code>
+                <gmx:Anchor>http://example.com/cinergi/vocabulary/</gmx:Anchor>
+               </gmd:code>
+             </gmd:MD_Identifier>
+        </gmd:identifier>
+         */
+        Element identifierEl = new Element("identifier",gmd);
+        Element mdIdentifierEl = new Element("MD_Identifier", gmd);
+        identifierEl.addContent(mdIdentifierEl);
+        Element codeEl = new Element("code",gmx);
+        mdIdentifierEl.addContent(codeEl);
+        Element anchorEl = new Element("Anchor", gmx);
+        anchorEl.setText("http://example.com/cinergi/vocabulary/");
+        codeEl.addContent(anchorEl);
+
+
         Element otherCitationDetailsEl = new Element("otherCitationDetails", gmd);
         otherCitationDetailsEl.addContent(createCharString("Cinergi keyword enhanced at " + date));
-        ciDateEl.addContent(otherCitationDetailsEl);
 
         citationEl.addContent(ciDateEl);
+        citationEl.addContent(identifierEl);
+        citationEl.addContent(otherCitationDetailsEl);
 
         for (Element keyword : keywords) {
             mdKWEl.addContent(keyword);

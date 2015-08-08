@@ -126,7 +126,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             System.out.println(jsArr.toString(2));
                             ISOXMLGenerator generator = new ISOXMLGenerator();
                             Element docEl = generator.generate(docWrapper);
-                            File enhancedXmlFile = null;
+                            File enhancedXmlFile;
                             if (filter) {
                                enhancedXmlFile = new File("/tmp/kwd_test.xml");
                             } else {

@@ -126,7 +126,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         for(Node n : topLevelNodeMap.values()) {
             root.addChild(n);
             fixHierarchy(n);
-            prepMapping(n);
+            // prepMapping(n);
         }
         for(Node n : nodeMap.values()) {
             label2NodeMap.put(n.label.toLowerCase(), n);
@@ -135,6 +135,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         topLevelNodeMap.clear();
         for(Node c : root.getChildren()) {
             topLevelNodeMap.put(c.id, c);
+            prepMapping(c);
         }
 
         showHierarchy(topLevelNodeMap);
@@ -294,6 +295,11 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
     public static void main(String[] args) throws Exception {
         FacetHierarchyHandler handler = FacetHierarchyHandler.getInstance();
 
+        List<String> sortedCinergiCategories = handler.getSortedCinergiCategories();
+        System.out.println("============================");
+        for(String cc : sortedCinergiCategories) {
+            System.out.println(cc);
+        }
     }
 
 }
