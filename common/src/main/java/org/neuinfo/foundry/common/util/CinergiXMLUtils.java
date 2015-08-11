@@ -74,17 +74,17 @@ public class CinergiXMLUtils {
         Element kwdEl = new Element("keyword", gmd);
         //kwdEl.addContent(createCharString(keyword));
         Element anchorEl = new Element("Anchor", gmx);
-        String anchorURL = "http://example.com/cinergi/vocabulary/" + keyword;
+        String anchorURL = "http://tikki.neuinfo.org:9000/scigraph/vocabulary/term/" + keyword;
         try {
-            URIBuilder builder = new URIBuilder("http://example.com");
-            builder.setPath("/cinergi/vocabulary/" + keyword);
+            URIBuilder builder = new URIBuilder("http://tikki.neuinfo.org:9000");
+            builder.setPath("/scigraph/vocabulary/term/" + keyword);
             anchorURL = builder.build().toURL().toString();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         anchorEl.setAttribute("href", anchorURL, xlink);
-        anchorEl.setAttribute("actuate", "onRequest", xlink);
+        // anchorEl.setAttribute("actuate", "onRequest", xlink);
         anchorEl.setText(keyword);
         kwdEl.addContent(anchorEl);
         return kwdEl;

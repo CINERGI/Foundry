@@ -16,9 +16,9 @@
     </gmd:hierarchyLevel>
     <gmd:contact>
         <gmd:CI_ResponsibleParty>
-            <gmd:organisationName>
-                <gco:CharacterString>$orgLongName</gco:CharacterString>
-            </gmd:organisationName>
+            <gmd:individualName>
+                <gco:CharacterString>$individualName</gco:CharacterString>
+            </gmd:individualName>
             <gmd:contactInfo>
                 <gmd:CI_Contact>
                     <gmd:address>
@@ -63,8 +63,13 @@
             <gmd:citation>
                 <gmd:CI_Citation>
                     <gmd:title>
-                        <gco:CharacterString>$dataSetTitle</gco:CharacterString>
+                        <gco:CharacterString>$resourceTitle</gco:CharacterString>
                     </gmd:title>
+                    #if ($alternateTitle)
+                        <gmd:alternateTitle>
+                            <gco:CharacterString>$alternateTitle</gco:CharacterString>
+                        </gmd:alternateTitle>
+                    #end
                     <gmd:date>
                         <gmd:CI_Date>
                             <gmd:date>
@@ -78,22 +83,31 @@
                             </gmd:dateType>
                         </gmd:CI_Date>
                     </gmd:date>
+                    <gmd:identifier>
+                        <gmd:MD_Identifier>
+                            <gmd:code>
+                                <gco:CharacterString>$definingCitation</gco:CharacterString>
+                            </gmd:code>
+                        </gmd:MD_Identifier>
+                    </gmd:identifier>
                 </gmd:CI_Citation>
             </gmd:citation>
             <gmd:abstract>
-                <gco:CharacterString>$description</gco:CharacterString>
+                <gco:CharacterString>$abstract</gco:CharacterString>
             </gmd:abstract>
             <gmd:pointOfContact>
                 <gmd:CI_ResponsibleParty>
                     <gmd:individualName>
-                        <gco:CharacterString>$individualName</gco:CharacterString>
+                        <gco:CharacterString>$resourceContributor</gco:CharacterString>
                     </gmd:individualName>
+                    <!--
                     <gmd:organisationName>
                         <gco:CharacterString>$czoOrgName</gco:CharacterString>
                     </gmd:organisationName>
                     <gmd:positionName>
                         <gco:CharacterString>$czoRole</gco:CharacterString>
                     </gmd:positionName>
+-->
                     <gmd:contactInfo>
                         <gmd:CI_Contact>
                             <gmd:phone>
@@ -132,6 +146,153 @@
                     </gmd:role>
                 </gmd:CI_ResponsibleParty>
             </gmd:pointOfContact>
+            #if($geoscienceSubdomains)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($geoscienceSubdomain in $geoscienceSubdomains)
+                            <gmd:keyword>
+                                <gco:CharacterString>$geoscienceSubdomain</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="discipline">discipline
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($equipments)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($equipment in $equipments)
+                            <gmd:keyword>
+                                <gco:CharacterString>$equipment</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Equipment</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($methods)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($method in $methods)
+                            <gmd:keyword>
+                                <gco:CharacterString>$method</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Methods</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($earthProcesses)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($earthProcess in $earthProcesses)
+                            <gmd:keyword>
+                                <gco:CharacterString>$earthProcess</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Earth processes</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($describedFeatures)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($describedFeature in $describedFeatures)
+                            <gmd:keyword>
+                                <gco:CharacterString>$describedFeature</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Features</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($otherTags)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($otherTag in $otherTags)
+                            <gmd:keyword>
+                                <gco:CharacterString>$otherTag</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
+            #if($placeNames)
+                <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                        #foreach($placeName in $placeNames)
+                            <gmd:keyword>
+                                <gco:CharacterString>$placeName</gco:CharacterString>
+                            </gmd:keyword>
+                        #end
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="place">place
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+            #end
             #if($categoryKeywords)
                 #foreach($cw in $categoryKeywords)
                     <gmd:descriptiveKeywords>
@@ -144,12 +305,14 @@
                             <gmd:type>
                                 <gmd:MD_KeywordTypeCode codeSpace="ISOTC211/19115"
                                                         codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
-                                                        codeListValue="$cw.category">$cw.category</gmd:MD_KeywordTypeCode>
+                                                        codeListValue="theme">theme
+                                </gmd:MD_KeywordTypeCode>
                             </gmd:type>
                         </gmd:MD_Keywords>
                     </gmd:descriptiveKeywords>
                 #end
             #end
+
             <gmd:language>
                 <gco:CharacterString>en</gco:CharacterString>
             </gmd:language>
@@ -161,35 +324,41 @@
                     <gmd:MD_TopicCategoryCode>[discipline tag2]</gmd:MD_TopicCategoryCode>
                 </gmd:topicCategory>
             #end
-            #if ($geoExtent)
+            #if ($hasExtent)
                 <gmd:extent>
                     <gmd:EX_Extent>
-                        <gmd:geographicElement>
-                            <gmd:EX_GeographicBoundingBox>
-                                <gmd:westBoundLongitude>
-                                    <gco:Decimal>-180</gco:Decimal>
-                                </gmd:westBoundLongitude>
-                                <gmd:eastBoundLongitude>
-                                    <gco:Decimal>180</gco:Decimal>
-                                </gmd:eastBoundLongitude>
-                                <gmd:southBoundLatitude>
-                                    <gco:Decimal>-90</gco:Decimal>
-                                </gmd:southBoundLatitude>
-                                <gmd:northBoundLatitude>
-                                    <gco:Decimal>90</gco:Decimal>
-                                </gmd:northBoundLatitude>
-                            </gmd:EX_GeographicBoundingBox>
-                        </gmd:geographicElement>
-                        <gmd:temporalElement>
-                            <gmd:EX_TemporalExtent>
-                                <gmd:extent>
-                                    <gml:TimePeriod gml:id="Temporal">
-                                        <gml:beginPosition>[startdate 1999-01-01]</gml:beginPosition>
-                                        <gml:endPosition>[enddate - 2000-12-31]</gml:endPosition>
-                                    </gml:TimePeriod>
-                                </gmd:extent>
-                            </gmd:EX_TemporalExtent>
-                        </gmd:temporalElement>
+                        #if($spatialExtents)
+                            #foreach($se in $spatialExtents)
+                                <gmd:geographicElement>
+                                    <gmd:EX_GeographicBoundingBox>
+                                        <gmd:westBoundLongitude>
+                                            <gco:Decimal>${se.wbl}</gco:Decimal>
+                                        </gmd:westBoundLongitude>
+                                        <gmd:eastBoundLongitude>
+                                            <gco:Decimal>${se.ebl}</gco:Decimal>
+                                        </gmd:eastBoundLongitude>
+                                        <gmd:southBoundLatitude>
+                                            <gco:Decimal>${se.sbl}</gco:Decimal>
+                                        </gmd:southBoundLatitude>
+                                        <gmd:northBoundLatitude>
+                                            <gco:Decimal>${se.nbl}</gco:Decimal>
+                                        </gmd:northBoundLatitude>
+                                    </gmd:EX_GeographicBoundingBox>
+                                </gmd:geographicElement>
+                            #end
+                        #end
+                        #if($temporalExtent)
+                            <gmd:temporalElement>
+                                <gmd:EX_TemporalExtent>
+                                    <gmd:extent>
+                                        <gml:TimePeriod gml:id="Temporal">
+                                            <gml:beginPosition>${temporalExtent.start}</gml:beginPosition>
+                                            <gml:endPosition>${temporalExtent.end}</gml:endPosition>
+                                        </gml:TimePeriod>
+                                    </gmd:extent>
+                                </gmd:EX_TemporalExtent>
+                            </gmd:temporalElement>
+                        #end
                     </gmd:EX_Extent>
                 </gmd:extent>
             #end
