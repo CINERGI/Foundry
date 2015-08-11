@@ -20,22 +20,24 @@ import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.Node;
 /**
  * Created by bozyurt on 7/16/15.
  */
-public class FacetHierarchyHandler implements IHierarchyHandler{
+public class FacetHierarchyHandler implements IHierarchyHandler {
     Node root;
-    Map<String,Node> categoryPath2NodeMap = new HashMap<String, Node>();
+    Map<String, Node> categoryPath2NodeMap = new HashMap<String, Node>();
     Map<String, String> scigraph2CinergiCategoryMap = new HashMap<String, String>();
     Map<String, String> cinergi2ScigraphCategoryMap = new HashMap<String, String>();
     List<String> sortedCinergiCategories;
-    Map<String,Node> label2NodeMap = new HashMap<String, Node>();
-    static Map<String,String> exceptionMap = new HashMap<String, String>();
+    Map<String, Node> label2NodeMap = new HashMap<String, Node>();
+    static Map<String, String> exceptionMap = new HashMap<String, String>();
+    Map<String, String> cinergiCategory2OntologyIdMap = new HashMap<String, String>();
 
     String serviceURL = "http://tikki.neuinfo.org:9000/";
     private static FacetHierarchyHandler instance;
+
     static {
-        exceptionMap.put("water body","hydrosphere feature");
-        exceptionMap.put("observed property","property"); //"measure");
-        exceptionMap.put("named property","property");
-        exceptionMap.put("material entity","material");
+        exceptionMap.put("water body", "hydrologic feature");
+        exceptionMap.put("observed property", "property"); //"measure");
+        exceptionMap.put("named property", "property");
+        exceptionMap.put("material entity", "material");
     }
 
 
@@ -45,7 +47,8 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         }
         return instance;
     }
-    private FacetHierarchyHandler() throws Exception{
+
+    private FacetHierarchyHandler() throws Exception {
         getFacetHierarchy();
     }
 
@@ -123,17 +126,17 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
 
 
         root = new Node("Root", "Root");
-        for(Node n : topLevelNodeMap.values()) {
+        for (Node n : topLevelNodeMap.values()) {
             root.addChild(n);
             fixHierarchy(n);
             // prepMapping(n);
         }
-        for(Node n : nodeMap.values()) {
+        for (Node n : nodeMap.values()) {
             label2NodeMap.put(n.label.toLowerCase(), n);
         }
-
+        fixExceptions();
         topLevelNodeMap.clear();
-        for(Node c : root.getChildren()) {
+        for (Node c : root.getChildren()) {
             topLevelNodeMap.put(c.id, c);
             prepMapping(c);
         }
@@ -157,13 +160,13 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
             }
 
         } else if (parent.label.equalsIgnoreCase("resource type")) {
-            Node softwareNode = new Node("http://www.ebi.ac.uk/swo/SWO_0000001","Software");
+            Node softwareNode = new Node("http://www.ebi.ac.uk/swo/SWO_0000001", "Software");
             if (parent.getChild(softwareNode.label) == null) {
                 softwareNode.setParent(parent);
                 parent.addChild(softwareNode);
             }
         } else if (parent.label.equalsIgnoreCase("property")) {
-            Node otherNode = new Node("","Property (Other)");
+            Node otherNode = new Node("", "Property (Other)");
             if (parent.getChild(otherNode.label) == null) {
                 otherNode.setParent(parent);
                 parent.addChild(otherNode);
@@ -172,7 +175,25 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         if (parent.hasChildren()) {
             List<Node> children = new ArrayList<Node>(parent.getChildren());
             for (Node c : children) {
-                   fixHierarchy(c);
+                fixHierarchy(c);
+            }
+        }
+    }
+
+    private void fixExceptions() {
+        for (String key : exceptionMap.keySet()) {
+            key = exceptionMap.get(key);
+            Node n = label2NodeMap.get(key);
+            if (n != null && n.hasChildren()) {
+                for (Node c : n.getChildren()) {
+                    if ((c.id == null || c.id.isEmpty())) {
+                        if (n.label.toLowerCase().equals("property")) {
+                            c.id = "http://hydro10.sdsc.edu/cinergi_ontology/cinergi#namedProperty";
+                        } else if (n.label.toLowerCase().equals("hydrologic feature")) {
+                            c.id = "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature";
+                        }
+                    }
+                }
             }
         }
     }
@@ -182,13 +203,17 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         categoryPath2NodeMap.put(categoryPath, parent);
         this.cinergi2ScigraphCategoryMap.put(categoryPath, parent.label.toLowerCase());
         this.scigraph2CinergiCategoryMap.put(parent.label.toLowerCase(), categoryPath);
+        this.cinergiCategory2OntologyIdMap.put(categoryPath, parent.id);
         if (parent.hasChildren()) {
-            for(Node c : parent.getChildren()) {
+            for (Node c : parent.getChildren()) {
                 prepMapping(c);
             }
         }
     }
 
+    public String getOntologyId(String facetPath) {
+        return this.cinergiCategory2OntologyIdMap.get(facetPath);
+    }
 
     String prepCategoryPath(Node node) {
         List<String> path = new ArrayList<String>(5);
@@ -209,7 +234,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
 
 
     public String getCinergiCategory(String category) {
-        String key = category;
+        String key = category.toLowerCase();
         if (exceptionMap.containsKey(key)) {
             key = exceptionMap.get(key);
         }
@@ -217,7 +242,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
         Node n = label2NodeMap.get(key);
         if (n != null && n.hasChildren()) {
             Node otherNode = null;
-            for(Node c : n.getChildren()) {
+            for (Node c : n.getChildren()) {
                 if (c.label.indexOf("Other") != -1) {
                     otherNode = c;
                     break;
@@ -238,7 +263,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
     public List<String> getSortedCinergiCategories() {
         if (sortedCinergiCategories == null) {
             sortedCinergiCategories = new ArrayList<String>(this.cinergi2ScigraphCategoryMap.size());
-            for(String category : cinergi2ScigraphCategoryMap.keySet()) {
+            for (String category : cinergi2ScigraphCategoryMap.keySet()) {
                 sortedCinergiCategories.add(category);
             }
             Collections.sort(sortedCinergiCategories);
@@ -272,7 +297,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
 
     private void showChildren(Node n, int level) {
         StringBuilder indent = new StringBuilder();
-        for(int i = 0; i < level; i++) {
+        for (int i = 0; i < level; i++) {
             indent.append("\t");
         }
         if (n.hasChildren()) {
@@ -297,8 +322,13 @@ public class FacetHierarchyHandler implements IHierarchyHandler{
 
         List<String> sortedCinergiCategories = handler.getSortedCinergiCategories();
         System.out.println("============================");
-        for(String cc : sortedCinergiCategories) {
+        for (String cc : sortedCinergiCategories) {
             System.out.println(cc);
+        }
+
+        System.out.println("============================");
+        for (String key : handler.cinergiCategory2OntologyIdMap.keySet()) {
+            System.out.println(key + " -> " + handler.getOntologyId(key));
         }
     }
 

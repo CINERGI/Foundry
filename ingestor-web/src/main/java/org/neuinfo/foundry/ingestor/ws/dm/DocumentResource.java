@@ -31,6 +31,15 @@ import java.util.*;
 @Api(value = "cinergi/docs", description = "Metadata Documents")
 public class DocumentResource {
     private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
+    static FacetHierarchyHandler fhh;
+
+    static {
+        try {
+            fhh = FacetHierarchyHandler.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Path("/{resourceId}")
     @GET
@@ -136,7 +145,6 @@ public class DocumentResource {
             Element docEl = converter.toXML(origDocJson);
             // Utils.saveXML(docEl, "/tmp/xpath_test.xml");
 
-
             List<JSONObject> jsonObjects = prepHierarchies(docEl, handler, chh);
             for (JSONObject js : jsonObjects) {
                 keywordsArr.put(js);
@@ -197,7 +205,7 @@ public class DocumentResource {
                                 EntityInfo ei = theKW.getTheCategoryEntityInfo(chh);
                                 if (ei != null && !Utils.isEmpty(ei.getId())) {
                                     String ontologyID = getOntologyID(ei.getId());
-                                    String keywordHierarchy = handler.getKeywordHierarchy(keywordStr, ontologyID);
+                                    String keywordHierarchy = handler.getKeywordHierarchy(keywordStr, ontologyID, fhh, null);
                                     if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
 
                                         JSONObject json = new JSONObject();
@@ -229,16 +237,14 @@ public class DocumentResource {
                 String[] toks = ei.getCategory().split("\\s+>\\s+");
                 String lastTerm = toks[toks.length - 1];
                 String cinergiCategory = chh.getCinergiCategory(lastTerm.toLowerCase());
-                if (cinergiCategory != null) {
+
+                String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID,
+                        (FacetHierarchyHandler) chh, cinergiCategory);
+                if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
                     json.put("keyword", keyword.getTerm());
-                    json.put("hierarchy", cinergiCategory);
-                } else {
-                    String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID);
-                    if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
-                        json.put("keyword", keyword.getTerm());
-                        json.put("hierarchy", keywordHierarchy);
-                    }
+                    json.put("hierarchy", keywordHierarchy);
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -251,7 +257,8 @@ public class DocumentResource {
                     ei = kw.getTheCategoryEntityInfo(chh);
                     if (ei != null && !Utils.isEmpty(ei.getId())) {
                         String ontologyID = getOntologyID(ei.getId());
-                        String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID);
+                        String keywordHierarchy = handler.getKeywordHierarchy(keyword.getTerm(), ontologyID,
+                                (FacetHierarchyHandler) chh, null);
                         if (keywordHierarchy != null && keywordHierarchy.length() > 0) {
                             json.put("keyword", keyword.getTerm());
                             json.put("hierarchy", keywordHierarchy);

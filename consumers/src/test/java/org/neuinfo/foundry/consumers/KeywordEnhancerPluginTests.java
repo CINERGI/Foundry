@@ -56,7 +56,8 @@ public class KeywordEnhancerPluginTests extends TestCase {
         kwiList.add(kwi);
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         category2KWIListMap.put("instrument", kwiList);
-        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap);
+        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
+        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap,fhh);
         File enhancedXmlFile = new File("/tmp/kwd_test.xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
         System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
@@ -158,6 +159,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
             List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
             IPlugin plugin = new KeywordEnhancer();
 
+            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
             plugin.initialize(new HashMap<String, String>(1));
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {
@@ -193,7 +195,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             JSONObject originalDocJson = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
                             XML2JSONConverter converter = new XML2JSONConverter();
                             Element docEl = converter.toXML(originalDocJson);
-                            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap);
+                            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
                             File enhancedXmlFile = new File("/tmp/kwd_" + primaryKey + ".xml");
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
                             System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);

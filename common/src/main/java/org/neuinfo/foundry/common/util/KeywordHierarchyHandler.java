@@ -121,14 +121,23 @@ public class KeywordHierarchyHandler {
     }
 
     // tikki.neuinfo.org:9000/scigraph/graph/neighbors/Manometer.json?depth=100&blankNodes=false&relationshipType=subClassOf&direction=out
-    public synchronized String getKeywordHierarchy(String keyword, String id) throws Exception {
+    public synchronized String getKeywordHierarchy(String keyword, String id,
+                                                   FacetHierarchyHandler fhh, String cinergiCategory) throws Exception {
         String cachedHierarchy = lruCache.get(id);
         if (cachedHierarchy != null) {
             return cachedHierarchy;
         }
+        String facetOntologyId = null;
+        if (cinergiCategory != null) {
+            facetOntologyId = fhh.getOntologyId(cinergiCategory);
+        }
 
         HttpClient client = new DefaultHttpClient();
         URIBuilder builder = new URIBuilder(this.serviceURL);
+        if (id.indexOf('#') != -1) {
+            id = id.substring(id.indexOf('#') + 1);
+        }
+
         builder.setPath("/scigraph/graph/neighbors/" + id + ".json");
         // builder.setPath("/scigraph/graph/neighbors");
         //builder.setParameter("id", id);
@@ -149,7 +158,7 @@ public class KeywordHierarchyHandler {
                 //System.out.println(json.toString(2));
                 // System.out.println("================");
 
-                String hierarchy = prepHierarchy(json, keyword, id);
+                String hierarchy = prepHierarchy(json, id, facetOntologyId);
                 System.out.println("hierarchy: " + hierarchy);
                 lruCache.put(id, hierarchy);
                 return hierarchy;
@@ -163,7 +172,7 @@ public class KeywordHierarchyHandler {
     }
 
 
-    String prepHierarchy(JSONObject json, String keyword, String id) {
+    String prepHierarchy(JSONObject json, String id, String facetOntologyId) {
         Map<String, Node> nodeMap = new HashMap<String, Node>(7);
         Map<String, Edge> edgeMap = new HashMap<String, Edge>(7);
         List<Edge> edges = new ArrayList<Edge>(10);
@@ -173,20 +182,40 @@ public class KeywordHierarchyHandler {
             nodeMap.put(node.id, node);
         }
         JSONArray edgesArr = json.getJSONArray("edges");
+        Set<Edge> startEdgeSet = new LinkedHashSet<Edge>();
         Edge startEdge = null;
         for (int i = 0; i < edgesArr.length(); i++) {
             Edge edge = Edge.fromJSON(edgesArr.getJSONObject(i));
             if (edge.sub.endsWith(id)) {
+                startEdgeSet.add(edge);
                 startEdge = edge;
             }
             edgeMap.put(edge.sub, edge);
             edges.add(edge);
         }
+        if (startEdgeSet.size() > 1) {
+            System.out.println();
+        }
         Assertion.assertNotNull(startEdge);
+        String pathStr = null;
+        for(Edge se : startEdgeSet) {
+            pathStr = prepPath(se, nodeMap, edgeMap, facetOntologyId);
+            if (pathStr != null) {
+                break;
+            }
+        }
+        return pathStr != null ? pathStr : "";
+    }
+
+    private String prepPath(Edge startEdge, Map<String, Node> nodeMap, Map<String, Edge> edgeMap, String facetOntologyId) {
         StringBuilder sb = new StringBuilder();
         Node n = nodeMap.get(startEdge.sub);
         List<String> path = new ArrayList<String>(edgeMap.size());
+        boolean foundFacet = false;
         while (n != null) {
+            if (n.id.equals(facetOntologyId)) {
+                foundFacet = true;
+            }
             String pathPart = n.label;
             if (n.label == null || n.label.length() == 0) {
                 pathPart = n.id;
@@ -204,6 +233,9 @@ public class KeywordHierarchyHandler {
             n = nodeMap.get(e.sub);
             startEdge = e;
         }
+        if (!foundFacet) {
+            return null;
+        }
         for (Iterator<String> it = path.iterator(); it.hasNext(); ) {
             String pathPart = it.next();
             sb.append(pathPart);
@@ -211,7 +243,6 @@ public class KeywordHierarchyHandler {
                 sb.append(" > ");
             }
         }
-
         return sb.toString().trim();
     }
 
@@ -331,7 +362,7 @@ public class KeywordHierarchyHandler {
             if (!hasChildren()) {
                 return null;
             }
-            for(Node c : children) {
+            for (Node c : children) {
                 if (c.label.equalsIgnoreCase(label)) {
                     return c;
                 }

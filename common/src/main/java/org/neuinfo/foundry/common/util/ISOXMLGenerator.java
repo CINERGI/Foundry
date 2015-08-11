@@ -20,6 +20,7 @@ import java.util.*;
 public class ISOXMLGenerator {
     private Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
+    private  Namespace xlink = Namespace.getNamespace("xlink","http://www.w3.org/1999/xlink");
 
     public Element generate(DBObject docWrapper) throws Exception {
         DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
@@ -36,6 +37,9 @@ public class ISOXMLGenerator {
             if (docEl.getNamespace("gmd") == null) {
                 docEl.addNamespaceDeclaration(gmd);
             }
+        }
+        if (docEl.getNamespace("xlink") == null) {
+            docEl.addNamespaceDeclaration(xlink);
         }
         if (spatial != null) {
             JSONObject spatialJson = JSONUtils.toJSON((BasicDBObject) spatial, false);
@@ -64,9 +68,9 @@ public class ISOXMLGenerator {
                 }
             }
         }
+        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
         if (data.containsField("keywords")) {
             //CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
-            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
 
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
@@ -97,7 +101,7 @@ public class ISOXMLGenerator {
                 CinergiXMLUtils.filterPlurals(kwiList);
             }
 
-            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap);
+            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
         }
         // fix anchor problem if exists
         docEl = ISOXMLFixer.fixAnchorProblem(docEl);

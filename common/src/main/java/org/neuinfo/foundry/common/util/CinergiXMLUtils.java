@@ -1,10 +1,12 @@
 package org.neuinfo.foundry.common.util;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.jdom2.Comment;
 import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -28,6 +30,8 @@ public class CinergiXMLUtils {
         thesaurusMap.put("dataCenter", "Datacenter from NASA/Global Change Master Directory (GCMD) Earth Science Keywords.");
         thesaurusMap.put("platform", "Platforms from NASA/Global Change Master Directory (GCMD) Earth Science Keywords.");
         thesaurusMap.put("organization", "Virtual International Authority File (VIAF) Corporate Names");
+
+
     }
 
     private CinergiXMLUtils() {
@@ -63,26 +67,36 @@ public class CinergiXMLUtils {
         return extEl;
     }
 
-    public static Element createKeywordTag(String keyword, String category) {
+    public static Element createKeywordTag(String keyword, String category)  {
       /*  <gmx:Anchor xlink:href="http://example.com/cinergi/vocabulary/term"
                  xlink:actuate="onRequest">Geothermal</gmx:Anchor>
         */
         Element kwdEl = new Element("keyword", gmd);
         //kwdEl.addContent(createCharString(keyword));
-        Element anchorEl = new Element("Anchor",gmx);
-        anchorEl.setAttribute("href","http://example.com/cinergi/vocabulary/term", xlink);
-        anchorEl.setAttribute("actuate","onRequest", xlink);
+        Element anchorEl = new Element("Anchor", gmx);
+        String anchorURL = "http://example.com/cinergi/vocabulary/" + keyword;
+        try {
+            URIBuilder builder = new URIBuilder("http://example.com");
+            builder.setPath("/cinergi/vocabulary/" + keyword);
+            anchorURL = builder.build().toURL().toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        anchorEl.setAttribute("href", anchorURL, xlink);
+        anchorEl.setAttribute("actuate", "onRequest", xlink);
         anchorEl.setText(keyword);
         kwdEl.addContent(anchorEl);
         return kwdEl;
     }
 
-    public static Element createKeywords(List<Element> keywords, String category, KeywordType keywordType, Date date) {
+    public static Element createKeywords(List<Element> keywords, String category, KeywordType keywordType,
+                                         Date date, FacetHierarchyHandler fhh) {
         Element mdKWEl = new Element("MD_Keywords", gmd);
         Element typeCodeEl = new Element("MD_KeywordTypeCode", gmd);
         typeCodeEl.setAttribute("codeList", "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode");
-        typeCodeEl.setAttribute("codeListValue", category);
-        typeCodeEl.setText(category);
+        typeCodeEl.setAttribute("codeListValue", "theme");
+        typeCodeEl.setText("theme");
         Element typeEl = new Element("type", gmd);
         typeEl.addContent(typeCodeEl);
         // thesaurus
@@ -91,15 +105,19 @@ public class CinergiXMLUtils {
         thesaurusEl.addContent(citationEl);
         Element titleEl = new Element("title", gmd);
         if (keywordType == KeywordType.Keyword) {
-            titleEl.addContent(createCharString(thesaurusMap.get(category)));
+            titleEl.addContent(createCharString(category));
+            //titleEl.addContent(createCharString(thesaurusMap.get(category)));
         } else if (keywordType == KeywordType.Organization) {
             titleEl.addContent(createCharString(thesaurusMap.get("organization")));
         }
+        /*
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ") {
             public Date parse(String source, ParsePosition pos) {
                 return super.parse(source.replaceFirst(":(?=[0-9]{2}$)", ""), pos);
             }
         };
+        */
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         /*
          <gmd:CI_Date>
@@ -125,11 +143,13 @@ public class CinergiXMLUtils {
         ciDateEl.addContent(dateEl);
         Element dateTypeEl = new Element("dateType", gmd);
         Element dateTypeCodeEl = new Element("CI_DateTypeCode", gmd);
-        dateTypeCodeEl.setAttribute("codeList", "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode", gmd);
-        dateTypeCodeEl.setAttribute("codeListValue", "publication", gmd);
+        dateTypeCodeEl.setAttribute("codeList", "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode");
+        dateTypeCodeEl.setAttribute("codeListValue", "publication");
         dateTypeCodeEl.setText("publication");
         dateTypeEl.addContent(dateTypeCodeEl);
         ciDateEl.addContent(dateTypeEl);
+        Element outDateEl = new Element("date", gmd);
+        outDateEl.addContent(ciDateEl);
 
         /*
         <gmd:identifier>
@@ -140,20 +160,21 @@ public class CinergiXMLUtils {
              </gmd:MD_Identifier>
         </gmd:identifier>
          */
-        Element identifierEl = new Element("identifier",gmd);
+        Element identifierEl = new Element("identifier", gmd);
         Element mdIdentifierEl = new Element("MD_Identifier", gmd);
         identifierEl.addContent(mdIdentifierEl);
-        Element codeEl = new Element("code",gmx);
+        Element codeEl = new Element("code", gmd);
         mdIdentifierEl.addContent(codeEl);
         Element anchorEl = new Element("Anchor", gmx);
-        anchorEl.setText("http://example.com/cinergi/vocabulary/");
+        String url = fhh.getOntologyId(category);
+        anchorEl.setText(url);
         codeEl.addContent(anchorEl);
 
 
         Element otherCitationDetailsEl = new Element("otherCitationDetails", gmd);
         otherCitationDetailsEl.addContent(createCharString("Cinergi keyword enhanced at " + date));
 
-        citationEl.addContent(ciDateEl);
+        citationEl.addContent(outDateEl);
         citationEl.addContent(identifierEl);
         citationEl.addContent(otherCitationDetailsEl);
 
@@ -277,7 +298,8 @@ public class CinergiXMLUtils {
         return kwiList;
     }
 
-    public static Element addKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap) {
+    public static Element addKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap,
+                                      FacetHierarchyHandler fhh) {
         Element identificationInfo = docEl.getChild("identificationInfo", gmd);
         Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
         if (dataIdentification == null) {
@@ -324,7 +346,7 @@ public class CinergiXMLUtils {
                     }
                 }
             }
-            addKeywords(category2KwiListMap, contents, pivot);
+            addKeywords(category2KwiListMap, contents, pivot, fhh);
         } else {
             int pivot = -1;
             for (int i = 0; i < contents.size(); i++) {
@@ -352,13 +374,13 @@ public class CinergiXMLUtils {
                 }
             }
             Assertion.assertTrue(pivot != -1);
-            addKeywords(category2KwiListMap, contents, pivot);
+            addKeywords(category2KwiListMap, contents, pivot, fhh);
         }
         return docEl;
     }
 
     private static void addKeywords(Map<String, List<KeywordInfo>> category2KwiListMap,
-                                    List<Content> contents, int pivot) {
+                                    List<Content> contents, int pivot, FacetHierarchyHandler fhh) {
         for (String category : category2KwiListMap.keySet()) {
             List<KeywordInfo> kwiList = category2KwiListMap.get(category);
             Element dkEl = new Element("descriptiveKeywords", gmd);
@@ -371,7 +393,7 @@ public class CinergiXMLUtils {
                 // descriptiveKeywords.add(dkEl);
             }
             KeywordType type = kwiList.get(0).getType();
-            Element keywordEl = createKeywords(keywords, category, type, now);
+            Element keywordEl = createKeywords(keywords, category, type, now, fhh);
             dkEl.addContent(keywordEl);
             contents.add(pivot + 1, dkEl);
         }

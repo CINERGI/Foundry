@@ -17,11 +17,8 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.neuinfo.foundry.common.util.CinergiXMLUtils;
+import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
-import org.neuinfo.foundry.common.util.JSONPathProcessor;
-import org.neuinfo.foundry.common.util.Utils;
-import org.neuinfo.foundry.common.util.XML2JSONConverter;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,7 +36,15 @@ import java.util.*;
 @Api(value = "cinergi/enhancers/keyword", description = "Keyword enhancement of ISO XML Metadata documents")
 public class KeywordEnhancerResource {
     private final static Logger logger = Logger.getLogger(KeywordEnhancerResource.class);
+    static FacetHierarchyHandler fhh = null;
     String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+    static {
+        try {
+            fhh = FacetHierarchyHandler.getInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @POST
     @Consumes({"application/xml"})
@@ -105,7 +110,7 @@ public class KeywordEnhancerResource {
                 for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
                     filterPlurals(kwiList);
                 }
-                docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap);
+                docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
             }
             XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
             StringWriter sw = new StringWriter(isoMetaXml.length());
