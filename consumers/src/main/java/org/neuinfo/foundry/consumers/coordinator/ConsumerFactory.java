@@ -112,6 +112,7 @@ public class ConsumerFactory {
             for (ConsumerConfig.Parameter p : config.getParameters()) {
                 options.put(p.getName(), p.getValue());
             }
+            options.put("collectionName",config.getCollectionName());
             plugin.initialize(options);
 
             JavaPluginConsumer consumer = new JavaPluginConsumer(config.getListeningQueueName());

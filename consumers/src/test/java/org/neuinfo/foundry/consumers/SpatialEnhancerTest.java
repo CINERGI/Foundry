@@ -1,12 +1,21 @@
 package org.neuinfo.foundry.consumers;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import junit.framework.TestCase;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer;
+import org.neuinfo.foundry.consumers.plugin.IPlugin;
+import org.neuinfo.foundry.consumers.plugin.Result;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bozyurt on 11/25/14.
@@ -67,5 +76,35 @@ public class SpatialEnhancerTest extends TestCase {
         JSONObject json = SpatialEnhancer.callSpatialEnhancer(serverUrl, xmlDocStr);
         assertNotNull(json);
         System.out.println(json.toString(2));
+    }
+
+    public void testSpatialEnhancer() throws Exception {
+        String thePrimaryKey = "043dbb8c-66de-6897-e054-00144fdd4fa6";
+        Helper helper = new Helper("");
+        try {
+            helper.startup("cinergi-consumers-cfg.xml");
+
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0010");
+            IPlugin plugin = new SpatialEnhancer();
+            Map<String, String> optionMap = new HashMap<String, String>();
+            optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
+            plugin.initialize(optionMap);
+            for (BasicDBObject docWrapper : docWrappers) {
+                String primaryKey = docWrapper.get("primaryKey").toString();
+                if (primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                    Result result = plugin.handle(docWrapper);
+                    if (result.getStatus() == Result.Status.OK_WITH_CHANGE) {
+                        DBObject dw = result.getDocWrapper();
+                        DBObject data = (DBObject) dw.get("Data");
+                        JSONObject json = JSONUtils.toJSON((BasicDBObject) data, false);
+                        System.out.println(json.toString(2));
+
+                    }
+                    break;
+                }
+            }
+        } finally {
+            helper.shutdown();
+        }
     }
 }

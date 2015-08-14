@@ -8,12 +8,17 @@
     <gmd:language>
         <gco:CharacterString>en</gco:CharacterString>
     </gmd:language>
+ <!--
     <gmd:hierarchyLevel>
         <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
                           codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
                           codeListValue="dataset">dataset
         </gmd:MD_ScopeCode>
     </gmd:hierarchyLevel>
+-->
+    <gmd:hierarchyLevelName>
+        <gco:CharacterString>$resourceType</gco:CharacterString>
+    </gmd:hierarchyLevelName>
     <gmd:contact>
         <gmd:CI_ResponsibleParty>
             <gmd:individualName>

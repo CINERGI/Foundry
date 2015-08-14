@@ -20,7 +20,8 @@ import java.util.*;
 public class ISOXMLGenerator {
     private Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
-    private  Namespace xlink = Namespace.getNamespace("xlink","http://www.w3.org/1999/xlink");
+    private Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
+    private Namespace gmx = Namespace.getNamespace("gmx", "http://www.isotc211.org/2005/gmx");
 
     public Element generate(DBObject docWrapper) throws Exception {
         DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
@@ -40,6 +41,9 @@ public class ISOXMLGenerator {
         }
         if (docEl.getNamespace("xlink") == null) {
             docEl.addNamespaceDeclaration(xlink);
+        }
+        if (docEl.getNamespace("gmx") == null) {
+            docEl.addNamespaceDeclaration(gmx);
         }
         if (spatial != null) {
             JSONObject spatialJson = JSONUtils.toJSON((BasicDBObject) spatial, false);

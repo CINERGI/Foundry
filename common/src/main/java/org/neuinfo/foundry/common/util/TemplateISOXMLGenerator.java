@@ -6,6 +6,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.jdom2.Element;
+import org.neuinfo.foundry.common.model.CinergiFormRec;
 import org.neuinfo.foundry.common.model.ScicrunchResourceRec;
 
 import java.io.StringWriter;
@@ -23,6 +24,40 @@ public class TemplateISOXMLGenerator {
         ve.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
         ve.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
         ve.init();
+    }
+
+    public Element createISOXMLDoc(CinergiFormRec cfRec, String primaryKey) throws Exception {
+        VelocityContext ctx = new VelocityContext();
+        ctx.put("guid", primaryKey);
+        ctx.put("resourceType", cfRec.getResourceType());
+        ctx.put("resourceTitle", cfRec.getResourceTitle());
+        ctx.put("abstract", cfRec.getAbstractText());
+        ctx.put("resourceURL", cfRec.getResourceURL());
+        ctx.put("individualName", cfRec.getIndividualName());
+        ctx.put("contactEmail", cfRec.getContactEmail());
+        ctx.put("definingCitation", cfRec.getDefiningCitation());
+        ctx.put("resourceContributor", cfRec.getResourceContributor());
+        ctx.put("alternateTitle", cfRec.getAlternateTitle());
+        ctx.put("geoscienceSubdomains", cfRec.getGeoscienceSubdomains());
+        ctx.put("equipments", cfRec.getEquipments());
+        ctx.put("methods", cfRec.getMethods());
+        ctx.put("earthProcesses", cfRec.getEarthProcesses());
+        ctx.put("describedFeatures", cfRec.getDescribedFeatures());
+        ctx.put("otherTags", cfRec.getOtherTags());
+        ctx.put("placeNames", cfRec.getPlaceNames());
+        ctx.put("temporalExtent", cfRec.getTemporalExtent());
+        ctx.put("spatialExtents", cfRec.getSpatialExtents());
+        Template template = null;
+        template = ve.getTemplate("iso_template.vm");
+
+        StringWriter sw = new StringWriter(16000);
+        template.merge(ctx, sw);
+
+        System.out.println(sw.toString());
+
+        Element rootEl = Utils.readXML(sw.toString());
+
+        return rootEl;
     }
 
     public Element createISOXMLDoc(ScicrunchResourceRec resourceRec) throws Exception {

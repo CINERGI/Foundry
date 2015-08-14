@@ -8,6 +8,7 @@ import org.neuinfo.foundry.common.config.ConsumerConfig;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.consumers.common.ConfigLoader;
 import org.neuinfo.foundry.consumers.common.Configuration;
+import org.neuinfo.foundry.consumers.common.ServiceFactory;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper;
 
 import javax.jms.*;
@@ -29,11 +30,13 @@ public class ConsumerCoordinator implements MessageListener {
     private final ExecutorService executorService = Executors
             .newFixedThreadPool(10);
     List<ConsumerWorker> consumerWorkers = new ArrayList<ConsumerWorker>();
+
     private final static Logger logger = Logger.getLogger("ConsumerCoordinator");
 
-    public ConsumerCoordinator(Configuration config, String configFile) {
+    public ConsumerCoordinator(Configuration config, String configFile) throws Exception {
         this.config = config;
         this.configFile = configFile;
+        ServiceFactory.getInstance(configFile);
     }
 
     public boolean isRunInTestMode() {
