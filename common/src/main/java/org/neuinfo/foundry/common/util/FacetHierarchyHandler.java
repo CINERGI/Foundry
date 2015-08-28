@@ -14,19 +14,19 @@ import org.json.JSONObject;
 import java.net.URI;
 import java.util.*;
 
-import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.Edge;
-import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.Node;
+import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWEdge;
+import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWNode;
 
 /**
  * Created by bozyurt on 7/16/15.
  */
 public class FacetHierarchyHandler implements IHierarchyHandler {
-    Node root;
-    Map<String, Node> categoryPath2NodeMap = new HashMap<String, Node>();
+    KWNode root;
+    Map<String, KWNode> categoryPath2NodeMap = new HashMap<String, KWNode>();
     Map<String, String> scigraph2CinergiCategoryMap = new HashMap<String, String>();
     Map<String, String> cinergi2ScigraphCategoryMap = new HashMap<String, String>();
     List<String> sortedCinergiCategories;
-    Map<String, Node> label2NodeMap = new HashMap<String, Node>();
+    Map<String, KWNode> label2NodeMap = new HashMap<String, KWNode>();
     static Map<String, String> exceptionMap = new HashMap<String, String>();
     Map<String, String> cinergiCategory2OntologyIdMap = new HashMap<String, String>();
 
@@ -77,33 +77,33 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
     }
 
     void prepareFacetHierarchy(JSONObject json) {
-        Map<String, Node> nodeMap = new HashMap<String, Node>();
-        Map<String, Edge> edgeMap = new HashMap<String, Edge>();
-        Map<String, Edge> objEdgeMap = new HashMap<String, Edge>();
-        List<Edge> edges = new ArrayList<Edge>();
+        Map<String, KWNode> nodeMap = new HashMap<String, KWNode>();
+        Map<String, KWEdge> edgeMap = new HashMap<String, KWEdge>();
+        Map<String, KWEdge> objEdgeMap = new HashMap<String, KWEdge>();
+        List<KWEdge> edges = new ArrayList<KWEdge>();
         JSONArray nodesArr = json.getJSONArray("nodes");
         for (int i = 0; i < nodesArr.length(); i++) {
-            Node node = Node.fromJSON(nodesArr.getJSONObject(i));
+            KWNode node = KWNode.fromJSON(nodesArr.getJSONObject(i));
             nodeMap.put(node.id, node);
         }
         JSONArray edgesArr = json.getJSONArray("edges");
         for (int i = 0; i < edgesArr.length(); i++) {
-            Edge edge = Edge.fromJSON(edgesArr.getJSONObject(i));
+            KWEdge edge = KWEdge.fromJSON(edgesArr.getJSONObject(i));
             edgeMap.put(edge.sub, edge);
             objEdgeMap.put(edge.obj, edge);
             edges.add(edge);
         }
 
-        List<Node> topLevelNodes = new LinkedList<Node>();
-        Map<String, Node> topLevelNodeMap = new HashMap<String, Node>(27);
-        Map<String, Node> parentNodeMap = new HashMap<String, Node>(27);
-        for (Node n : nodeMap.values()) {
+        List<KWNode> topLevelNodes = new LinkedList<KWNode>();
+        Map<String, KWNode> topLevelNodeMap = new HashMap<String, KWNode>(27);
+        Map<String, KWNode> parentNodeMap = new HashMap<String, KWNode>(27);
+        for (KWNode n : nodeMap.values()) {
             if (!objEdgeMap.containsKey(n.id)) {
                 topLevelNodes.add(n);
             }
-            Edge se = edgeMap.get(n.id);
+            KWEdge se = edgeMap.get(n.id);
             if (se != null && se.pred.equals("subClassOf")) {
-                Node parent = nodeMap.get(se.obj);
+                KWNode parent = nodeMap.get(se.obj);
                 if (parent != null && !parentNodeMap.containsKey(parent.id)) {
                     parentNodeMap.put(parent.id, parent);
                 }
@@ -112,9 +112,9 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             }
         }
         Assertion.assertTrue(!parentNodeMap.isEmpty());
-        Set<Node> usedNodeSet = new HashSet<Node>();
-        for (Node n : parentNodeMap.values()) {
-            Node p = n.getParent();
+        Set<KWNode> usedNodeSet = new HashSet<KWNode>();
+        for (KWNode n : parentNodeMap.values()) {
+            KWNode p = n.getParent();
             if (p != null && p.getParent() == null) {
                 topLevelNodeMap.put(p.id, p);
                 populateUsedSet(p, usedNodeSet);
@@ -125,34 +125,34 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         }
 
 
-        root = new Node("Root", "Root");
-        for (Node n : topLevelNodeMap.values()) {
+        root = new KWNode("Root", "Root");
+        for (KWNode n : topLevelNodeMap.values()) {
             root.addChild(n);
             fixHierarchy(n);
             // prepMapping(n);
         }
-        for (Node n : nodeMap.values()) {
+        for (KWNode n : nodeMap.values()) {
             label2NodeMap.put(n.label.toLowerCase(), n);
         }
         fixExceptions();
         topLevelNodeMap.clear();
-        for (Node c : root.getChildren()) {
+        for (KWNode c : root.getChildren()) {
             topLevelNodeMap.put(c.id, c);
             prepMapping(c);
         }
 
         showHierarchy(topLevelNodeMap);
         System.out.println("# nodes:" + nodeMap.size() + " usedNodeSet:" + usedNodeSet.size());
-        for (Node n : nodeMap.values()) {
+        for (KWNode n : nodeMap.values()) {
             if (!usedNodeSet.contains(n)) {
                 System.out.println(n);
             }
         }
     }
 
-    private void fixHierarchy(Node parent) {
+    private void fixHierarchy(KWNode parent) {
         if (parent.label.equalsIgnoreCase("equipment")) {
-            Node grandParent = parent.getParent();
+            KWNode grandParent = parent.getParent();
             if (grandParent != null) {
                 grandParent.getChildren().remove(parent);
                 parent.setParent(this.root);
@@ -160,21 +160,30 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             }
 
         } else if (parent.label.equalsIgnoreCase("resource type")) {
-            Node softwareNode = new Node("http://www.ebi.ac.uk/swo/SWO_0000001", "Software");
+            KWNode softwareNode = new KWNode("http://www.ebi.ac.uk/swo/SWO_0000001", "Software");
             if (parent.getChild(softwareNode.label) == null) {
                 softwareNode.setParent(parent);
                 parent.addChild(softwareNode);
             }
         } else if (parent.label.equalsIgnoreCase("property")) {
-            Node otherNode = new Node("", "Property (Other)");
+            KWNode otherNode = new KWNode("", "Property (Other)");
             if (parent.getChild(otherNode.label) == null) {
                 otherNode.setParent(parent);
                 parent.addChild(otherNode);
             }
+        } else if (parent.label.equalsIgnoreCase("natural processes")) {
+            KWNode grandParent = parent.getParent();
+            if (grandParent != null) {
+                grandParent.getChildren().remove(parent);
+                for(KWNode c : parent.getChildren()) {
+                    c.setParent(grandParent);
+                    grandParent.addChild(c);
+                }
+            }
         }
         if (parent.hasChildren()) {
-            List<Node> children = new ArrayList<Node>(parent.getChildren());
-            for (Node c : children) {
+            List<KWNode> children = new ArrayList<KWNode>(parent.getChildren());
+            for (KWNode c : children) {
                 fixHierarchy(c);
             }
         }
@@ -183,9 +192,9 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
     private void fixExceptions() {
         for (String key : exceptionMap.keySet()) {
             key = exceptionMap.get(key);
-            Node n = label2NodeMap.get(key);
+            KWNode n = label2NodeMap.get(key);
             if (n != null && n.hasChildren()) {
-                for (Node c : n.getChildren()) {
+                for (KWNode c : n.getChildren()) {
                     if ((c.id == null || c.id.isEmpty())) {
                         if (n.label.toLowerCase().equals("property")) {
                             c.id = "http://hydro10.sdsc.edu/cinergi_ontology/cinergi#namedProperty";
@@ -198,14 +207,14 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         }
     }
 
-    private void prepMapping(Node parent) {
+    private void prepMapping(KWNode parent) {
         String categoryPath = prepCategoryPath(parent);
         categoryPath2NodeMap.put(categoryPath, parent);
         this.cinergi2ScigraphCategoryMap.put(categoryPath, parent.label.toLowerCase());
         this.scigraph2CinergiCategoryMap.put(parent.label.toLowerCase(), categoryPath);
         this.cinergiCategory2OntologyIdMap.put(categoryPath, parent.id);
         if (parent.hasChildren()) {
-            for (Node c : parent.getChildren()) {
+            for (KWNode c : parent.getChildren()) {
                 prepMapping(c);
             }
         }
@@ -215,7 +224,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         return this.cinergiCategory2OntologyIdMap.get(facetPath);
     }
 
-    String prepCategoryPath(Node node) {
+    String prepCategoryPath(KWNode node) {
         List<String> path = new ArrayList<String>(5);
         while (node != null) {
             if (node.id.equals("Root")) {
@@ -239,10 +248,10 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             key = exceptionMap.get(key);
         }
 
-        Node n = label2NodeMap.get(key);
+        KWNode n = label2NodeMap.get(key);
         if (n != null && n.hasChildren()) {
-            Node otherNode = null;
-            for (Node c : n.getChildren()) {
+            KWNode otherNode = null;
+            for (KWNode c : n.getChildren()) {
                 if (c.label.indexOf("Other") != -1) {
                     otherNode = c;
                     break;
@@ -275,7 +284,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         if (categoryPath == null) {
             return -1;
         }
-        Node node = categoryPath2NodeMap.get(categoryPath);
+        KWNode node = categoryPath2NodeMap.get(categoryPath);
         if (node == null) {
             return -1;
         }
@@ -287,31 +296,31 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         return len;
     }
 
-    private void showHierarchy(Map<String, Node> topLevelNodeMap) {
+    private void showHierarchy(Map<String, KWNode> topLevelNodeMap) {
         int level = 1;
-        for (Node n : topLevelNodeMap.values()) {
+        for (KWNode n : topLevelNodeMap.values()) {
             System.out.println(n);
             showChildren(n, level);
         }
     }
 
-    private void showChildren(Node n, int level) {
+    private void showChildren(KWNode n, int level) {
         StringBuilder indent = new StringBuilder();
         for (int i = 0; i < level; i++) {
             indent.append("\t");
         }
         if (n.hasChildren()) {
-            for (Node c : n.getChildren()) {
+            for (KWNode c : n.getChildren()) {
                 System.out.println(indent.toString() + c);
                 showChildren(c, level + 1);
             }
         }
     }
 
-    private void populateUsedSet(Node n, Set<Node> usedNodeSet) {
+    private void populateUsedSet(KWNode n, Set<KWNode> usedNodeSet) {
         usedNodeSet.add(n);
         if (n.hasChildren()) {
-            for (Node c : n.getChildren()) {
+            for (KWNode c : n.getChildren()) {
                 populateUsedSet(c, usedNodeSet);
             }
         }

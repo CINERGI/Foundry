@@ -8,14 +8,14 @@
     <gmd:language>
         <gco:CharacterString>en</gco:CharacterString>
     </gmd:language>
- <!--
-    <gmd:hierarchyLevel>
-        <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
-                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
-                          codeListValue="dataset">dataset
-        </gmd:MD_ScopeCode>
-    </gmd:hierarchyLevel>
--->
+    <!--
+       <gmd:hierarchyLevel>
+           <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
+                             codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                             codeListValue="dataset">dataset
+           </gmd:MD_ScopeCode>
+       </gmd:hierarchyLevel>
+   -->
     <gmd:hierarchyLevelName>
         <gco:CharacterString>$resourceType</gco:CharacterString>
     </gmd:hierarchyLevelName>
@@ -113,6 +113,7 @@
                         <gco:CharacterString>$czoRole</gco:CharacterString>
                     </gmd:positionName>
 -->
+                    <!--
                     <gmd:contactInfo>
                         <gmd:CI_Contact>
                             <gmd:phone>
@@ -143,6 +144,7 @@
                             </gmd:address>
                         </gmd:CI_Contact>
                     </gmd:contactInfo>
+-->
                     <gmd:role>
                         <gmd:CI_RoleCode codeSpace="ISOTC211/19115"
                                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
@@ -151,7 +153,7 @@
                     </gmd:role>
                 </gmd:CI_ResponsibleParty>
             </gmd:pointOfContact>
-            #if($geoscienceSubdomains)
+            #if(!${geoscienceSubdomains.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($geoscienceSubdomain in $geoscienceSubdomains)
@@ -168,7 +170,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($equipments)
+            #if(!${equipments.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($equipment in $equipments)
@@ -192,7 +194,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($methods)
+            #if(!${methods.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($method in $methods)
@@ -216,7 +218,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($earthProcesses)
+            #if(!${earthProcesses.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($earthProcess in $earthProcesses)
@@ -240,7 +242,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($describedFeatures)
+            #if(!${describedFeatures.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($describedFeature in $describedFeatures)
@@ -264,7 +266,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($otherTags)
+            #if(!${otherTags.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($otherTag in $otherTags)
@@ -281,7 +283,7 @@
                     </gmd:MD_Keywords>
                 </gmd:descriptiveKeywords>
             #end
-            #if($placeNames)
+            #if(!${placeNames.isEmpty()})
                 <gmd:descriptiveKeywords>
                     <gmd:MD_Keywords>
                         #foreach($placeName in $placeNames)
@@ -337,16 +339,16 @@
                                 <gmd:geographicElement>
                                     <gmd:EX_GeographicBoundingBox>
                                         <gmd:westBoundLongitude>
-                                            <gco:Decimal>${se.wbl}</gco:Decimal>
+                                            <gco:Decimal>${se.westBoundLongitude}</gco:Decimal>
                                         </gmd:westBoundLongitude>
                                         <gmd:eastBoundLongitude>
-                                            <gco:Decimal>${se.ebl}</gco:Decimal>
+                                            <gco:Decimal>${se.eastBoundLongitude}</gco:Decimal>
                                         </gmd:eastBoundLongitude>
                                         <gmd:southBoundLatitude>
-                                            <gco:Decimal>${se.sbl}</gco:Decimal>
+                                            <gco:Decimal>${se.southBoundLatitude}</gco:Decimal>
                                         </gmd:southBoundLatitude>
                                         <gmd:northBoundLatitude>
-                                            <gco:Decimal>${se.nbl}</gco:Decimal>
+                                            <gco:Decimal>${se.northBoundLatitude}</gco:Decimal>
                                         </gmd:northBoundLatitude>
                                     </gmd:EX_GeographicBoundingBox>
                                 </gmd:geographicElement>
@@ -364,9 +366,54 @@
                                 </gmd:EX_TemporalExtent>
                             </gmd:temporalElement>
                         #end
+                        #if($geologicAge)
+                             <gmd:temporalElement>
+                                <gmd:EX_TemporalExtent>
+                                    <gmd:extent>
+                                        <gml:TimePeriod gml:id="GeologicAge">
+                                            <gml:beginPosition frame="geologicTime">${geologicAge.older}</gml:beginPosition>
+                                            <gml:endPosition frame="geologicTime">${geologicAge.younger}</gml:endPosition>
+                                        </gml:TimePeriod>
+                                    </gmd:extent>
+                                </gmd:EX_TemporalExtent>
+                            </gmd:temporalElement>
+                        #end
                     </gmd:EX_Extent>
                 </gmd:extent>
             #end
         </gmd:MD_DataIdentification>
     </gmd:identificationInfo>
+    #if($fileFormat)
+        <gmd:distributionInfo>
+            <gmd:MD_Distribution>
+                <gmd:distributionFormat>
+                    <gmd:MD_Format>
+                        <gmd:name>
+                            <gco:CharacterString>$fileFormat</gco:CharacterString>
+                        </gmd:name>
+                    </gmd:MD_Format>
+                </gmd:distributionFormat>
+            </gmd:MD_Distribution>
+        </gmd:distributionInfo>
+    #end
+    #if($lineage)
+        <gmd:dataQualityInfo>
+            <gmd:DQ_DataQuality>
+                <gmd:scope>
+                    <gmd:DQ_Scope>
+                        <gmd:level>
+                            <gmd:MD_ScopeCode codeList="" codeListValue="dataset">dataset</gmd:MD_ScopeCode>
+                        </gmd:level>
+                    </gmd:DQ_Scope>
+                </gmd:scope>
+                <gmd:lineage>
+                    <gmd:LI_Lineage>
+                        <gmd:statement>
+                            <gco:CharacterString>$lineage</gco:CharacterString>
+                        </gmd:statement>
+                    </gmd:LI_Lineage>
+                </gmd:lineage>
+            </gmd:DQ_DataQuality>
+        </gmd:dataQualityInfo>
+    #end
 </gmd:MD_Metadata>

@@ -28,6 +28,33 @@ public class CinergiFormRec {
     private List<String> placeNames = new LinkedList<String>();
     private TemporalExtent temporalExtent;
     private List<SpatialExtent> spatialExtents = new LinkedList<SpatialExtent>();
+    private String fileFormat;
+    private String lineage;
+    private GeologicAge geologicAge;
+
+    public String getFileFormat() {
+        return fileFormat;
+    }
+
+    public void setFileFormat(String fileFormat) {
+        this.fileFormat = fileFormat;
+    }
+
+    public String getLineage() {
+        return lineage;
+    }
+
+    public void setLineage(String lineage) {
+        this.lineage = lineage;
+    }
+
+    public GeologicAge getGeologicAge() {
+        return geologicAge;
+    }
+
+    public void setGeologicAge(GeologicAge geologicAge) {
+        this.geologicAge = geologicAge;
+    }
 
     public String getResourceType() {
         return resourceType;
@@ -197,6 +224,58 @@ public class CinergiFormRec {
         return this;
     }
 
+    public JSONObject toJSON() {
+        JSONObject json = new JSONObject();
+        json.put("resourceType", resourceType);
+        json.put("resourceTitle", resourceTitle);
+        json.put("abstractText", abstractText);
+        json.put("resourceURL", resourceURL);
+        json.put("individualName", individualName);
+        json.put("contactEmail", contactEmail);
+        json.put("definingCitation", definingCitation);
+        json.put("resourceContributor", resourceContributor);
+        if (alternateTitle != null) {
+            json.put("alternateTitle", alternateTitle);
+        }
+        prepJsonArray(geoscienceSubdomains, json, "geoscienceSubdomains");
+        prepJsonArray(equipments, json, "equipments");
+        prepJsonArray(methods, json, "methods");
+        prepJsonArray(earthProcesses, json, "earthProcesses");
+        prepJsonArray(describedFeatures, json, "describedFeatures");
+        prepJsonArray(otherTags, json, "otherTags");
+        prepJsonArray(placeNames, json, "placeNames");
+        if (temporalExtent != null) {
+            json.put("temporalExtent", temporalExtent.toJSON());
+        }
+        if (!spatialExtents.isEmpty()) {
+            JSONArray jsArr = new JSONArray();
+            for (SpatialExtent se : spatialExtents) {
+                jsArr.put(se.toJSON());
+            }
+            json.put("spatialExtents", jsArr);
+        }
+        if (fileFormat != null) {
+            json.put("fileFormat", fileFormat);
+        }
+        if (lineage != null) {
+            json.put("lineage", lineage);
+        }
+        if (geologicAge != null) {
+            json.put("geologicAge", geologicAge.toJSON());
+        }
+        return json;
+    }
+
+    static void prepJsonArray(List<String> list, JSONObject json, String name) {
+        if (!list.isEmpty()) {
+            JSONArray jsArr = new JSONArray();
+            for (String e : list) {
+                jsArr.put(e);
+            }
+            json.put(name, jsArr);
+        }
+    }
+
     public static CinergiFormRec fromJSON(JSONObject json) {
         CinergiFormRec cfr = new CinergiFormRec();
         cfr.resourceType = json.getString("resourceType");
@@ -218,14 +297,23 @@ public class CinergiFormRec {
         prepList(cfr.otherTags, json, "otherTags");
         prepList(cfr.placeNames, json, "placeNames");
         if (json.has("temporalExtent")) {
-            cfr.temporalExtent = TemporalExtent.fromJSON( json.getJSONObject("temporalExtent"));
+            cfr.temporalExtent = TemporalExtent.fromJSON(json.getJSONObject("temporalExtent"));
         }
         if (json.has("spatialExtents")) {
             JSONArray jsArr = json.getJSONArray("spatialExtents");
-            for(int i = 0; i < jsArr.length(); i++) {
-                SpatialExtent se = SpatialExtent.fromJSON( jsArr.getJSONObject(i));
+            for (int i = 0; i < jsArr.length(); i++) {
+                SpatialExtent se = SpatialExtent.fromJSON(jsArr.getJSONObject(i));
                 cfr.addSpatialExtent(se);
             }
+        }
+        if (json.has("fileFormat")) {
+            cfr.setFileFormat(json.getString("fileFormat"));
+        }
+        if (json.has("lineage")) {
+            cfr.setLineage(json.getString("lineage"));
+        }
+        if (json.has("geologicAge")) {
+            cfr.setGeologicAge(GeologicAge.fromJSON(json.getJSONObject("geologicAge")));
         }
         return cfr;
     }
@@ -234,8 +322,8 @@ public class CinergiFormRec {
         if (json.has(name)) {
             JSONArray jsArr = json.getJSONArray(name);
             int len = jsArr.length();
-            for(int i = 0; i < len; i++) {
-                list.add( jsArr.getString(i));
+            for (int i = 0; i < len; i++) {
+                list.add(jsArr.getString(i));
             }
         }
 
@@ -259,7 +347,14 @@ public class CinergiFormRec {
         }
 
         public static TemporalExtent fromJSON(JSONObject json) {
-            return new TemporalExtent( json.getString("start"), json.getString("end"));
+            return new TemporalExtent(json.getString("start"), json.getString("end"));
+        }
+
+        public JSONObject toJSON() {
+            JSONObject json = new JSONObject();
+            json.put("start", start);
+            json.put("end", end);
+            return json;
         }
     }
 
@@ -318,6 +413,44 @@ public class CinergiFormRec {
             String sbl = json.getString("southBoundLatitude");
             String nbl = json.getString("northBoundLatitude");
             return new SpatialExtent(wbl, ebl, sbl, nbl);
+        }
+
+        public JSONObject toJSON() {
+            JSONObject json = new JSONObject();
+            json.put("westBoundLongitude", westBoundLongitude);
+            json.put("eastBoundLongitude", eastBoundLongitude);
+            json.put("southBoundLatitude", southBoundLatitude);
+            json.put("northBoundLatitude", northBoundLatitude);
+            return json;
+        }
+    }
+
+    public static class GeologicAge {
+        String older;
+        String younger;
+
+        public GeologicAge(String older, String younger) {
+            this.older = older;
+            this.younger = younger;
+        }
+
+        public String getOlder() {
+            return older;
+        }
+
+        public String getYounger() {
+            return younger;
+        }
+
+        public static GeologicAge fromJSON(JSONObject json) {
+            return new GeologicAge(json.getString("older"), json.getString("younger"));
+        }
+
+        public JSONObject toJSON() {
+            JSONObject json = new JSONObject();
+            json.put("older", older);
+            json.put("younger", younger);
+            return json;
         }
     }
 

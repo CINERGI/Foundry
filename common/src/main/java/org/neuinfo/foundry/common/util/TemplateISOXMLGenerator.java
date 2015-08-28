@@ -27,6 +27,7 @@ public class TemplateISOXMLGenerator {
     }
 
     public Element createISOXMLDoc(CinergiFormRec cfRec, String primaryKey) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         VelocityContext ctx = new VelocityContext();
         ctx.put("guid", primaryKey);
         ctx.put("resourceType", cfRec.getResourceType());
@@ -47,6 +48,12 @@ public class TemplateISOXMLGenerator {
         ctx.put("placeNames", cfRec.getPlaceNames());
         ctx.put("temporalExtent", cfRec.getTemporalExtent());
         ctx.put("spatialExtents", cfRec.getSpatialExtents());
+        ctx.put("hasExtent", cfRec.getTemporalExtent() != null
+                || !cfRec.getSpatialExtents().isEmpty() || cfRec.getGeologicAge() != null);
+        ctx.put("editDate", sdf.format(new Date()));
+        ctx.put("geologicAge", cfRec.getGeologicAge());
+        ctx.put("fileFormat", cfRec.getFileFormat());
+        ctx.put("lineage", cfRec.getLineage());
         Template template = null;
         template = ve.getTemplate("iso_template.vm");
 

@@ -35,6 +35,8 @@ public class KeywordHierarchyHandler {
     private KeywordHierarchyHandler() {
     }
 
+
+
     public synchronized List<String> getParentKeywords(String keyword, String id) throws Exception {
         List<String> cachedParentKeywords = parentKeywordsCache.get(id);
         if (cachedParentKeywords != null) {
@@ -173,19 +175,19 @@ public class KeywordHierarchyHandler {
 
 
     String prepHierarchy(JSONObject json, String id, String facetOntologyId) {
-        Map<String, Node> nodeMap = new HashMap<String, Node>(7);
-        Map<String, Edge> edgeMap = new HashMap<String, Edge>(7);
-        List<Edge> edges = new ArrayList<Edge>(10);
+        Map<String, KWNode> nodeMap = new HashMap<String, KWNode>(7);
+        Map<String, KWEdge> edgeMap = new HashMap<String, KWEdge>(7);
+        List<KWEdge> edges = new ArrayList<KWEdge>(10);
         JSONArray nodesArr = json.getJSONArray("nodes");
         for (int i = 0; i < nodesArr.length(); i++) {
-            Node node = Node.fromJSON(nodesArr.getJSONObject(i));
+            KWNode node = KWNode.fromJSON(nodesArr.getJSONObject(i));
             nodeMap.put(node.id, node);
         }
         JSONArray edgesArr = json.getJSONArray("edges");
-        Set<Edge> startEdgeSet = new LinkedHashSet<Edge>();
-        Edge startEdge = null;
+        Set<KWEdge> startEdgeSet = new LinkedHashSet<KWEdge>();
+        KWEdge startEdge = null;
         for (int i = 0; i < edgesArr.length(); i++) {
-            Edge edge = Edge.fromJSON(edgesArr.getJSONObject(i));
+            KWEdge edge = KWEdge.fromJSON(edgesArr.getJSONObject(i));
             if (edge.sub.endsWith(id)) {
                 startEdgeSet.add(edge);
                 startEdge = edge;
@@ -198,7 +200,7 @@ public class KeywordHierarchyHandler {
         }
         Assertion.assertNotNull(startEdge);
         String pathStr = null;
-        for(Edge se : startEdgeSet) {
+        for(KWEdge se : startEdgeSet) {
             pathStr = prepPath(se, nodeMap, edgeMap, facetOntologyId);
             if (pathStr != null) {
                 break;
@@ -207,9 +209,9 @@ public class KeywordHierarchyHandler {
         return pathStr != null ? pathStr : "";
     }
 
-    private String prepPath(Edge startEdge, Map<String, Node> nodeMap, Map<String, Edge> edgeMap, String facetOntologyId) {
+    private String prepPath(KWEdge startEdge, Map<String, KWNode> nodeMap, Map<String, KWEdge> edgeMap, String facetOntologyId) {
         StringBuilder sb = new StringBuilder();
-        Node n = nodeMap.get(startEdge.sub);
+        KWNode n = nodeMap.get(startEdge.sub);
         List<String> path = new ArrayList<String>(edgeMap.size());
         boolean foundFacet = false;
         while (n != null) {
@@ -226,7 +228,7 @@ public class KeywordHierarchyHandler {
             }
 
             path.add(pathPart);
-            Edge e = edgeMap.get(startEdge.obj);
+            KWEdge e = edgeMap.get(startEdge.obj);
             if (e == null) {
                 break;
             }
@@ -327,42 +329,42 @@ public class KeywordHierarchyHandler {
         return null;
     }
 
-    public static class Node {
+    public static class KWNode {
         String id;
         String label;
         List<String> categories = new ArrayList<String>(2);
-        Node parent;
-        List<Node> children;
+        KWNode parent;
+        List<KWNode> children;
 
-        public Node(String id, String label) {
+        public KWNode(String id, String label) {
             this.id = id;
             this.label = label;
         }
 
-        public Node getParent() {
+        public KWNode getParent() {
             return parent;
         }
 
-        public void setParent(Node parent) {
+        public void setParent(KWNode parent) {
             this.parent = parent;
         }
 
-        public List<Node> getChildren() {
+        public List<KWNode> getChildren() {
             return children;
         }
 
-        public void addChild(Node child) {
+        public void addChild(KWNode child) {
             if (this.children == null) {
-                this.children = new LinkedList<Node>();
+                this.children = new LinkedList<KWNode>();
             }
             children.add(child);
         }
 
-        public Node getChild(String label) {
+        public KWNode getChild(String label) {
             if (!hasChildren()) {
                 return null;
             }
-            for (Node c : children) {
+            for (KWNode c : children) {
                 if (c.label.equalsIgnoreCase(label)) {
                     return c;
                 }
@@ -374,7 +376,7 @@ public class KeywordHierarchyHandler {
             return children != null && !children.isEmpty();
         }
 
-        public static Node fromJSON(JSONObject json) {
+        public static KWNode fromJSON(JSONObject json) {
             String id = json.getString("id");
             String label = null;
             if (json.has("lbl")) {
@@ -383,7 +385,7 @@ public class KeywordHierarchyHandler {
                     label = (String) o;
                 }
             }
-            Node node = new Node(id, label);
+            KWNode node = new KWNode(id, label);
             if (json.has("meta")) {
                 JSONObject metaJS = json.getJSONObject("meta");
                 if (metaJS.has("category")) {
@@ -418,23 +420,23 @@ public class KeywordHierarchyHandler {
         }
     }
 
-    public static class Edge {
+    public static class KWEdge {
         String sub;
         String obj;
         String pred;
 
-        public Edge(String sub, String obj, String pred) {
+        public KWEdge(String sub, String obj, String pred) {
             this.sub = sub;
             this.obj = obj;
             this.pred = pred;
         }
 
-        public static Edge fromJSON(JSONObject json) {
+        public static KWEdge fromJSON(JSONObject json) {
             String sub = json.getString("sub");
             String obj = json.getString("obj");
             String pred = json.getString("pred");
 
-            return new Edge(sub, obj, pred);
+            return new KWEdge(sub, obj, pred);
         }
     }
 
