@@ -1,0 +1,1 @@
+all json schema work moved to CINERGI/Json-schemas repository. 
