@@ -5,10 +5,7 @@ import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.CategoryHierarchyHandler;
 import org.neuinfo.foundry.common.util.IHierarchyHandler;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bozyurt on 2/11/15.
@@ -51,6 +48,16 @@ public class Keyword {
             }
         }
         return false;
+    }
+
+    public Set<String> getIds() {
+        Set<String> idSet = new LinkedHashSet<String>();
+        for (EntityInfo ei : entityInfos) {
+            if (ei.getId() != null) {
+                idSet.add(ei.getId());
+            }
+        }
+        return idSet;
     }
 
     /**

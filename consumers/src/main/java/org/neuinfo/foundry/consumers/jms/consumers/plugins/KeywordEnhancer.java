@@ -86,7 +86,7 @@ public class KeywordEnhancer implements IPlugin {
                 if (objects != null && !objects.isEmpty()) {
                     String text2Annotate = (String) objects.get(0);
                     if (!text2Annotate.equals("REQUIRED FIELD")) {
-                        annotateEntities(jsonPath, text2Annotate, keywordMap);
+                        ScigraphUtils.annotateEntities(jsonPath, text2Annotate, keywordMap);
                         text2AnnotateList.add(text2Annotate);
                         if (jsonPath.indexOf("title") != -1) {
                             docTitle = text2Annotate;
@@ -324,87 +324,6 @@ public class KeywordEnhancer implements IPlugin {
         }
     }
 
-    void annotateEntities(String contentLocation, String text, Map<String, Keyword> keywordMap) throws Exception {
-        HttpClient client = new DefaultHttpClient();
-        URIBuilder builder = new URIBuilder(this.serviceURL);
-        builder.setParameter("content", text);
-        // minLength=4&longestOnly=true&includeAbbrev=false&includeAcronym=false&includeNumbers=false&callback=fn
-        builder.setParameter("minLength", "4");
-        builder.setParameter("longestOnly", "true");
-        builder.setParameter("includeAbbrev", "false");
-        builder.setParameter("includeNumbers", "false");
 
-        URI uri = builder.build();
-        HttpGet httpGet = new HttpGet(uri);
-        System.out.println("uri:" + uri);
-        // httpGet.addHeader("Content-Type", "application/json");
-        httpGet.addHeader("Accept", "application/json");
-        try {
-            final HttpResponse response = client.execute(httpGet);
-            final HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String jsonStr = EntityUtils.toString(entity);
-                try {
-                    System.out.println(new JSONArray(jsonStr).toString(2));
-                    System.out.println("================");
-                    JSONArray jsArr = new JSONArray(jsonStr);
-                    String textLC = text.toLowerCase();
-                    for (int i = 0; i < jsArr.length(); i++) {
-                        final JSONObject json = jsArr.getJSONObject(i);
-                        if (json.has("token")) {
-                            JSONObject tokenObj = json.getJSONObject("token");
-                            String id = tokenObj.getString("id");
-                            final JSONArray terms = tokenObj.getJSONArray("terms");
-                            if (terms.length() > 0) {
-                                int start = json.getInt("start");
-                                int end = json.getInt("end");
-                                String term = findMatchingTerm(terms, textLC);
-                                if (term != null) {
-                                    Keyword keyword = keywordMap.get(term);
-                                    if (keyword == null) {
-                                        keyword = new Keyword(term);
-                                        keywordMap.put(term, keyword);
-                                    }
-                                    JSONArray categories = tokenObj.getJSONArray("categories");
-                                    String category = "";
-                                    if (categories.length() > 0) {
-                                        category = categories.getString(0);
-                                    }
-                                    EntityInfo ei = new EntityInfo(contentLocation, id, start, end, category);
-                                    for (int j = 1; j < categories.length(); j++) {
-                                        ei.addOtherCategory(categories.getString(j));
-                                    }
-                                    keyword.addEntityInfo(ei);
-                                }
-                            }
-                        }
-                    }
-                } catch (Throwable t) {
-                    logger.error("annotateEntities", t);
-                }
-            }
-        } finally {
-            if (httpGet != null) {
-                httpGet.releaseConnection();
-            }
-        }
-    }
-
-    public static String findMatchingTerm(JSONArray jsArr, String text) {
-        for (int i = 0; i < jsArr.length(); i++) {
-            String term = jsArr.getString(i);
-            if (text.indexOf(term.toLowerCase()) != -1) {
-                return term;
-            }
-        }
-        // if no match has found return the first term
-        for (int i = 0; i < jsArr.length(); i++) {
-            String term = jsArr.getString(i);
-            if (term != null && term.length() > 0) {
-                return term;
-            }
-        }
-        return null;
-    }
 
 }
