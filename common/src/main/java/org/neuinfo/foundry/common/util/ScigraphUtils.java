@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 
 import java.net.URI;
 import java.util.*;
@@ -23,6 +24,17 @@ public class ScigraphUtils {
     static String serviceURL = "http://tikki.neuinfo.org:9000/";
     static String annotationServiceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
     private final static Logger logger = Logger.getLogger(ScigraphUtils.class);
+    private static ScigraphMappingsHandler handler;
+
+    public synchronized static void setHandler(ScigraphMappingsHandler handler) {
+        ScigraphUtils.handler = handler;
+    }
+
+    public static String prepKeywordMapKey(String term, String id) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(term.toLowerCase()).append(':').append(id);
+        return sb.toString();
+    }
 
     public static void annotateEntities(String contentLocation, String text, Map<String, Keyword> keywordMap) throws Exception {
         HttpClient client = new DefaultHttpClient();
@@ -60,10 +72,11 @@ public class ScigraphUtils {
                                 int end = json.getInt("end");
                                 String term = findMatchingTerm(terms, textLC);
                                 if (term != null) {
-                                    Keyword keyword = keywordMap.get(term);
+                                    String key = prepKeywordMapKey(term, id);
+                                    Keyword keyword = keywordMap.get(key);
                                     if (keyword == null) {
                                         keyword = new Keyword(term);
-                                        keywordMap.put(term, keyword);
+                                        keywordMap.put(key, keyword);
                                     }
                                     JSONArray categories = tokenObj.getJSONArray("categories");
                                     String category = "";
@@ -101,6 +114,35 @@ public class ScigraphUtils {
             id = id.substring(id.indexOf('#') + 1);
         }
         return id;
+    }
+
+    public static List<List<FacetNode>> getKeywordFacetHierarchy(String id) throws Exception {
+        System.out.println("id:" + id);
+        List<List<FacetNode>> fnListList = new LinkedList<List<FacetNode>>();
+        List<OntologyPath> keywordHierarchies = getKeywordHierarchy(id, "subClassOf");
+        if (keywordHierarchies != null) {
+            for (OntologyPath op : keywordHierarchies) {
+                List<KWNode> thirdLevelCandidateNodes = op.getThirdLevelCandidateNodes();
+                List<FacetNode> facetHierarchy = null;
+                for (KWNode node : thirdLevelCandidateNodes) {
+                    facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
+                    if (facetHierarchy != null) {
+                        fnListList.add(facetHierarchy);
+                        break;
+                    }
+                }
+                if (facetHierarchy != null) {
+                    System.out.println("\t" + facetHierarchy);
+                }
+            }
+        }
+        return fnListList;
+    }
+
+    public static String toCinergiCategory(List<FacetNode> fnList) {
+        StringBuilder sb = new StringBuilder(60);
+        sb.append(fnList.get(0).getLabel()).append(" > ").append(fnList.get(1).getLabel());
+        return sb.toString().trim();
     }
 
     public static List<OntologyPath> getiKeywordCinergiHierarchy(String id) throws Exception {
@@ -259,6 +301,15 @@ public class ScigraphUtils {
             }
             return sb.toString();
         }
+
+        public List<KWNode> getThirdLevelCandidateNodes() {
+            int len = path.size();
+            List<KWNode> candidates = new LinkedList<KWNode>();
+            for (int i = len - 3; i >= 0; i--) {
+                candidates.add(path.get(i));
+            }
+            return candidates;
+        }
     }
 
     public static class KWNode {
@@ -373,13 +424,16 @@ public class ScigraphUtils {
     }
 
     public static void main(String[] args) throws Exception {
+        ScigraphUtils.setHandler(ScigraphMappingsHandler.getInstance());
         String text = "Ocean floor under polar ice cap";
         Map<String, Keyword> kwMap = new HashMap<String, Keyword>(7);
         ScigraphUtils.annotateEntities("", text, kwMap);
         for (Keyword kw : kwMap.values()) {
             Set<String> ids = kw.getIds();
             for (String id : ids) {
-                getKeywordHierarchy(id);
+                // getKeywordHierarchy(id);
+                getKeywordFacetHierarchy(id);
+
             }
         }
 

@@ -108,6 +108,7 @@ public class KeywordEnhancer implements IPlugin {
             // add any related terms also
             List<Keyword> mainKeywords = new ArrayList<Keyword>(keywordMap.values());
             // CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
+            /*
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
             for (Keyword keyword : mainKeywords) {
                 if (keyword.hasCategory()) {
@@ -123,6 +124,7 @@ public class KeywordEnhancer implements IPlugin {
                     }
                 }
             }
+            */
 
             for (Keyword keyword : keywordMap.values()) {
                 // if (keyword.hasCategory() && keyword.hasAnyCategory(allowedCategorySet)) {

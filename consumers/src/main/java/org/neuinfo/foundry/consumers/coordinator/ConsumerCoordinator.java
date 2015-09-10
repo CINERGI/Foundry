@@ -6,6 +6,8 @@ import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.config.ConsumerConfig;
 import org.neuinfo.foundry.common.util.Assertion;
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler;
+import org.neuinfo.foundry.common.util.ScigraphUtils;
 import org.neuinfo.foundry.consumers.common.ConfigLoader;
 import org.neuinfo.foundry.consumers.common.Configuration;
 import org.neuinfo.foundry.consumers.common.ServiceFactory;
@@ -56,6 +58,8 @@ public class ConsumerCoordinator implements MessageListener {
         String libDir = config.getLibDir();
         String pluginDir = config.getPluginDir();
         JavaPluginCoordinator.getInstance(pluginDir, libDir);
+        ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
+        ScigraphUtils.setHandler(smHandler);
     }
 
     public void shutdown() {

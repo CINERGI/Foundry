@@ -67,21 +67,25 @@ public class CinergiXMLUtils {
         return extEl;
     }
 
-    public static Element createKeywordTag(String keyword, String category)  {
+    public static Element createKeywordTag(String keyword, String category, KeywordInfo kwi) {
       /*  <gmx:Anchor xlink:href="http://example.com/cinergi/vocabulary/term"
                  xlink:actuate="onRequest">Geothermal</gmx:Anchor>
         */
         Element kwdEl = new Element("keyword", gmd);
         //kwdEl.addContent(createCharString(keyword));
         Element anchorEl = new Element("Anchor", gmx);
+        String anchorURL = kwi.getId();
+      /*
         String anchorURL = "http://tikki.neuinfo.org:9000/scigraph/vocabulary/term/" + keyword;
         try {
             URIBuilder builder = new URIBuilder("http://tikki.neuinfo.org:9000");
             builder.setPath("/scigraph/vocabulary/term/" + keyword);
             anchorURL = builder.build().toURL().toString();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
 
         anchorEl.setAttribute("href", anchorURL, xlink);
         // anchorEl.setAttribute("actuate", "onRequest", xlink);
@@ -175,7 +179,8 @@ public class CinergiXMLUtils {
         otherCitationDetailsEl.addContent(createCharString("Cinergi keyword enhanced at " + date));
 
         citationEl.addContent(outDateEl);
-        citationEl.addContent(identifierEl);
+        // not used 9/5/2015
+        //  citationEl.addContent(identifierEl);
         citationEl.addContent(otherCitationDetailsEl);
 
         for (Element keyword : keywords) {
@@ -283,7 +288,7 @@ public class CinergiXMLUtils {
                                     if (keywordElList != null) {
                                         for (Element keywordEl : keywordElList) {
                                             String keyword = keywordEl.getChildTextTrim("CharacterString", gco);
-                                            KeywordInfo kwi = new KeywordInfo(keyword, "theme", "");
+                                            KeywordInfo kwi = new KeywordInfo("", keyword, "theme", "");
                                             kwiList.add(kwi);
                                         }
                                     }
@@ -389,7 +394,7 @@ public class CinergiXMLUtils {
             dkEl.addContent(comment);
             List<Element> keywords = new ArrayList<Element>(kwiList.size());
             for (KeywordInfo kwi : kwiList) {
-                keywords.add(createKeywordTag(kwi.getTerm(), kwi.getCategory()));
+                keywords.add(createKeywordTag(kwi.getTerm(), kwi.getCategory(), kwi));
                 // descriptiveKeywords.add(dkEl);
             }
             KeywordType type = kwiList.get(0).getType();
@@ -438,21 +443,23 @@ public class CinergiXMLUtils {
     }
 
     public static class KeywordInfo {
+        String id;
         String term;
         String category;
         String hierarchyPath;
         KeywordType type;
 
 
-        public KeywordInfo(String term, String category, String hierarchyPath) {
-            this(term, category, hierarchyPath, KeywordType.Keyword);
+        public KeywordInfo(String id, String term, String category, String hierarchyPath) {
+            this(id, term, category, hierarchyPath, KeywordType.Keyword);
         }
 
-        public KeywordInfo(String term, String category, String hierarchyPath, KeywordType type) {
+        public KeywordInfo(String id, String term, String category, String hierarchyPath, KeywordType type) {
             this.term = term;
             this.category = category;
             this.hierarchyPath = hierarchyPath;
             this.type = type;
+            this.id = id;
         }
 
         public KeywordType getType() {
@@ -469,6 +476,10 @@ public class CinergiXMLUtils {
 
         public String getHierarchyPath() {
             return hierarchyPath;
+        }
+
+        public String getId() {
+            return id;
         }
     }
 

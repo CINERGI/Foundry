@@ -49,10 +49,10 @@ public class KeywordEnhancerPluginTests extends TestCase {
     public void testAddKeyword() throws Exception {
         Element docEl = Utils.loadXML("/tmp/00C9D45F-F6DF-4B80-B24B-B10883A282CB.xml");
         List<CinergiXMLUtils.KeywordInfo> kwiList = new ArrayList<CinergiXMLUtils.KeywordInfo>(10);
-        CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("geyser",
+        CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("","geyser",
                 "theme", null);
         kwiList.add(kwi);
-        kwi = new CinergiXMLUtils.KeywordInfo("Laser", "instrument", null);
+        kwi = new CinergiXMLUtils.KeywordInfo("","Laser", "instrument", null);
         kwiList.add(kwi);
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         category2KWIListMap.put("instrument", kwiList);
@@ -102,8 +102,11 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
         Helper helper = new Helper("");
-        boolean filter = false;
+        boolean filter = true;
         try {
+            ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
+            ScigraphUtils.setHandler(smHandler);
+
             helper.startup("cinergi-consumers-cfg.xml");
 
             List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
@@ -179,7 +182,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             Set<String> categories = kw.getCategories();
                             if (categories.size() == 1) { // && categories.iterator().next().equalsIgnoreCase("instrument")) {
                                 String category = categories.iterator().next();
-                                CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo(kw.getTerm(),
+                                CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("", kw.getTerm(),
                                         category, null);
                                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                                 if (kwiList == null) {

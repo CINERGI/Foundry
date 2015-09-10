@@ -96,7 +96,8 @@ public class KeywordEnhancerResource {
                 Set<String> categories = kw.getCategories();
                 if (categories.size() == 1) {
                     String category = categories.iterator().next();
-                    KeywordInfo kwi = new KeywordInfo(kw.getTerm(), category, null);
+                    // FIXME no id
+                    KeywordInfo kwi = new KeywordInfo("", kw.getTerm(), category, null);
                     List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                     if (kwiList == null) {
                         kwiList = new ArrayList<KeywordInfo>(10);

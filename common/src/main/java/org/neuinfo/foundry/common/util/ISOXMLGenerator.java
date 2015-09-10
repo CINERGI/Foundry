@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 
 import java.util.*;
 
@@ -61,14 +62,18 @@ public class ISOXMLGenerator {
                 Set<String> categories = kw.getCategories();
                 if (categories.size() == 1) {
                     String category = categories.iterator().next();
-                    KeywordInfo kwi = new KeywordInfo(kw.getTerm(), category, null,
-                            CinergiXMLUtils.KeywordType.Organization);
-                    List<CinergiXMLUtils.KeywordInfo> kwiList = category2KWIListMap.get(category);
-                    if (kwiList == null) {
-                        kwiList = new ArrayList<KeywordInfo>(10);
-                        category2KWIListMap.put(category, kwiList);
+                    Set<String> ids = kw.getIds();
+                    if (!ids.isEmpty()) {
+                        KeywordInfo kwi = new KeywordInfo(ids.iterator().next(),
+                                kw.getTerm(), category, null,
+                                CinergiXMLUtils.KeywordType.Organization);
+                        List<CinergiXMLUtils.KeywordInfo> kwiList = category2KWIListMap.get(category);
+                        if (kwiList == null) {
+                            kwiList = new ArrayList<KeywordInfo>(10);
+                            category2KWIListMap.put(category, kwiList);
+                        }
+                        kwiList.add(kwi);
                     }
-                    kwiList.add(kwi);
                 }
             }
         }
@@ -81,10 +86,23 @@ public class ISOXMLGenerator {
             for (int i = 0; i < jsArr.length(); i++) {
                 JSONObject kwJson = jsArr.getJSONObject(i);
                 Keyword kw = Keyword.fromJSON(kwJson);
+                for (String id : kw.getIds()) {
+                    List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id);
+                    for (List<FacetNode> fnList : fnListList) {
+                        String category = ScigraphUtils.toCinergiCategory(fnList);
+                        KeywordInfo kwi = new KeywordInfo(id, kw.getTerm(), category, null);
+                        List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+                        if (kwiList == null) {
+                            kwiList = new ArrayList<KeywordInfo>(10);
+                            category2KWIListMap.put(category, kwiList);
+                        }
+                        kwiList.add(kwi);
+                    }
+                }
+                /*
                 Set<String> categories = kw.getCategories();
                 if (categories.size() > 0) {
                     String category = kw.getTheCategory(fhh);
-                    // String category = categories.iterator().next();
                     String cinergiCategory = fhh.getCinergiCategory(category.toLowerCase());
                     if (cinergiCategory != null) {
                         category = cinergiCategory;
@@ -97,6 +115,7 @@ public class ISOXMLGenerator {
                     }
                     kwiList.add(kwi);
                 }
+                */
             }
 
         }

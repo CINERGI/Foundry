@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
+
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper.ProvData;
 
@@ -15,8 +17,9 @@ import java.util.*;
  * Created by bozyurt on 2/4/15.
  */
 public class EnhancerUtils {
-//    private static CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
+    //    private static CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
     private static IHierarchyHandler chh;
+
     static {
         try {
             chh = FacetHierarchyHandler.getInstance();
@@ -26,23 +29,36 @@ public class EnhancerUtils {
     }
 
     public static Map<String, List<KeywordInfo>> getKeywordsToBeAdded(JSONArray keywordsJson,
-                                                                      JSONObject originalDocJson) {
+                                                                      JSONObject originalDocJson) throws Exception {
         Inflector inflector = new Inflector();
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         for (int i = 0; i < keywordsJson.length(); i++) {
             JSONObject kwJson = keywordsJson.getJSONObject(i);
             Keyword kw = Keyword.fromJSON(kwJson);
-            String singularCCTerm =  Inflector.toCamelCase(inflector.toSingular(kw.getTerm()));
+            String singularCCTerm = Inflector.toCamelCase(inflector.toSingular(kw.getTerm()));
             if (!singularCCTerm.equals(kw.getTerm())) {
                 Keyword kwNew = new Keyword(singularCCTerm);
-                for(EntityInfo ei : kw.getEntityInfos()) {
+                for (EntityInfo ei : kw.getEntityInfos()) {
                     kwNew.addEntityInfo(ei);
                 }
                 kw = kwNew;
             }
 
-            String category = kw.getTheCategory(chh);
-            Assertion.assertNotNull(category);
+            // String category = kw.getTheCategory(chh);
+            for (String id : kw.getIds()) {
+                List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id);
+                for (List<FacetNode> fnList : fnListList) {
+                    String category = ScigraphUtils.toCinergiCategory(fnList);
+                    KeywordInfo kwi = new KeywordInfo(id, kw.getTerm(), category, null);
+                    List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+                    if (kwiList == null) {
+                        kwiList = new ArrayList<KeywordInfo>(10);
+                        category2KWIListMap.put(category, kwiList);
+                    }
+                    kwiList.add(kwi);
+                }
+            }
+            /*
             String cinergiCategory = chh.getCinergiCategory(category.toLowerCase());
             if (cinergiCategory != null) {
                 category = cinergiCategory;
@@ -54,7 +70,7 @@ public class EnhancerUtils {
                 category2KWIListMap.put(category, kwiList);
             }
             kwiList.add(kwi);
-
+            */
         }
         if (!category2KWIListMap.isEmpty()) {
             for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
@@ -79,11 +95,15 @@ public class EnhancerUtils {
         JSONArray filtered = new JSONArray();
         for (int i = 0; i < keywordsArr.length(); i++) {
             JSONObject kwJson = keywordsArr.getJSONObject(i);
-            String term = kwJson.getString("term");
-            Keyword keyword = keywordMap.get(term);
-            if (keyword != null) {
-                if (hasMatch(category2KWIListMap, keyword)) {
-                    filtered.put(kwJson);
+            Keyword kw = Keyword.fromJSON(kwJson);
+            for(String id : kw.getIds()) {
+                String key = ScigraphUtils.prepKeywordMapKey(kw.getTerm(), id);
+                Keyword keyword = keywordMap.get(key);
+                if (keyword != null) {
+                    if (hasMatch(category2KWIListMap, keyword)) {
+                        filtered.put(kwJson);
+                        break;
+                    }
                 }
             }
         }
