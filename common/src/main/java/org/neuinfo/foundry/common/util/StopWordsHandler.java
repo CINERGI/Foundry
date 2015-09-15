@@ -34,11 +34,10 @@ public class StopWordsHandler {
 
     public synchronized static StopWordsHandler getInstance() {
         if (instance == null) {
-            throw  new RuntimeException("StopWordsHandler is not properly initialized!");
+            throw new RuntimeException("StopWordsHandler is not properly initialized!");
         }
         return instance;
     }
-
 
 
     private StopWordsHandler(String stopwordsUrl) {
@@ -46,20 +45,27 @@ public class StopWordsHandler {
     }
 
     public void postFilter(String text, Map<String, Keyword> keywordMap) {
-        List<String> terms = new ArrayList<String>(keywordMap.keySet());
+        List<String> keys = new ArrayList<String>(keywordMap.keySet());
         if (!stopWordSet.isEmpty()) {
-            for (String term : terms) {
-                if (stopWordSet.contains(term.toLowerCase())) {
-                    keywordMap.remove(term);
+            for (String key : keys) {
+                Keyword kw = keywordMap.get(key);
+                String term = kw.getTerm();
+                if (stopWordSet.contains(term) || stopWordSet.contains(term.toLowerCase())) {
+                    keywordMap.remove(key);
                 }
             }
         }
-        terms = new ArrayList<String>(keywordMap.keySet());
+        keys = new ArrayList<String>(keywordMap.keySet());
         if (!phraseMap.isEmpty()) {
-            for (String term : terms) {
-                Phrase ph = phraseMap.get(term.toLowerCase());
+            for (String key : keys) {
+                Keyword kw = keywordMap.get(key);
+                String term = kw.getTerm();
+                Phrase ph = phraseMap.get(term);
+                if (ph == null) {
+                    ph = phraseMap.get(term.toLowerCase());
+                }
                 if (ph != null) {
-                    Keyword keyword = keywordMap.get(term);
+                    Keyword keyword = keywordMap.get(key);
                     List<EntityInfo> toBeRemoved = new LinkedList<EntityInfo>();
                     for (EntityInfo ei : keyword.getEntityInfos()) {
                         int idx = ph.phrase.indexOf(ph.term);
@@ -75,7 +81,7 @@ public class StopWordsHandler {
                         keyword.getEntityInfos().removeAll(toBeRemoved);
                     }
                     if (keyword.getEntityInfos().isEmpty()) {
-                        keywordMap.remove(term);
+                        keywordMap.remove(key);
                     }
                 }
             }
@@ -112,12 +118,23 @@ public class StopWordsHandler {
         for (String line : lines) {
             int idx = line.indexOf(',');
             if (idx != -1) {
-                String term = line.substring(0, idx).trim().toLowerCase();
-                String phrase = line.substring(idx + 1).trim().toLowerCase();
+                String term = line.substring(0, idx).trim();
+                String phrase = line.substring(idx + 1).trim();
+                idx = term.indexOf("/i");
+                if (idx != -1) {
+                    term = term.substring(0, idx).toLowerCase();
+                }
                 Phrase ph = new Phrase(term, phrase);
                 phraseMap.put(term, ph);
             } else {
-                this.stopWordSet.add(line.trim().toLowerCase());
+                String term = line.trim();
+                idx = term.indexOf("/i");
+                if (idx != -1) {
+                    term = term.substring(0, idx);
+                    this.stopWordSet.add(term.toLowerCase());
+                } else {
+                    this.stopWordSet.add(term);
+                }
             }
         }
     }

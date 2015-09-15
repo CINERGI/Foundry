@@ -11,6 +11,7 @@ import java.util.Map;
  */
 public class ScigraphMappingsHandler {
     static Map<String, List<FacetNode>> mappings = new HashMap<String, List<FacetNode>>();
+    static Map<String, String> label2PreferredLabelMap = new HashMap<String, String>();
     private static ScigraphMappingsHandler instance;
 
     public static synchronized ScigraphMappingsHandler getInstance() throws IOException {
@@ -42,6 +43,21 @@ public class ScigraphMappingsHandler {
                 }
             }
         }
+        text = Utils.loadAsString("/var/data/cinergi/preferredLabels.txt");
+        lines = text.split("\\n");
+        for (String line : lines) {
+            if (line.startsWith("#")) {
+                continue;
+            }
+            String[] toks = line.trim().split("\\s+,\\s+");
+            if (toks.length == 2) {
+                label2PreferredLabelMap.put(toks[0], toks[1]);
+            }
+        }
+    }
+
+    public String getPreferredLabel(String scigraphLabel) {
+        return label2PreferredLabelMap.get(scigraphLabel);
     }
 
     public List<FacetNode> findFacetHierarchy(String thirdLevelCurrie) {

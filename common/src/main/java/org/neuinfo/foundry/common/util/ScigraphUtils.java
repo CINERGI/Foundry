@@ -141,8 +141,14 @@ public class ScigraphUtils {
 
     public static String toCinergiCategory(List<FacetNode> fnList) {
         StringBuilder sb = new StringBuilder(60);
-        sb.append(fnList.get(0).getLabel()).append(" > ").append(fnList.get(1).getLabel());
+        sb.append(getPreferredLabel(fnList.get(0).getLabel())).append(" > ")
+                .append(getPreferredLabel(fnList.get(1).getLabel()));
         return sb.toString().trim();
+    }
+
+    public static String getPreferredLabel(String label) {
+        String preferredLabel = handler.getPreferredLabel(label);
+        return preferredLabel != null ? preferredLabel : label;
     }
 
     public static List<OntologyPath> getiKeywordCinergiHierarchy(String id) throws Exception {

@@ -102,7 +102,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
         Helper helper = new Helper("");
-        boolean filter = true;
+        boolean filter = false;
         try {
             ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
             ScigraphUtils.setHandler(smHandler);
