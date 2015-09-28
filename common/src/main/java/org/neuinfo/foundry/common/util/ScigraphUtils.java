@@ -162,7 +162,7 @@ public class ScigraphUtils {
                     KWNode node = thirdLevelCandidateNodes.get(i);
                     facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
                     if (facetHierarchy != null) {
-                        for(Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext()) {
+                        for(Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext();) {
                             facetHierarchySB.append(iter.next().getLabel());
                             if (iter.hasNext()) {
                                 facetHierarchySB.append(" > ");
