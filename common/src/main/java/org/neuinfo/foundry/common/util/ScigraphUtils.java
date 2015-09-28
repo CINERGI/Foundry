@@ -57,9 +57,9 @@ public class ScigraphUtils {
             if (entity != null) {
                 String jsonStr = EntityUtils.toString(entity);
                 try {
-                    System.out.println(new JSONArray(jsonStr).toString(2));
-                    System.out.println("================");
                     JSONArray jsArr = new JSONArray(jsonStr);
+                    System.out.println(jsArr.toString(2));
+                    System.out.println("================");
                     String textLC = text.toLowerCase();
                     for (int i = 0; i < jsArr.length(); i++) {
                         final JSONObject json = jsArr.getJSONObject(i);
@@ -70,7 +70,15 @@ public class ScigraphUtils {
                             if (terms.length() > 0) {
                                 int start = json.getInt("start");
                                 int end = json.getInt("end");
-                                String term = findMatchingTerm(terms, textLC);
+                                boolean allUpperCaseTerm = hasAnyAllUpperCaseTerm(terms);
+
+                                String term;
+                                // filter out any upper case term from ontology that is not exactly matched in the text
+                                if (allUpperCaseTerm) {
+                                    term = findAllUpperCaseTerm(terms, text);
+                                } else {
+                                    term = findMatchingTerm(terms, textLC);
+                                }
                                 if (term != null) {
                                     String key = prepKeywordMapKey(term, id);
                                     Keyword keyword = keywordMap.get(key);
@@ -137,6 +145,46 @@ public class ScigraphUtils {
             }
         }
         return fnListList;
+    }
+
+    public static List<String> getKeywordFacetHierarchies4WS(String id) throws Exception {
+        System.out.println("id:" + id);
+        List<String> fhList = new LinkedList<String>();
+
+        List<OntologyPath> keywordHierarchies = getKeywordHierarchy(id, "subClassOf");
+        if (keywordHierarchies != null) {
+            for (OntologyPath op : keywordHierarchies) {
+                List<KWNode> thirdLevelCandidateNodes = op.getThirdLevelCandidateNodes();
+                List<FacetNode> facetHierarchy = null;
+                StringBuilder facetHierarchySB = new StringBuilder(128);
+                int len = thirdLevelCandidateNodes.size();
+                for (int i = 0; i < len; i++) {
+                    KWNode node = thirdLevelCandidateNodes.get(i);
+                    facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
+                    if (facetHierarchy != null) {
+                        for(Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext()) {
+                            facetHierarchySB.append(iter.next().getLabel());
+                            if (iter.hasNext()) {
+                                facetHierarchySB.append(" > ");
+                            }
+                        }
+                        facetHierarchySB.append(" > ").append(node.label);
+                        for(int k = i+1; k < len; k++) {
+                            String label = thirdLevelCandidateNodes.get(k).label;
+                            if (!Utils.isEmpty(label)) {
+                                facetHierarchySB.append(" > ").append(label);
+                            }
+                        }
+                        fhList.add( facetHierarchySB.toString().trim());
+                        break;
+                    }
+                }
+                if (facetHierarchy != null) {
+                    System.out.println("\t" + facetHierarchy);
+                }
+            }
+        }
+        return fhList;
     }
 
     public static String toCinergiCategory(List<FacetNode> fnList) {
@@ -261,6 +309,37 @@ public class ScigraphUtils {
             startEdge = e;
         }
         return op;
+    }
+
+    public static boolean isAllUpperCase(String text) {
+        int len = text.length();
+        for (int i = 0; i < len; i++) {
+            if (!Character.isUpperCase(text.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean hasAnyAllUpperCaseTerm(JSONArray jsArr) {
+        for (int i = 0; i < jsArr.length(); i++) {
+            String term = jsArr.getString(i);
+            if (isAllUpperCase(term)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String findAllUpperCaseTerm(JSONArray jsArr, String origText) {
+        for (int i = 0; i < jsArr.length(); i++) {
+            String term = jsArr.getString(i);
+            boolean allUpperCase = isAllUpperCase(term);
+            if (allUpperCase && origText.indexOf(term) != -1) {
+                return term;
+            }
+        }
+        return null;
     }
 
     public static String findMatchingTerm(JSONArray jsArr, String text) {
