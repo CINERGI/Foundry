@@ -101,6 +101,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
     public void testKeywordEnhancer1() throws Exception {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
+        thePrimaryKey = "4f4e4a51e4b07f02db62a174";
         Helper helper = new Helper("");
         boolean filter = false;
         try {

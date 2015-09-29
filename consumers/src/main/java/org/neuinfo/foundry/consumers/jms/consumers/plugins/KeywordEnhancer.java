@@ -106,25 +106,8 @@ public class KeywordEnhancer implements IPlugin {
                 allowedCategorySet.add("platform");
             }
             // add any related terms also
-            List<Keyword> mainKeywords = new ArrayList<Keyword>(keywordMap.values());
-            // CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
-            /*
-            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
-            for (Keyword keyword : mainKeywords) {
-                if (keyword.hasCategory()) {
-                    EntityInfo ei = keyword.getTheCategoryEntityInfo(fhh);
-                    if (ei != null && !Utils.isEmpty(ei.getId())) {
-                        if (ei.getId().startsWith("http://purl.obolibrary.org/obo/RO_")) {
-                            continue;
-                        }
-                        String ontologyId = Utils.getOntologyID(ei.getId());
-                        getRelatedKeywords(ontologyId, keywordMap);
+           // List<Keyword> mainKeywords = new ArrayList<Keyword>(keywordMap.values());
 
-                        // addHierarchyKeywords(ontologyId, keyword.getTerm(), ei.getCategory(), keywordMap);
-                    }
-                }
-            }
-            */
 
             for (Keyword keyword : keywordMap.values()) {
                 // if (keyword.hasCategory() && keyword.hasAnyCategory(allowedCategorySet)) {

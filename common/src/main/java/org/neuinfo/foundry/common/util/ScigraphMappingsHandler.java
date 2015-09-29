@@ -1,10 +1,7 @@
 package org.neuinfo.foundry.common.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bozyurt on 9/8/15.
@@ -49,9 +46,9 @@ public class ScigraphMappingsHandler {
             if (line.startsWith("#")) {
                 continue;
             }
-            String[] toks = line.trim().split("\\s+,\\s+");
+            String[] toks = line.trim().split("\\s*,\\s*");
             if (toks.length == 2) {
-                label2PreferredLabelMap.put(toks[0], toks[1]);
+                label2PreferredLabelMap.put(toks[0].trim(), toks[1].trim());
             }
         }
     }
@@ -61,6 +58,11 @@ public class ScigraphMappingsHandler {
     }
 
     public List<FacetNode> findFacetHierarchy(String thirdLevelCurrie) {
+        /*
+        if (thirdLevelCurrie.equals("CHEBI_24431")) {
+            return Arrays.asList(new FacetNode("Chemical Entity","http://purl.obolibrary.org/obo/CHEBI_24431"));
+        }
+        */
         return mappings.get(thirdLevelCurrie);
     }
 
