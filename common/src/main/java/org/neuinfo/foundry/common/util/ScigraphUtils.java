@@ -141,8 +141,10 @@ public class ScigraphUtils {
 
     public static String toCinergiCategory(List<FacetNode> fnList) {
         StringBuilder sb = new StringBuilder(60);
-        sb.append(getPreferredLabel(fnList.get(0).getLabel())).append(" > ")
-                .append(getPreferredLabel(fnList.get(1).getLabel()));
+        sb.append(getPreferredLabel(fnList.get(0).getLabel()));
+        if (fnList.size() >= 2) {
+            sb.append(" > ").append(getPreferredLabel(fnList.get(1).getLabel()));
+        }
         return sb.toString().trim();
     }
 
