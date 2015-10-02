@@ -163,7 +163,7 @@ public class ScigraphUtils {
                     facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
                     if (facetHierarchy != null) {
                         for(Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext();) {
-                            facetHierarchySB.append(iter.next().getLabel());
+                            facetHierarchySB.append(getPreferredLabel(iter.next().getLabel()));
                             if (iter.hasNext()) {
                                 facetHierarchySB.append(" > ");
                             }

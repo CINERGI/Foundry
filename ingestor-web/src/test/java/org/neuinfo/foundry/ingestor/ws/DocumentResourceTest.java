@@ -51,6 +51,7 @@ public class DocumentResourceTest {
         String docId = "4f4e4ae1e4b07f02db6887ce";
         docId = "CORDC";
         docId = "4f4e48b4e4b07f02db532964";
+        docId = "4f4e4a51e4b07f02db62a174";
         Response response = target.path("cinergi/docs/keyword/hierarchies/").queryParam("id", docId)
                 .request(MediaType.APPLICATION_JSON_TYPE).get();
         System.out.println(response.getStatus());

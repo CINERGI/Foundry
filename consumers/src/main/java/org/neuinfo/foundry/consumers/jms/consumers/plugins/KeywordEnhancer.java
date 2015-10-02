@@ -146,6 +146,8 @@ public class KeywordEnhancer implements IPlugin {
                 Map<String, List<KeywordInfo>> category2KWIListMap = EnhancerUtils.getKeywordsToBeAdded(jsArr, json);
                 jsArr = EnhancerUtils.filter(jsArr, category2KWIListMap, keywordMap);
                 jsArr = EnhancerUtils.filterCategories(jsArr, excludeCategorySet);
+                // do final mapping of keywords to Cinergi preferred labels
+                EnhancerUtils.useCinergiPreferredLabels(jsArr);
                 data.put("keywords", JSONUtils.encode(jsArr));
 
                 ProvData provData = new ProvData(primaryKey, ProvenanceHelper.ModificationType.Added);

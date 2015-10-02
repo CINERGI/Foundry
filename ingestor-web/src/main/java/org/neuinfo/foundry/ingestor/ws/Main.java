@@ -4,6 +4,8 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler;
+import org.neuinfo.foundry.common.util.ScigraphUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -30,6 +32,8 @@ public class Main {
         IngestorWSApp app = new IngestorWSApp();
 
         mongoService = MongoService.getInstance();
+        ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
+        ScigraphUtils.setHandler(smHandler);
         // create and start a new instance of grizzly http server
         // exposing the Jersey application at BASE_URI
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), app);

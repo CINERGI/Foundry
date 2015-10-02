@@ -1,5 +1,8 @@
 package org.neuinfo.foundry.ingestor.ws;
 
+import org.neuinfo.foundry.common.util.ScigraphMappingsHandler;
+import org.neuinfo.foundry.common.util.ScigraphUtils;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
@@ -12,6 +15,8 @@ public class IngestorWSServletContextListener implements ServletContextListener 
         try {
             System.out.println("starting mongoService");
             MongoService.getInstance();
+            ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
+            ScigraphUtils.setHandler(smHandler);
         } catch (Exception x) {
             x.printStackTrace();
         }

@@ -116,7 +116,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
             Map<String, String> optionMap = new HashMap<String, String>();
             optionMap.put("stopwordsUrl", "file:///var/data/cinergi/stopwords.txt");
             plugin.initialize(optionMap);
-            ((KeywordEnhancer) plugin).setUseNER(true);
+            ((KeywordEnhancer) plugin).setUseNER(false);
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();

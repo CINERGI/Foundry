@@ -11,6 +11,7 @@ import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper.ProvData;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -108,6 +109,25 @@ public class EnhancerUtils {
             }
         }
         return filtered;
+    }
+
+    public static void useCinergiPreferredLabels(JSONArray keywordsArr) {
+        ScigraphMappingsHandler handler = null;
+        try {
+            handler = ScigraphMappingsHandler.getInstance();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (handler != null) {
+            for (int i = 0; i < keywordsArr.length(); i++) {
+                JSONObject kwJson = keywordsArr.getJSONObject(i);
+                String term = kwJson.getString("term");
+                String newLabel = handler.getPreferredLabel(term);
+                if (newLabel != null && !newLabel.equals(term)) {
+                    kwJson.put("term", newLabel);
+                }
+            }
+        }
     }
 
     public static JSONArray filterCategories(JSONArray keywordsArr, Set<String> excludeCategorySet) {

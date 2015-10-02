@@ -112,7 +112,7 @@ public class DocumentResource {
             response = String.class)
     public Response getKeywordHierarchies(
             @ApiParam(value = "The document ID for the metadata document", required = true) @QueryParam("id") String docId) {
-        String jsonStr = null;
+        String jsonStr;
         try {
             final MongoService mongoService = MongoService.getInstance();
             System.out.println("docId:" + docId);
@@ -127,12 +127,12 @@ public class DocumentResource {
             BasicDBList keywords = (BasicDBList) data.get("keywords");
             JSONArray keywordsArr = new JSONArray();
             result.put("keywords", keywordsArr);
-            //IHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
             IHierarchyHandler chh = FacetHierarchyHandler.getInstance();
             if (keywords != null && !keywords.isEmpty()) {
                 for (Object o : keywords) {
                     JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);
-                    JSONObject kwhJson = prepHierarchyForKeyword(keywordJson, handler, chh);
+                    //JSONObject kwhJson = prepHierarchyForKeyword(keywordJson, handler, chh);
+                    JSONObject kwhJson = prepHierarchyForKeyword2(keywordJson);
                     if (kwhJson.has("hierarchy")) {
                         keywordsArr.put(kwhJson);
                     }
@@ -225,6 +225,27 @@ public class DocumentResource {
         return jsonList;
     }
 
+
+    JSONObject prepHierarchyForKeyword2(JSONObject keywordJson) {
+        JSONObject json = new JSONObject();
+        Keyword keyword = Keyword.fromJSON(keywordJson);
+        for (EntityInfo ei : keyword.getEntityInfos()) {
+            if (!Utils.isEmpty(ei.getId())) {
+
+                try {
+                    List<String> facetHierarchies = ScigraphUtils.getKeywordFacetHierarchies4WS(ei.getId());
+                    if (!facetHierarchies.isEmpty()) {
+                        json.put("keyword", keyword.getTerm());
+                        json.put("hierarchy", facetHierarchies.get(0));
+                        return json;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return json;
+    }
 
     JSONObject prepHierarchyForKeyword(JSONObject keywordJson, KeywordHierarchyHandler handler,
                                        IHierarchyHandler chh) {
