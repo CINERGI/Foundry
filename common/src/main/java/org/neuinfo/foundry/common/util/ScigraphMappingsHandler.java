@@ -66,6 +66,66 @@ public class ScigraphMappingsHandler {
         return mappings.get(thirdLevelCurrie);
     }
 
+    public List<String> getSortedCinergiFacets() {
+        Set<FacetNodes> facetNodesSet = new HashSet<FacetNodes>();
+        for (List<FacetNode> fnList : this.mappings.values()) {
+            FacetNodes fn = new FacetNodes(fnList.subList(0,2));
+            if (!facetNodesSet.contains(fn)) {
+                facetNodesSet.add(fn);
+            }
+        }
+        List<String> cinergiFacetStrings = new ArrayList<String>(facetNodesSet.size());
+        for (FacetNodes facetNodes : facetNodesSet) {
+            List<FacetNode> fnList = facetNodes.getFnList();
+            StringBuilder sb = new StringBuilder(80);
+            for (Iterator<FacetNode> iter = fnList.iterator(); iter.hasNext(); ) {
+                String label = iter.next().getLabel();
+                label = getPreferredLabel(label) != null ? getPreferredLabel(label) : label;
+                sb.append(label);
+                if (iter.hasNext()) {
+                    sb.append(" > ");
+                }
+            }
+            cinergiFacetStrings.add(sb.toString());
+        }
+        Collections.sort(cinergiFacetStrings);
+        return cinergiFacetStrings;
+    }
+
+    static class FacetNodes {
+        final List<FacetNode> fnList;
+
+        public FacetNodes(List<FacetNode> fnList) {
+            this.fnList = fnList;
+        }
+
+        public List<FacetNode> getFnList() {
+            return fnList;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            FacetNodes that = (FacetNodes) o;
+            if (fnList.size() != that.fnList.size()) {
+                return false;
+            }
+            for (int i = 0; i < fnList.size(); i++) {
+                if (!fnList.get(i).equals(that.fnList.get(i))) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return fnList != null ? fnList.hashCode() : 0;
+        }
+    }
+
     public static class FacetNode {
         final String label;
         final String id;
@@ -91,12 +151,36 @@ public class ScigraphMappingsHandler {
             sb.append('}');
             return sb.toString();
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            FacetNode facetNode = (FacetNode) o;
+
+            if (!label.equals(facetNode.label)) return false;
+            return id.equals(facetNode.id);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = label.hashCode();
+            result = 31 * result + id.hashCode();
+            return result;
+        }
     }
 
     public static void main(String[] args) throws IOException {
         ScigraphMappingsHandler handler = ScigraphMappingsHandler.getInstance();
         List<FacetNode> facetHierarchy = handler.findFacetHierarchy("b98f3a77-397d-41d7-9507-e7a3e47210b1");
         System.out.println(facetHierarchy);
+
+        List<String> sortedCinergiFacets = handler.getSortedCinergiFacets();
+        for (String s : sortedCinergiFacets) {
+            System.out.println("\t" + s);
+        }
 
     }
 }

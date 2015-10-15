@@ -288,7 +288,7 @@ public class ScigraphUtils {
         if (startEdgeSet.size() > 1) {
             System.out.println();
         }
-        Assertion.assertNotNull(startEdge);
+        // Assertion.assertNotNull(startEdge);
         for (KWEdge se : startEdgeSet) {
             OntologyPath op = prepPath(se, nodeMap, edgeMap);
             if (!op.path.isEmpty()) {

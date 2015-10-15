@@ -48,7 +48,10 @@ public class ISOXMLGenerator {
         }
         if (spatial != null) {
             JSONObject spatialJson = JSONUtils.toJSON((BasicDBObject) spatial, false);
-            docEl = addSpatialExtent(docEl, spatialJson);
+            Object bbObj = spatialJson.get("bounding_boxes");
+            if ((bbObj instanceof JSONArray)) {
+                docEl = addSpatialExtent(docEl, spatialJson);
+            }
         }
 
 
@@ -132,6 +135,7 @@ public class ISOXMLGenerator {
     }
 
     Element addSpatialExtent(Element docEl, JSONObject spatial) throws Exception {
+
         JSONArray boundingBoxes = spatial.getJSONArray("bounding_boxes");
         boolean hasBB = boundingBoxes.length() > 0;
         boolean hasBBFromPlaces = false;

@@ -49,15 +49,15 @@ public class KeywordEnhancerPluginTests extends TestCase {
     public void testAddKeyword() throws Exception {
         Element docEl = Utils.loadXML("/tmp/00C9D45F-F6DF-4B80-B24B-B10883A282CB.xml");
         List<CinergiXMLUtils.KeywordInfo> kwiList = new ArrayList<CinergiXMLUtils.KeywordInfo>(10);
-        CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("","geyser",
+        CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("", "geyser",
                 "theme", null);
         kwiList.add(kwi);
-        kwi = new CinergiXMLUtils.KeywordInfo("","Laser", "instrument", null);
+        kwi = new CinergiXMLUtils.KeywordInfo("", "Laser", "instrument", null);
         kwiList.add(kwi);
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         category2KWIListMap.put("instrument", kwiList);
         FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
-        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap,fhh);
+        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
         File enhancedXmlFile = new File("/tmp/kwd_test.xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
         System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
@@ -102,15 +102,23 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
         thePrimaryKey = "4f4e4a51e4b07f02db62a174";
-        Helper helper = new Helper("");
         boolean filter = false;
+        // runKeywordEnhancer("cinergi-0001", thePrimaryKey, filter, new File("/tmp/kw2"));
+        //runKeywordEnhancer("cinergi-0011", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Sonar_Water_Column"));
+        //runKeywordEnhancer("cinergi-0012", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Collection"));
+        runKeywordEnhancer("cinergi-0007", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC"));
+
+    }
+
+    void runKeywordEnhancer(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {
+        Helper helper = new Helper("");
         try {
             ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
             ScigraphUtils.setHandler(smHandler);
 
             helper.startup("cinergi-consumers-cfg.xml");
 
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
             IPlugin plugin = new KeywordEnhancer();
 
             Map<String, String> optionMap = new HashMap<String, String>();
@@ -133,10 +141,13 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             Element docEl = generator.generate(docWrapper);
                             File enhancedXmlFile;
                             if (filter) {
-                               enhancedXmlFile = new File("/tmp/kwd_test.xml");
+                                enhancedXmlFile = new File("/tmp/kwd_test.xml");
                             } else {
-                                new File("/tmp/kw2").mkdir();
-                                enhancedXmlFile = new File("/tmp/kw2/" + primaryKey + "_test.xml");
+                                if (!outDir.isDirectory()) {
+                                    outDir.mkdir();
+                                }
+                                String filename = primaryKey.replaceAll("/","_");
+                                enhancedXmlFile = new File(outDir, filename + "_test.xml");
                             }
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
                             System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
