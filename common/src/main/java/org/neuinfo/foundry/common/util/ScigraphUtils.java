@@ -168,7 +168,7 @@ public class ScigraphUtils {
                                 facetHierarchySB.append(" > ");
                             }
                         }
-                        facetHierarchySB.append(" > ").append(node.label);
+                        // facetHierarchySB.append(" > ").append(node.label);
                         for(int k = i+1; k < len; k++) {
                             String label = thirdLevelCandidateNodes.get(k).label;
                             if (!Utils.isEmpty(label)) {
