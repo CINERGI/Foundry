@@ -25,6 +25,9 @@ public class ScigraphUtils {
     static String annotationServiceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
     private final static Logger logger = Logger.getLogger(ScigraphUtils.class);
     private static ScigraphMappingsHandler handler;
+    static Map<String, List<List<FacetNode>>> idFacetNodeListCache =
+            Collections.synchronizedMap(new LRUCache<String, List<List<FacetNode>>>(1000));
+    static Map<String, List<String>> idWSFacetsCache = Collections.synchronizedMap(new LRUCache<String, List<String>>(1000));
 
     public synchronized static void setHandler(ScigraphMappingsHandler handler) {
         ScigraphUtils.handler = handler;
@@ -126,7 +129,14 @@ public class ScigraphUtils {
 
     public static List<List<FacetNode>> getKeywordFacetHierarchy(String id) throws Exception {
         System.out.println("id:" + id);
-        List<List<FacetNode>> fnListList = new LinkedList<List<FacetNode>>();
+
+
+        List<List<FacetNode>> fnListList = idFacetNodeListCache.get(id);
+        if (fnListList != null) {
+            return fnListList;
+        }
+
+        fnListList = new LinkedList<List<FacetNode>>();
         List<OntologyPath> keywordHierarchies = getKeywordHierarchy(id, "subClassOf");
         if (keywordHierarchies != null) {
             for (OntologyPath op : keywordHierarchies) {
@@ -144,12 +154,18 @@ public class ScigraphUtils {
                 }
             }
         }
+        idFacetNodeListCache.put(id, fnListList);
         return fnListList;
     }
 
     public static List<String> getKeywordFacetHierarchies4WS(String id) throws Exception {
         System.out.println("id:" + id);
-        List<String> fhList = new LinkedList<String>();
+        List<String> fhList = idWSFacetsCache.get(id);
+        if (fhList != null) {
+            return fhList;
+        }
+
+        fhList = new LinkedList<String>();
 
         List<OntologyPath> keywordHierarchies = getKeywordHierarchy(id, "subClassOf");
         if (keywordHierarchies != null) {
@@ -162,20 +178,20 @@ public class ScigraphUtils {
                     KWNode node = thirdLevelCandidateNodes.get(i);
                     facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
                     if (facetHierarchy != null) {
-                        for(Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext();) {
+                        for (Iterator<FacetNode> iter = facetHierarchy.iterator(); iter.hasNext(); ) {
                             facetHierarchySB.append(getPreferredLabel(iter.next().getLabel()));
                             if (iter.hasNext()) {
                                 facetHierarchySB.append(" > ");
                             }
                         }
                         // facetHierarchySB.append(" > ").append(node.label);
-                        for(int k = i+1; k < len; k++) {
+                        for (int k = i + 1; k < len; k++) {
                             String label = thirdLevelCandidateNodes.get(k).label;
                             if (!Utils.isEmpty(label)) {
                                 facetHierarchySB.append(" > ").append(label);
                             }
                         }
-                        fhList.add( facetHierarchySB.toString().trim());
+                        fhList.add(facetHierarchySB.toString().trim());
                         break;
                     }
                 }
@@ -184,6 +200,7 @@ public class ScigraphUtils {
                 }
             }
         }
+        idWSFacetsCache.put(id, fhList);
         return fhList;
     }
 
