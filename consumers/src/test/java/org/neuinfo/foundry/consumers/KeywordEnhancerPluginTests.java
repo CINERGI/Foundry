@@ -107,7 +107,12 @@ public class KeywordEnhancerPluginTests extends TestCase {
         //runKeywordEnhancer("cinergi-0011", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Sonar_Water_Column"));
         //runKeywordEnhancer("cinergi-0012", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Collection"));
         runKeywordEnhancer("cinergi-0007", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC"));
+    }
 
+    public void testBadKeywords() throws Exception {
+        String thePrimaryKey = "SEN:0112";
+        boolean filter = true;
+        runKeywordEnhancer("cinergi-0015", thePrimaryKey, filter, new File("/tmp/SEN"));
     }
 
     void runKeywordEnhancer(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {
@@ -146,7 +151,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
                                 if (!outDir.isDirectory()) {
                                     outDir.mkdir();
                                 }
-                                String filename = primaryKey.replaceAll("/","_");
+                                String filename = primaryKey.replaceAll("/", "_");
                                 enhancedXmlFile = new File(outDir, filename + "_test.xml");
                             }
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());

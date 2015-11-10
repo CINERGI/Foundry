@@ -12,6 +12,7 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Created by bozyurt on 4/4/14.
@@ -287,5 +288,32 @@ public class Utils {
         return id;
     }
 
-
+public static String formatText(String str, int maxLineLen) {
+		if (str.length() <= maxLineLen) {
+			return str;
+		}
+		StringBuilder buf = new StringBuilder(str.length() + 10);
+		StringTokenizer stok = new StringTokenizer(str);
+		int count = 0;
+		boolean first = true;
+		while (stok.hasMoreTokens()) {
+			String tok = stok.nextToken();
+			int tokLen = tok.length();
+			if (count + tokLen + 1 > maxLineLen) {
+				buf.append("\n");
+				buf.append(tok);
+				count = tokLen;
+			} else {
+				if (first) {
+					buf.append(tok);
+					first = false;
+					count += tokLen;
+				} else {
+					buf.append(' ').append(tok);
+					count += tokLen + 1;
+				}
+			}
+		}
+		return buf.toString();
+	}
 }
