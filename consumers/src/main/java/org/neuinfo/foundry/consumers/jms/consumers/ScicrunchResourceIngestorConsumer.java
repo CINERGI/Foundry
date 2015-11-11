@@ -23,7 +23,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import java.util.*;
 
-import static org.mockito.Mockito.*;
+//import static org.mockito.Mockito.*;
 
 /**
  * Created by bozyurt on 4/21/15.
@@ -48,6 +48,7 @@ public class ScicrunchResourceIngestorConsumer extends JMSConsumerSupport implem
     public void handle() throws Exception {
         boolean testMode = getParam("testMode") != null;
         if (testMode) {
+            /*
             Map<String, String> map = new HashMap<String, String>(17);
             map.put("Resource Name", "Cinergi 1");
             map.put("Description", "This is a dummy description with LIDAR, sediments, lakes and calderas.");
@@ -60,6 +61,7 @@ public class ScicrunchResourceIngestorConsumer extends JMSConsumerSupport implem
             doNothing().when(mockSR).startup();
             doNothing().when(mockSR).shutdown();
             this.setScicrunchResourceReader(mockSR);
+            */
         }
 
 
