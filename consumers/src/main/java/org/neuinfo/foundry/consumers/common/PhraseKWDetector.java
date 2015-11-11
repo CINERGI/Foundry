@@ -31,11 +31,13 @@ public class PhraseKWDetector {
     ChunkerME chunker;
     POSTaggerME posTagger;
     TokenizerME tokenizer;
+    Inflector inflector = new Inflector();
     private static Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private static Namespace gco = Namespace.getNamespace("gco", "http://www.isotc211.org/2005/gco");
 
 
     public void handle(File rootDir) throws Exception {
+        Map<String, NPWrapper> npMap = new HashMap<String, NPWrapper>();
         File[] files = rootDir.listFiles();
         for (File f : files) {
             if (f.isFile() && f.getName().endsWith(".xml")) {
@@ -44,7 +46,7 @@ public class PhraseKWDetector {
                     if (isoText.abstractText != null && isoText.abstractText.indexOf("heat flux") != -1) {
                         System.out.println(org.neuinfo.foundry.common.util.Utils.formatText(isoText.abstractText, 100));
                         System.out.println("======================");
-                        extractNPs(isoText.abstractText);
+                        extractNPs(isoText.abstractText, npMap);
                         /*
                         String abs = isoText.abstractText;
                         Map<String, Keyword> keywordMap = new HashMap<String, Keyword>();
@@ -55,6 +57,18 @@ public class PhraseKWDetector {
                     }
                 }
             }
+        }
+
+        List<NPWrapper> npwList = new ArrayList<NPWrapper>(npMap.values());
+        Collections.sort(npwList, new Comparator<NPWrapper>() {
+            @Override
+            public int compare(NPWrapper o1, NPWrapper o2) {
+                return o2.count - o1.count;
+            }
+        });
+        System.out.println("=======================================");
+        for (NPWrapper npw : npwList) {
+            System.out.println(npw);
         }
     }
 
@@ -93,7 +107,7 @@ public class PhraseKWDetector {
         }
     }
 
-    public void extractNPs(String text) {
+    public void extractNPs(String text, Map<String, NPWrapper> npMap) {
         String[] sentences = this.sentenceDetector.sentDetect(text);
         int idx = 1;
         for (String sentence : sentences) {
@@ -115,9 +129,21 @@ public class PhraseKWDetector {
             List<NP> npList = findNPsInSentence(tokens, pos, tags);
             if (!npList.isEmpty()) {
                 System.out.println(npList);
+                for (NP np : npList) {
+                    String phrase = np.getPhrase();
+                    String key = inflector.toSingular(phrase).toLowerCase();
+                    NPWrapper npw = npMap.get(key);
+                    if (npw == null) {
+                        npw = new NPWrapper(np);
+                        npMap.put(key, npw);
+                    }
+                    npw.incr();
+                }
+
             }
             idx++;
         }
+
 
     }
 
@@ -135,7 +161,7 @@ public class PhraseKWDetector {
                 }
             } else if (tags[i].equals("I-NP")) {
                 if (isEligible(pos[i])) {
-                    np.addTok(new Token(tokens[i],i, pos[i]));
+                    np.addTok(new Token(tokens[i], i, pos[i]));
                 }
             }
         }
@@ -192,6 +218,28 @@ public class PhraseKWDetector {
             }
         }
         return new ISOText(abstractText, title);
+    }
+
+    public static class NPWrapper {
+        final NP np;
+        int count = 0;
+
+        public NPWrapper(NP np) {
+            this.np = np;
+        }
+
+        public void incr() {
+            count++;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder("NPWrapper::{");
+            sb.append("np=").append(np.getPhrase());
+            sb.append(", count=").append(count);
+            sb.append('}');
+            return sb.toString();
+        }
     }
 
     public static class NP {
