@@ -39,7 +39,13 @@ public class ScigraphUtils {
         return sb.toString();
     }
 
-    public static void annotateEntities(String contentLocation, String text, Map<String, Keyword> keywordMap) throws Exception {
+    public static void annotateEntities(String contentLocation, String text,
+                                        Map<String, Keyword> keywordMap) throws Exception {
+        annotateEntities(contentLocation, text, keywordMap, true);
+    }
+
+    public static void annotateEntities(String contentLocation, String text,
+                                        Map<String, Keyword> keywordMap, boolean verbose) throws Exception {
         HttpClient client = new DefaultHttpClient();
         URIBuilder builder = new URIBuilder(annotationServiceURL);
         builder.setParameter("content", text);
@@ -61,8 +67,10 @@ public class ScigraphUtils {
                 String jsonStr = EntityUtils.toString(entity);
                 try {
                     JSONArray jsArr = new JSONArray(jsonStr);
-                    System.out.println(jsArr.toString(2));
-                    System.out.println("================");
+                    if (verbose) {
+                        System.out.println(jsArr.toString(2));
+                        System.out.println("================");
+                    }
                     String textLC = text.toLowerCase();
                     for (int i = 0; i < jsArr.length(); i++) {
                         final JSONObject json = jsArr.getJSONObject(i);

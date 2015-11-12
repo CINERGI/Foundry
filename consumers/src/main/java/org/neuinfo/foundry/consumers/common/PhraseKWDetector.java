@@ -47,6 +47,10 @@ public class PhraseKWDetector {
                         System.out.println(org.neuinfo.foundry.common.util.Utils.formatText(isoText.abstractText, 100));
                         System.out.println("======================");
                         extractNPs(isoText.abstractText, npMap);
+                        Map<String, List<String>> keyword2OntologyIdsMap = prepKeyword2OntologyIdsMap(isoText);
+                        List<NPWrapper> npwList1 = new ArrayList<NPWrapper>(npMap.values());
+                        associateWithOntologyIds(npwList1, keyword2OntologyIdsMap);
+
                         /*
                         String abs = isoText.abstractText;
                         Map<String, Keyword> keywordMap = new HashMap<String, Keyword>();
@@ -69,6 +73,56 @@ public class PhraseKWDetector {
         System.out.println("=======================================");
         for (NPWrapper npw : npwList) {
             System.out.println(npw);
+        }
+    }
+
+    Map<String, List<String>> prepKeyword2OntologyIdsMap(ISOText isoText) throws Exception {
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        StringBuilder sb = new StringBuilder(1024);
+        if (isoText.title != null) {
+            sb.append(isoText.title).append(" \n");
+        }
+        if (isoText.abstractText != null) {
+            sb.append(isoText.abstractText);
+        }
+        String text = sb.toString();
+        Map<String, Keyword> keywordMap = new HashMap<String, Keyword>();
+        ScigraphUtils.annotateEntities(null, text, keywordMap, false);
+        for (Keyword kw : keywordMap.values()) {
+            List<String> ontologyIds = new ArrayList<String>(kw.getIds());
+            String term = kw.getTerm().toLowerCase();
+            if (term.indexOf(' ') != -1) {
+                String[] toks = term.split("\\s+");
+                for (String tok : toks) {
+                    if (!map.containsKey(tok)) {
+                        map.put(tok, ontologyIds);
+                    }
+                }
+            }
+            map.put(term, ontologyIds);
+        }
+        return map;
+    }
+
+    void associateWithOntologyIds(List<NPWrapper> npwList, Map<String, List<String>> kw2OntoloyIdsMap) {
+        for(NPWrapper npw : npwList) {
+            String phrase = npw.np.getPhrase().toLowerCase();
+            if (kw2OntoloyIdsMap.containsKey(phrase)) {
+                List<String> ontologyIds = kw2OntoloyIdsMap.get(phrase);
+                for(String ontId : ontologyIds) {
+                    npw.np.addOntologyId(ontId);
+                }
+            } else  {
+                for(Token tok : npw.np.toks) {
+                    String key = tok.token.toLowerCase();
+                    if (kw2OntoloyIdsMap.containsKey(key)) {
+                        List<String> ontologyIds = kw2OntoloyIdsMap.get(key);
+                        for(String ontId : ontologyIds) {
+                            tok.addOntologyId(ontId);
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -139,12 +193,9 @@ public class PhraseKWDetector {
                     }
                     npw.incr();
                 }
-
             }
             idx++;
         }
-
-
     }
 
     List<NP> findNPsInSentence(String[] tokens, String[] pos, String[] tags) {
@@ -236,6 +287,9 @@ public class PhraseKWDetector {
         public String toString() {
             StringBuilder sb = new StringBuilder("NPWrapper::{");
             sb.append("np=").append(np.getPhrase());
+            if (np.hasOntologyId()) {
+                sb.append(" * ");
+            }
             sb.append(", count=").append(count);
             sb.append('}');
             return sb.toString();
@@ -245,6 +299,7 @@ public class PhraseKWDetector {
     public static class NP {
         List<Token> toks = new LinkedList<Token>();
         String phrase;
+        List<String> ontologyIds = new LinkedList<String>();
 
         public void addTok(Token tok) {
             toks.add(tok);
@@ -265,6 +320,24 @@ public class PhraseKWDetector {
             return phrase;
         }
 
+        public void addOntologyId(String ontologyId) {
+            if (!ontologyIds.contains(ontologyId)) {
+                ontologyIds.add(ontologyId);
+            }
+        }
+
+        public boolean hasOntologyId() {
+            if (!ontologyIds.isEmpty()) {
+                return true;
+            }
+            for (Token tok : toks) {
+                if (tok.hasOntologyId()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder("NP::{");
@@ -278,12 +351,22 @@ public class PhraseKWDetector {
         String token;
         int locIdx;
         String posTag;
-        String ontologyId;
+        List<String> ontologyIds = new LinkedList<String>();
 
         public Token(String token, int locIdx, String posTag) {
             this.token = token;
             this.locIdx = locIdx;
             this.posTag = posTag;
+        }
+
+        public void addOntologyId(String ontologyId) {
+            if (!ontologyIds.contains(ontologyId)) {
+                ontologyIds.add(ontologyId);
+            }
+        }
+
+        public boolean hasOntologyId() {
+            return !ontologyIds.isEmpty();
         }
     }
 
@@ -299,9 +382,8 @@ public class PhraseKWDetector {
         @Override
         public String toString() {
             final StringBuilder sb = new StringBuilder("ISOText::{");
-            sb.append("abstractText='").append(abstractText).append('\'');
-            sb.append(", title='").append(title).append('\'');
-            sb.append('}');
+            sb.append("abstractText='").append(abstractText);
+            sb.append("', title='").append(title).append("'}");
             return sb.toString();
         }
     }
