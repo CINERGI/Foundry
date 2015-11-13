@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.consumers.common;
 
+import bnlpkit.nlp.common.CharSetEncoding;
 import bnlpkit.util.FileUtils;
 import bnlpkit.util.GenUtils;
 import opennlp.tools.chunker.ChunkerME;
@@ -18,9 +19,13 @@ import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.neuinfo.foundry.common.model.Keyword;
-import org.neuinfo.foundry.common.util.*;
+import org.neuinfo.foundry.common.util.Inflector;
+import org.neuinfo.foundry.common.util.ScigraphUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -35,31 +40,42 @@ public class PhraseKWDetector {
     private static Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private static Namespace gco = Namespace.getNamespace("gco", "http://www.isotc211.org/2005/gco");
 
-
-    public void handle(File rootDir) throws Exception {
-        Map<String, NPWrapper> npMap = new HashMap<String, NPWrapper>();
-        File[] files = rootDir.listFiles();
-        for (File f : files) {
-            if (f.isFile() && f.getName().endsWith(".xml")) {
-                ISOText isoText = extractText(f);
-                if (isoText.abstractText != null || isoText.title != null) {
-                    if (isoText.abstractText != null && isoText.abstractText.indexOf("heat flux") != -1) {
-                        System.out.println(org.neuinfo.foundry.common.util.Utils.formatText(isoText.abstractText, 100));
-                        System.out.println("======================");
-                        extractNPs(isoText.abstractText, npMap);
-                        Map<String, List<String>> keyword2OntologyIdsMap = prepKeyword2OntologyIdsMap(isoText);
-                        List<NPWrapper> npwList1 = new ArrayList<NPWrapper>(npMap.values());
-                        associateWithOntologyIds(npwList1, keyword2OntologyIdsMap);
-
-                        /*
-                        String abs = isoText.abstractText;
-                        Map<String, Keyword> keywordMap = new HashMap<String, Keyword>();
-                        ScigraphUtils.annotateEntities(null, abs, keywordMap);
-                        for (Keyword kw : keywordMap.values()) {
-                            System.out.println(kw);
-                        } */
-                    }
+    public List<File> getXMLFiles(List<String> paths) {
+        List<File> xmlFiles = new LinkedList<File>();
+        for (String pathStr : paths) {
+            File dir = new File(pathStr);
+            if (!dir.isDirectory()) {
+                continue;
+            }
+            File[] files = dir.listFiles();
+            for (File f : files) {
+                if (f.isFile() && f.getName().endsWith(".xml")) {
+                    xmlFiles.add(f);
                 }
+            }
+        }
+        return xmlFiles;
+    }
+
+    public void handle(List<File> xmlFiles) throws Exception {
+        Map<String, NPWrapper> npMap = new HashMap<String, NPWrapper>();
+        int count = 0;
+        for (File xmlFile : xmlFiles) {
+            ISOText isoText = extractText(xmlFile);
+            if (isoText.abstractText != null || isoText.title != null) {
+                // if (isoText.abstractText != null && isoText.abstractText.indexOf("heat flux") != -1) {
+                if (isoText.abstractText != null) {
+                    System.out.println(org.neuinfo.foundry.common.util.Utils.formatText(isoText.abstractText, 100));
+                    System.out.println("======================");
+                    extractNPs(isoText.abstractText, npMap);
+                    Map<String, List<String>> keyword2OntologyIdsMap = prepKeyword2OntologyIdsMap(isoText);
+                    List<NPWrapper> npwList1 = new ArrayList<NPWrapper>(npMap.values());
+                    associateWithOntologyIds(npwList1, keyword2OntologyIdsMap);
+                }
+            }
+            ++count;
+            if ((count % 100) == 0) {
+                System.out.println("########## Handled so far:" + count + " #########################");
             }
         }
 
@@ -70,10 +86,44 @@ public class PhraseKWDetector {
                 return o2.count - o1.count;
             }
         });
-        System.out.println("=======================================");
+        System.out.println("*******************************");
+        StringBuilder sb = new StringBuilder(100000);
         for (NPWrapper npw : npwList) {
-            System.out.println(npw);
+            if (npw.np.hasOntologyId() && npw.count > 2) {
+                // System.out.println(npw);
+                String s = show(npw, true);
+                System.out.println(s);
+                sb.append(s).append('\n');
+            }
         }
+        String outFile = "/tmp/cinergi_phrases.csv";
+        FileUtils.saveText(sb.toString(), outFile, CharSetEncoding.UTF8);
+        System.out.println("saved file:" + outFile);
+    }
+
+    String show(NPWrapper npw, boolean withOntologyIds) {
+        StringBuilder sb = new StringBuilder(128);
+        NP np = npw.np;
+        sb.append(np.getPhrase()).append(", ").append(npw.count);
+        if (withOntologyIds) {
+            sb.append(", ");
+            if (!np.ontologyIds.isEmpty()) {
+                sb.append(GenUtils.join(np.ontologyIds, ";"));
+            } else {
+                boolean first = true;
+                for (Token tok : np.toks) {
+                    if (tok.hasOntologyId()) {
+                        if (!first) {
+                            sb.append('|');
+                        }
+                        sb.append(tok.token).append('=');
+                        sb.append(GenUtils.join(tok.ontologyIds, ";"));
+                        first = false;
+                    }
+                }
+            }
+        }
+        return sb.toString();
     }
 
     Map<String, List<String>> prepKeyword2OntologyIdsMap(ISOText isoText) throws Exception {
@@ -105,19 +155,19 @@ public class PhraseKWDetector {
     }
 
     void associateWithOntologyIds(List<NPWrapper> npwList, Map<String, List<String>> kw2OntoloyIdsMap) {
-        for(NPWrapper npw : npwList) {
+        for (NPWrapper npw : npwList) {
             String phrase = npw.np.getPhrase().toLowerCase();
             if (kw2OntoloyIdsMap.containsKey(phrase)) {
                 List<String> ontologyIds = kw2OntoloyIdsMap.get(phrase);
-                for(String ontId : ontologyIds) {
+                for (String ontId : ontologyIds) {
                     npw.np.addOntologyId(ontId);
                 }
-            } else  {
-                for(Token tok : npw.np.toks) {
+            } else {
+                for (Token tok : npw.np.toks) {
                     String key = tok.token.toLowerCase();
                     if (kw2OntoloyIdsMap.containsKey(key)) {
                         List<String> ontologyIds = kw2OntoloyIdsMap.get(key);
-                        for(String ontId : ontologyIds) {
+                        for (String ontId : ontologyIds) {
                             tok.addOntologyId(ontId);
                         }
                     }
@@ -255,7 +305,7 @@ public class PhraseKWDetector {
         List<Element> absEls = expr.evaluate(doc);
         if (!absEls.isEmpty()) {
             abstractText = absEls.get(0).getChildTextTrim("CharacterString", gco);
-            if (abstractText.equalsIgnoreCase("required field")) {
+            if (abstractText != null && abstractText.equalsIgnoreCase("required field")) {
                 abstractText = null;
             }
         }
@@ -264,7 +314,7 @@ public class PhraseKWDetector {
         List<Element> titleEls = expr.evaluate(doc);
         if (!titleEls.isEmpty()) {
             title = titleEls.get(0).getChildTextTrim("CharacterString", gco);
-            if (title.equalsIgnoreCase("required field")) {
+            if (title != null && title.equalsIgnoreCase("required field")) {
                 title = null;
             }
         }
@@ -391,7 +441,14 @@ public class PhraseKWDetector {
     public static void main(String[] args) throws Exception {
         PhraseKWDetector detector = new PhraseKWDetector();
         detector.initialize();
-        detector.handle(new File("/var/data/cinergi/waf/hydro10.sdsc.edu/metadata/ScienceBase_WAF_dump"));
+        String ROOT = "/var/data/cinergi/waf/hydro10.sdsc.edu/metadata/";
+        List<String> paths = Arrays.asList(ROOT + "ScienceBase_WAF_dump",
+                ROOT + "SEN", ROOT + "databib", ROOT + "ecogeo",
+                ROOT + "Geoscience_Australia", ROOT + "c4p", ROOT + "Data.gov_csw",
+                ROOT + "NOAA_data.noaa.gov_catalog", ROOT + "EPA_Environmental_Dataset_Gateway");
+        List<File> xmlFiles = detector.getXMLFiles(paths);
+        System.out.println("# of files:" + xmlFiles.size());
+        detector.handle(xmlFiles);
 
     }
 }
