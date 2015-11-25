@@ -10,7 +10,7 @@ import org.neuinfo.foundry.common.provenance.ProvenanceRec;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.consumers.common.ProvenanceClient;
-import org.neuinfo.foundry.consumers.common.Utils;
+import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 
 import java.text.ParseException;
 import java.util.*;
@@ -112,9 +112,9 @@ public class ProvenanceHelper {
             Assertion.assertNotNull(provState);
 
             ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
-            String startTime = Utils.getTimeInProvenanceFormat(provState.getLastProcessedDate());
+            String startTime = ConsumerUtils.getTimeInProvenanceFormat(provState.getLastProcessedDate());
             Date now = new Date();
-            String docCreationTime = Utils.getTimeInProvenanceFormat(now);
+            String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat(now);
             String label = provData.prepLabel();
             String howLabel = provData.prepLabelHow();
             String version = provState.getCurVersion();
@@ -128,7 +128,7 @@ public class ProvenanceHelper {
                     "label=" + label,
                     "version=" + nextVersion).getLastGeneratedId();
             String activityId = builder.activityWithAttr(activityName, docCreationTime,
-                    Utils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
+                    ConsumerUtils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
             ProvenanceRec provenanceRec = builder.used(activityId, inDocId)
                     .wasDerivedFrom(outDocId, inDocId, activityId)
                     .wasGeneratedBy(outDocId, activityId).build();
@@ -161,9 +161,9 @@ public class ProvenanceHelper {
     public static String saveIngestionProvenance(String activityName, ProvData provData, Date startTS, DocWrapper docWrapper) {
         try {
             ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
-            String startTime = Utils.getTimeInProvenanceFormat(startTS);
+            String startTime = ConsumerUtils.getTimeInProvenanceFormat(startTS);
             Date now = new Date();
-            String docCreationTime = Utils.getTimeInProvenanceFormat(now);
+            String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat(now);
             String startUUID = UUID.randomUUID().toString();
             String label = provData.prepLabel();
             String howLabel = provData.prepLabelHow();
@@ -178,7 +178,7 @@ public class ProvenanceHelper {
                     "label=" + label,
                     "version=" + nextVersion).getLastGeneratedId();
             String activityId = builder.activityWithAttr(activityName, docCreationTime,
-                    Utils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
+                    ConsumerUtils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
 
             ProvenanceRec provenanceRec = builder.used(activityId, inDocId)
                     .wasGeneratedBy(outDocId, activityId).build();

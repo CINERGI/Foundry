@@ -5,7 +5,7 @@ import com.mongodb.DBObject;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.consumers.common.Constants;
-import org.neuinfo.foundry.consumers.common.Utils;
+import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 
@@ -65,8 +65,8 @@ public class XML2CinergiPlugin implements IPlugin {
     JSONObject processHandler(JSONObject originalDoc, String objectId) throws Exception {
         List<String> cmdList = new ArrayList<String>(10);
         cmdList.add("xml-to-cinergi");
-        File inputFile = Utils.prepareInputFile("xml", originalDoc, objectId);
-        File outFile = Utils.prepareOutFile("json", objectId);
+        File inputFile = ConsumerUtils.prepareInputFile("xml", originalDoc, objectId);
+        File outFile = ConsumerUtils.prepareOutFile("json", objectId);
         cmdList.add("-i");
         cmdList.add(inputFile.getAbsolutePath());
         cmdList.add("-o");

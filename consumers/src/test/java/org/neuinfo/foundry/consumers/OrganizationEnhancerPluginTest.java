@@ -25,7 +25,7 @@ public class OrganizationEnhancerPluginTest extends TestCase {
         try {
             helper.startup("cinergi-consumers-cfg.xml");
 
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0002");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
 
             IPlugin orgEnhancer = new OrganizationEnhancer();
 
@@ -49,7 +49,7 @@ public class OrganizationEnhancerPluginTest extends TestCase {
 
                 }
                // break;
-                if (count > 5) {
+                if (count > 1000) {
                     break;
                 }
                 count++;

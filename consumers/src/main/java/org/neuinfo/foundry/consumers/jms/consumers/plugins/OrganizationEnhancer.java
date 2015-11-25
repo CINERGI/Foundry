@@ -3,13 +3,20 @@ package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
+import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.Namespace;
+import org.jdom2.filter.Filters;
+import org.jdom2.input.SAXBuilder;
+import org.jdom2.xpath.XPathExpression;
+import org.jdom2.xpath.XPathFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
 import org.neuinfo.foundry.common.model.Keyword;
+import org.neuinfo.foundry.consumers.common.OrgLookupHandler;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper.ProvData;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
@@ -25,6 +32,8 @@ import java.util.*;
 public class OrganizationEnhancer implements IPlugin {
     protected String workDir;
     protected String scriptPath;
+    private static Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
+    private static Namespace gco = Namespace.getNamespace("gco", "http://www.isotc211.org/2005/gco");
     private final static Logger logger = Logger.getLogger("OrganizationEnhancer");
 
     @Override
@@ -73,6 +82,7 @@ public class OrganizationEnhancer implements IPlugin {
             Map<String, String> env = pb.environment();
             env.put("PATH", env.get("PATH") + ":" + this.scriptPath);
             logger.info("scriptPath:" + scriptPath);
+            logger.info(cmdList);
 
             Process process = pb.start();
             BufferedReader ein = new BufferedReader(new InputStreamReader(process.getErrorStream()));
@@ -92,27 +102,32 @@ public class OrganizationEnhancer implements IPlugin {
 
             if (rc == 0) {
                 ProvData provData = new ProvData(primaryKey, ProvenanceHelper.ModificationType.Added);
+                KeywordData kd;
                 if (outFile.exists()) {
                     // load enhanced XML extract new organization keywords and add  to orgKeywords
-                    KeywordData kd = addOrganizations(outFile);
-                    inFile.delete();
-                    if (kd.jsArr.length() > 0) {
-                        DBObject data = (DBObject) docWrapper.get("Data");
-                        Map<String, List<KeywordInfo>> category2KWIListMap = EnhancerUtils.getKeywordsToBeAdded(kd.jsArr, json);
-                        kd.jsArr = EnhancerUtils.filter(kd.jsArr, category2KWIListMap, kd.keywordMap);
-                        data.put("orgKeywords", JSONUtils.encode(kd.jsArr));
-                        provData.setSourceName(sourceName).setSrcId(srcId);
-                        EnhancerUtils.prepKeywordsProv(category2KWIListMap, provData);
-                        ProvenanceHelper.saveEnhancerProvenance("organizationEnhancer", provData, docWrapper);
-                        outFile.delete();
-                        return new Result(docWrapper, Result.Status.OK_WITH_CHANGE);
-                    } else {
-                        outFile.delete();
-                        EnhancerUtils.prepKeywordsProv(null, provData);
-                        ProvenanceHelper.saveEnhancerProvenance("organizationEnhancer", provData, docWrapper);
-                        return new Result(docWrapper, Result.Status.OK_WITHOUT_CHANGE);
-                    }
+                    kd = addOrganizations(outFile);
                 } else {
+                    kd = new KeywordData();
+                    kd.jsArr = new JSONArray();
+                    kd.keywordMap = new HashMap<String, Keyword>(17);
+                }
+                // try lookup also
+                extractOrganizations(inFile, kd);
+                inFile.delete();
+                if (kd.jsArr.length() > 0) {
+                    DBObject data = (DBObject) docWrapper.get("Data");
+                    Map<String, List<KeywordInfo>> category2KWIListMap = EnhancerUtils.getKeywordsToBeAdded(kd.jsArr, json);
+                    kd.jsArr = EnhancerUtils.filter(kd.jsArr, category2KWIListMap, kd.keywordMap);
+                    data.put("orgKeywords", JSONUtils.encode(kd.jsArr));
+                    provData.setSourceName(sourceName).setSrcId(srcId);
+                    EnhancerUtils.prepKeywordsProv(category2KWIListMap, provData);
+                    ProvenanceHelper.saveEnhancerProvenance("organizationEnhancer", provData, docWrapper);
+                    outFile.delete();
+                    return new Result(docWrapper, Result.Status.OK_WITH_CHANGE);
+                } else {
+                    if (outFile.exists()) {
+                        outFile.delete();
+                    }
                     EnhancerUtils.prepKeywordsProv(null, provData);
                     ProvenanceHelper.saveEnhancerProvenance("organizationEnhancer", provData, docWrapper);
                     return new Result(docWrapper, Result.Status.OK_WITHOUT_CHANGE);
@@ -134,6 +149,59 @@ public class OrganizationEnhancer implements IPlugin {
         }
     }
 
+    public void extractOrganizations(File isoXmlFile, KeywordData kwData) throws Exception {
+        int origKWCount = kwData.keywordMap.size();
+        OrgLookupHandler handler = new OrgLookupHandler();
+        SAXBuilder builder = new SAXBuilder();
+        BufferedReader in = null;
+        Document doc = null;
+        try {
+            in = org.neuinfo.foundry.common.util.Utils.newUTF8CharSetReader(isoXmlFile.getAbsolutePath());
+            doc = builder.build(in);
+        } finally {
+            org.neuinfo.foundry.common.util.Utils.close(in);
+        }
+        XPathFactory factory = XPathFactory.instance();
+        XPathExpression<Element> expr = factory.compile("//gmd:organisationName",
+                Filters.element(), null, gmd);
+        List<Element> orgEls = expr.evaluate(doc);
+        if (!orgEls.isEmpty()) {
+            for (Element orgEl : orgEls) {
+                String orgName = orgEl.getChildTextTrim("CharacterString", gco);
+                if (!orgName.equalsIgnoreCase("unknown")) {
+                    Keyword kw = handler.getOrganizationVIAF(orgName, kwData.keywordMap);
+                    if (kw != null) {
+                        System.out.println("adding VIAF from lookup: " + kw.getTerm());
+                        kwData.add(kw);
+                    }
+                }
+            }
+        }
+        expr = factory.compile("//gmd:abstract", Filters.element(), null, gmd);
+        List<Element> absEls = expr.evaluate(doc);
+        StringBuilder sb = new StringBuilder(300);
+        if (!absEls.isEmpty()) {
+            String abstractText = absEls.get(0).getChildTextTrim("CharacterString", gco);
+            if (abstractText.length() > 0) {
+                sb.append(abstractText).append(' ');
+            }
+        }
+        expr = factory.compile("//gmd:title", Filters.element(), null, gmd);
+        List<Element> titleEls = expr.evaluate(doc);
+        if (!titleEls.isEmpty()) {
+            String title = titleEls.get(0).getChildTextTrim("CharacterString", gco);
+            if (title.length() > 0) {
+                sb.append(title);
+            }
+        }
+        String text = sb.toString().trim();
+        if (text.length() > 0) {
+            handler.findOrganizations(text, kwData.keywordMap, kwData.jsArr);
+        }
+        if (kwData.keywordMap.size() > origKWCount) {
+            System.out.println("Added VIAFs from lookup");
+        }
+    }
 
     KeywordData addOrganizations(File outFile) throws Exception {
         Element docEl = Utils.loadXML(outFile.getAbsolutePath());
@@ -159,6 +227,11 @@ public class OrganizationEnhancer implements IPlugin {
     static class KeywordData {
         JSONArray jsArr;
         Map<String, Keyword> keywordMap;
+
+        public void add(Keyword kw) {
+            keywordMap.put(kw.getTerm(), kw);
+            jsArr.put(kw.toJSON());
+        }
 
     }
 

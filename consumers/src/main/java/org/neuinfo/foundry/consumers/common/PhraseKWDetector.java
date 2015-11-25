@@ -21,6 +21,7 @@ import org.jdom2.xpath.XPathFactory;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.Inflector;
 import org.neuinfo.foundry.common.util.ScigraphUtils;
+import org.neuinfo.foundry.common.util.Utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,22 +41,6 @@ public class PhraseKWDetector {
     private static Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private static Namespace gco = Namespace.getNamespace("gco", "http://www.isotc211.org/2005/gco");
 
-    public List<File> getXMLFiles(List<String> paths) {
-        List<File> xmlFiles = new LinkedList<File>();
-        for (String pathStr : paths) {
-            File dir = new File(pathStr);
-            if (!dir.isDirectory()) {
-                continue;
-            }
-            File[] files = dir.listFiles();
-            for (File f : files) {
-                if (f.isFile() && f.getName().endsWith(".xml")) {
-                    xmlFiles.add(f);
-                }
-            }
-        }
-        return xmlFiles;
-    }
 
     public void handle(List<File> xmlFiles) throws Exception {
         Map<String, NPWrapper> npMap = new HashMap<String, NPWrapper>();
@@ -291,10 +276,10 @@ public class PhraseKWDetector {
         BufferedReader in = null;
         Document doc = null;
         try {
-            in = org.neuinfo.foundry.common.util.Utils.newUTF8CharSetReader(isoXmlFile.getAbsolutePath());
+            in = Utils.newUTF8CharSetReader(isoXmlFile.getAbsolutePath());
             doc = builder.build(in);
         } finally {
-            org.neuinfo.foundry.common.util.Utils.close(in);
+            Utils.close(in);
         }
         XPathFactory factory = XPathFactory.instance();
 
@@ -446,7 +431,7 @@ public class PhraseKWDetector {
                 ROOT + "SEN", ROOT + "databib", ROOT + "ecogeo",
                 ROOT + "Geoscience_Australia", ROOT + "c4p", ROOT + "Data.gov_csw",
                 ROOT + "NOAA_data.noaa.gov_catalog", ROOT + "EPA_Environmental_Dataset_Gateway");
-        List<File> xmlFiles = detector.getXMLFiles(paths);
+        List<File> xmlFiles = ConsumerUtils.getXMLFiles(paths);
         System.out.println("# of files:" + xmlFiles.size());
         detector.handle(xmlFiles);
 

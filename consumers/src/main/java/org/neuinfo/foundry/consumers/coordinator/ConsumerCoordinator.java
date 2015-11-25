@@ -27,6 +27,7 @@ public class ConsumerCoordinator implements MessageListener {
     private transient Session session;
     private Configuration config;
     private String configFile;
+    private boolean consumerMode = false;
     private int maxDocs = -1;
     private boolean runInTestMode = false;
     private final ExecutorService executorService = Executors
@@ -35,9 +36,10 @@ public class ConsumerCoordinator implements MessageListener {
 
     private final static Logger logger = Logger.getLogger("ConsumerCoordinator");
 
-    public ConsumerCoordinator(Configuration config, String configFile) throws Exception {
+    public ConsumerCoordinator(Configuration config, String configFile, boolean consumerMode) throws Exception {
         this.config = config;
         this.configFile = configFile;
+        this.consumerMode = consumerMode;
         ServiceFactory.getInstance(configFile);
     }
 
@@ -101,9 +103,11 @@ public class ConsumerCoordinator implements MessageListener {
     }
 
     public void handleMessages(MessageListener listener) throws JMSException {
-        Destination destination = this.session.createQueue("foundry.consumer.head");
-        MessageConsumer messageConsumer = this.session.createConsumer(destination);
-        messageConsumer.setMessageListener(listener);
+        if (!consumerMode) {
+            Destination destination = this.session.createQueue("foundry.consumer.head");
+            MessageConsumer messageConsumer = this.session.createConsumer(destination);
+            messageConsumer.setMessageListener(listener);
+        }
     }
 
 
@@ -206,6 +210,7 @@ public class ConsumerCoordinator implements MessageListener {
         Option numOption = OptionBuilder.withDescription("Max number of documents to ingest").hasArg()
                 .withArgName("max number of docs").create("n");
         Option testOption = OptionBuilder.withDescription("run ingestors in test mode").create('t');
+        Option consumerModeOption = OptionBuilder.withDescription("run in consumer mode (no ingestors)").create("cm");
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
@@ -213,6 +218,7 @@ public class ConsumerCoordinator implements MessageListener {
         options.addOption(provOption);
         options.addOption(numOption);
         options.addOption(testOption);
+        options.addOption(consumerModeOption);
         CommandLineParser cli = new GnuParser();
         CommandLine line = null;
         try {
@@ -252,9 +258,10 @@ public class ConsumerCoordinator implements MessageListener {
         if (line.hasOption('t')) {
             runInTestMode = true;
         }
+        boolean consumerMode = line.hasOption("cm");
 
         Configuration config = ConfigLoader.load(configFile);
-        ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile);
+        ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile, consumerMode);
         cc.setRunInTestMode(runInTestMode);
         if (!processInFull) {
             cc.setMaxDocs(numDocs);

@@ -7,7 +7,7 @@ import org.json.JSONObject;
 import org.neuinfo.foundry.common.provenance.ProvenanceRec;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.consumers.common.ProvenanceClient;
-import org.neuinfo.foundry.consumers.common.Utils;
+import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -28,10 +28,10 @@ public class ProvenanceTests extends TestCase {
 
         String fileIdentifier = "52d969c0e4b08fdd52822380";
         String entityUUID = fileIdentifier + "_v1";
-        String docCreationTime = Utils.getTimeInProvenanceFormat();
+        String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat();
 
         String docId = builder.entityWithAttr("UUID=" + entityUUID, "creationTime=" + docCreationTime).getLastGeneratedId();
-        String activityId = builder.activityWithAttr("ingestion", docCreationTime, Utils.getTimeInProvenanceFormat()).getLastGeneratedId();
+        String activityId = builder.activityWithAttr("ingestion", docCreationTime, ConsumerUtils.getTimeInProvenanceFormat()).getLastGeneratedId();
 
         ProvenanceRec provenanceRec = builder.used(activityId, docId).wasGeneratedBy(docId, activityId).build();
 
@@ -55,11 +55,11 @@ public class ProvenanceTests extends TestCase {
     private ProvenanceRec getProvenanceRec(String entityUUID) throws DatatypeConfigurationException {
         ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
 
-        String docCreationTime = Utils.getTimeInProvenanceFormat();
+        String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat();
         String startUUID = UUID.randomUUID().toString();
         String inDocId = builder.entityWithAttr("UUID=" + startUUID, "creationTime=" + docCreationTime, "sourceName=ScienceBase").getLastGeneratedId();
         String outDocId = builder.entityWithAttr("UUID=" + entityUUID, "creationTime=" + docCreationTime).getLastGeneratedId();
-        String activityId = builder.activityWithAttr("ingestion", docCreationTime, Utils.getTimeInProvenanceFormat()).getLastGeneratedId();
+        String activityId = builder.activityWithAttr("ingestion", docCreationTime, ConsumerUtils.getTimeInProvenanceFormat()).getLastGeneratedId();
 
         ProvenanceRec provenanceRec = builder.used(activityId, inDocId).wasGeneratedBy(outDocId, activityId).build();
 
@@ -84,11 +84,11 @@ public class ProvenanceTests extends TestCase {
         String entityUUID = "52d969c0e4b08fdd528223800";
         // entityUUID = "52d969c0e4b08fdd528223678";
         ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
-        String docCreationTime = Utils.getTimeInProvenanceFormat();
+        String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat();
 
         String inDocId = builder.entityWithAttr("UUID=" + entityUUID, "sourceName=ScienceBase").getLastGeneratedId();
         String outDocId = builder.entityWithAttr("UUID=" + entityUUID).getLastGeneratedId();
-        String activityId = builder.activityWithAttr("spatialEnhancer", docCreationTime, Utils.getTimeInProvenanceFormat()).getLastGeneratedId();
+        String activityId = builder.activityWithAttr("spatialEnhancer", docCreationTime, ConsumerUtils.getTimeInProvenanceFormat()).getLastGeneratedId();
 
         ProvenanceRec provenanceRec = builder.used(activityId, inDocId)
                 .wasDerivedFrom(outDocId, inDocId, activityId)

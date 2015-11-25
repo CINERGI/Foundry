@@ -14,12 +14,30 @@ import java.io.File;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TimeZone;
 
 /**
  * Created by bozyurt on 11/20/14.
  */
-public class Utils {
+public class ConsumerUtils {
+    public static List<File> getXMLFiles(List<String> paths) {
+        List<File> xmlFiles = new LinkedList<File>();
+        for (String pathStr : paths) {
+            File dir = new File(pathStr);
+            if (!dir.isDirectory()) {
+                continue;
+            }
+            File[] files = dir.listFiles();
+            for (File f : files) {
+                if (f.isFile() && f.getName().endsWith(".xml")) {
+                    xmlFiles.add(f);
+                }
+            }
+        }
+        return xmlFiles;
+    }
     public static File prepareInputFile(String format, JSONObject originalDoc, String objectId) throws Exception {
         File dir = new File("/tmp/consumers");
         if (!dir.isDirectory()) {

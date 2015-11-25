@@ -3,7 +3,7 @@ package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.json.JSONObject;
-import org.neuinfo.foundry.consumers.common.Utils;
+import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 
@@ -33,7 +33,7 @@ public class CinergiElasticSearchIndexPreparer implements IPlugin {
             JSONObject js = new JSONObject();
             js.put("content", new JSONObject(metaData.toString()));
             jsonDocStr = js.toString();
-            boolean ok = Utils.send2ElasticSearch(jsonDocStr, docId, indexPath, serverURL);
+            boolean ok = ConsumerUtils.send2ElasticSearch(jsonDocStr, docId, indexPath, serverURL);
             if (ok) {
                 return new Result(docWrapper, Result.Status.OK_WITHOUT_CHANGE);
             } else {
