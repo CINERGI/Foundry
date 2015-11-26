@@ -57,7 +57,10 @@ public class ManagementService {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = new MongoClient(servers);
+        MongoClientOptions options = MongoClientOptions.builder()
+                .autoConnectRetry(true).maxAutoConnectRetryTime(1200000)
+                .socketTimeout(30000).connectTimeout(15000).build();
+        mongoClient = new MongoClient(servers, options);
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
@@ -101,6 +104,7 @@ public class ManagementService {
     }
 
     List<Source> findSources() {
+
         DB db = mongoClient.getDB(dbName);
         DBCollection sources = db.getCollection("sources");
         List<Source> srcList = new LinkedList<Source>();
@@ -118,6 +122,7 @@ public class ManagementService {
         return srcList;
 
     }
+
 
     void deleteDocuments(String sourceID) {
         docService.deleteDocuments4Resource(config.getCollectionName(), sourceID, null);
