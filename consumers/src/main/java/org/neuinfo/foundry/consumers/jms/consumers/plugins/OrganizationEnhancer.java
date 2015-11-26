@@ -168,7 +168,7 @@ public class OrganizationEnhancer implements IPlugin {
         if (!orgEls.isEmpty()) {
             for (Element orgEl : orgEls) {
                 String orgName = orgEl.getChildTextTrim("CharacterString", gco);
-                if (!orgName.equalsIgnoreCase("unknown")) {
+                if (orgName != null && !orgName.equalsIgnoreCase("unknown")) {
                     Keyword kw = handler.getOrganizationVIAF(orgName, kwData.keywordMap);
                     if (kw != null) {
                         System.out.println("adding VIAF from lookup: " + kw.getTerm());
@@ -182,7 +182,7 @@ public class OrganizationEnhancer implements IPlugin {
         StringBuilder sb = new StringBuilder(300);
         if (!absEls.isEmpty()) {
             String abstractText = absEls.get(0).getChildTextTrim("CharacterString", gco);
-            if (abstractText.length() > 0) {
+            if (abstractText != null && abstractText.length() > 0) {
                 sb.append(abstractText).append(' ');
             }
         }
