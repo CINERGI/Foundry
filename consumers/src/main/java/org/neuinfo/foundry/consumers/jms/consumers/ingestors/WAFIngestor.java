@@ -18,12 +18,10 @@ import org.neuinfo.foundry.common.util.XML2JSONConverter;
 import org.neuinfo.foundry.consumers.plugin.Ingestor;
 import org.neuinfo.foundry.consumers.plugin.Result;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bozyurt on 11/10/14.
@@ -43,13 +41,13 @@ public class WAFIngestor implements Ingestor {
                 Boolean.parseBoolean(options.get("allowDuplicates")) : false;
         this.optionMap = options;
         if (options.containsKey("maxDocs")) {
-            this.maxNumDocs2Ingest = Utils.getIntValue( options.get("maxDocs"), -1);
+            this.maxNumDocs2Ingest = Utils.getIntValue(options.get("maxDocs"), -1);
         }
     }
 
     @Override
     public void startup() throws Exception {
-        List<String> links = new ArrayList<String>();
+        List<String> links = new LinkedList<String>();
         final Document doc = Jsoup.connect(this.ingestURL).timeout(15000).get();
         final Elements anchorEls = doc.select("a");
         final Iterator<Element> it = anchorEls.iterator();
@@ -58,9 +56,31 @@ public class WAFIngestor implements Ingestor {
             final String href = ae.attr("abs:href");
             if (href != null && href.endsWith(".xml")) {
                 links.add(href);
+            } else if (href.length() > this.ingestURL.length()){
+                collectLinks(href, links);
             }
         }
+        System.out.println("# of xml docs:" + links.size());
         this.docLinkIterator = links.iterator();
+    }
+
+    void collectLinks(String subDirHref, List<String> links) {
+        try {
+            int startSize = links.size();
+            Document doc = Jsoup.connect(subDirHref).timeout(15000).get();
+            Elements anchorEls = doc.select("a");
+            Iterator<Element> it = anchorEls.iterator();
+            while (it.hasNext()) {
+                String href = it.next().attr("abs:href");
+                if (href != null && href.endsWith(".xml")) {
+                    links.add(href);
+                }
+            }
+            int numAdded = links.size() - startSize;
+            System.out.println("Added " + numAdded + " documents from " + subDirHref);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
