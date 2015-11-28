@@ -284,7 +284,7 @@ public class XML2JSONConverter {
         String nsPrefix = toks[0];
         if (!namespaceMap.isEmpty()) {
             Namespace ns = namespaceMap.get(nsPrefix);
-            Assertion.assertNotNull(ns);
+            Assertion.assertNotNull(ns, nsPrefix + ": unknown namespace");
             return new Element(localName, ns);
         } else {
             Namespace ns = nsMap.get(nsPrefix);
