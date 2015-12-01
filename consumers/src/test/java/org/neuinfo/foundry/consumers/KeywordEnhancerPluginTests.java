@@ -72,8 +72,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
             List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
 
-            StopWordsHandler handler = StopWordsHandler.getInstance("file:///var/data/cinergi/stopwords.txt");
-            handler.loadStopwords();
+            StopWordsHandler handler = StopWordsHandler.getInstance();
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
                 if (primaryKey.equals("4f4e48b4e4b07f02db532964")) {

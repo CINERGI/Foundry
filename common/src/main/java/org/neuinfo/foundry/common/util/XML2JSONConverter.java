@@ -175,6 +175,20 @@ public class XML2JSONConverter {
                 }
             }
         }
+        // for Data.gov missing gmd NS declaration
+        if (!namespaceMap.containsKey("gmd")) {
+            Namespace gmd = nsMap.get("gmd");
+            namespaceMap.put("gmd", gmd);
+        }
+        if (!namespaceMap.containsKey("gco")) {
+            Namespace gco = nsMap.get("gco");
+            namespaceMap.put("gco", gco);
+        }
+        if (!namespaceMap.containsKey("gml")) {
+            Namespace gml = nsMap.get("gml");
+            namespaceMap.put("gml", gml);
+        }
+
         toXML(rootEl, root, namespaceMap);
         return rootEl;
     }
@@ -282,6 +296,7 @@ public class XML2JSONConverter {
         String[] toks = qName.split(":");
         String localName = toks[1];
         String nsPrefix = toks[0];
+
         if (!namespaceMap.isEmpty()) {
             Namespace ns = namespaceMap.get(nsPrefix);
             Assertion.assertNotNull(ns, nsPrefix + ": unknown namespace");

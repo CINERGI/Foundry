@@ -20,7 +20,8 @@ public class ScigraphMappingsHandler {
 
 
     private ScigraphMappingsHandler() throws IOException {
-        String text = Utils.loadAsString("/var/data/cinergi/mappings.txt");
+        // String text = Utils.loadAsString("/var/data/cinergi/mappings.txt");
+        String text = Utils.loadAsStringFromClasspath("mappings.txt");
         String[] lines = text.split("\\n");
         for (String line : lines) {
             String[] toks = line.trim().split("\\s+>\\s+");
@@ -40,7 +41,8 @@ public class ScigraphMappingsHandler {
                 }
             }
         }
-        text = Utils.loadAsString("/var/data/cinergi/preferredLabels.txt");
+        //text = Utils.loadAsString("/var/data/cinergi/preferredLabels.txt");
+        text = Utils.loadAsStringFromClasspath("preferredLabels.txt");
         lines = text.split("\\n");
         for (String line : lines) {
             if (line.startsWith("#")) {

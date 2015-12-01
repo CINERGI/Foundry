@@ -1,6 +1,5 @@
 package org.neuinfo.foundry.consumers.common;
 
-import au.com.bytecode.opencsv.CSVParser;
 import au.com.bytecode.opencsv.CSVReader;
 import org.json.JSONArray;
 import org.neuinfo.foundry.common.model.EntityInfo;
@@ -11,9 +10,7 @@ import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.Key;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -91,7 +88,7 @@ public class OrgLookupHandler {
                     EntityInfo ei = new EntityInfo("", "", -1, -1, "theme");
                     kw.addEntityInfo(ei);
                     keywordMap.put(combined, kw);
-                    jsArr.put( kw.toJSON());
+                    jsArr.put(kw.toJSON());
                 }
             }
         }

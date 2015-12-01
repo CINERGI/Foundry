@@ -85,8 +85,11 @@ public class SpatialEnhancer implements IPlugin {
             provData.addModifiedFieldProv("No bounding box is added.");
             return;
         }
-        JSONArray boundingBoxes = spatial.getJSONArray("bounding_boxes");
-        boolean hasBB = boundingBoxes.length() > 0;
+        JSONArray boundingBoxes = null;
+        if (!spatial.isNull("bounding_boxes")) {
+            boundingBoxes = spatial.getJSONArray("bounding_boxes");
+        }
+        boolean hasBB = boundingBoxes != null && boundingBoxes.length() > 0;
         StringBuilder sb = new StringBuilder();
         if (!hasBB) {
             JSONObject derivedBoundingBoxes = spatial.getJSONObject("derived_bounding_boxes_from_places");

@@ -67,7 +67,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
                 String jsonStr = EntityUtils.toString(entity);
                 JSONObject json = new JSONObject(jsonStr);
                 // System.out.println(json.toString(2));
-                prepareFacetHierarchy(json);
+                prepareFacetHierarchy(json, false);
             }
         } finally {
             if (httpGet != null) {
@@ -76,7 +76,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
         }
     }
 
-    void prepareFacetHierarchy(JSONObject json) {
+    void prepareFacetHierarchy(JSONObject json, boolean verbose) {
         Map<String, KWNode> nodeMap = new HashMap<String, KWNode>();
         Map<String, KWEdge> edgeMap = new HashMap<String, KWEdge>();
         Map<String, KWEdge> objEdgeMap = new HashMap<String, KWEdge>();
@@ -140,12 +140,13 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             topLevelNodeMap.put(c.id, c);
             prepMapping(c);
         }
-
-        showHierarchy(topLevelNodeMap);
-        System.out.println("# nodes:" + nodeMap.size() + " usedNodeSet:" + usedNodeSet.size());
-        for (KWNode n : nodeMap.values()) {
-            if (!usedNodeSet.contains(n)) {
-                System.out.println(n);
+        if (verbose) {
+            showHierarchy(topLevelNodeMap);
+            System.out.println("# nodes:" + nodeMap.size() + " usedNodeSet:" + usedNodeSet.size());
+            for (KWNode n : nodeMap.values()) {
+                if (!usedNodeSet.contains(n)) {
+                    System.out.println(n);
+                }
             }
         }
     }
@@ -175,7 +176,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             KWNode grandParent = parent.getParent();
             if (grandParent != null) {
                 grandParent.getChildren().remove(parent);
-                for(KWNode c : parent.getChildren()) {
+                for (KWNode c : parent.getChildren()) {
                     c.setParent(grandParent);
                     grandParent.addChild(c);
                 }

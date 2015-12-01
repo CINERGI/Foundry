@@ -10,6 +10,10 @@ import org.apache.http.util.EntityUtils;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.util.*;
@@ -18,31 +22,19 @@ import java.util.*;
  * Created by bozyurt on 7/27/15.
  */
 public class StopWordsHandler {
-    String stopwordsUrl;
     Set<String> stopWordSet = new HashSet<String>();
     Map<String, Phrase> phraseMap = new HashMap<String, Phrase>();
     private static StopWordsHandler instance = null;
 
 
-    public synchronized static StopWordsHandler getInstance(String stopwordsUrl) throws Exception {
+    public synchronized static StopWordsHandler getInstance() throws Exception {
         if (instance == null) {
-            instance = new StopWordsHandler(stopwordsUrl);
-            instance.loadStopwords();
+            instance = new StopWordsHandler();
+            instance.loadStopWordsFromClassPath();
         }
         return instance;
     }
 
-    public synchronized static StopWordsHandler getInstance() {
-        if (instance == null) {
-            throw new RuntimeException("StopWordsHandler is not properly initialized!");
-        }
-        return instance;
-    }
-
-
-    private StopWordsHandler(String stopwordsUrl) {
-        this.stopwordsUrl = stopwordsUrl;
-    }
 
     public void postFilter(String text, Map<String, Keyword> keywordMap) {
         List<String> keys = new ArrayList<String>(keywordMap.keySet());
@@ -88,6 +80,24 @@ public class StopWordsHandler {
         }
     }
 
+    void loadStopWordsFromClassPath() throws IOException {
+        BufferedReader bin = null;
+        try {
+            bin = new BufferedReader(new InputStreamReader(
+                    StopWordsHandler.class.getClassLoader().getResourceAsStream("stopwords.txt")));
+            StringBuilder sb = new StringBuilder(4096);
+            String line;
+            while ((line = bin.readLine()) != null) {
+                sb.append(line).append('\n');
+            }
+            String content = sb.toString().trim();
+            parse(content);
+        } finally {
+            Utils.close(bin);
+        }
+    }
+
+    /*
     public void loadStopwords() throws Exception {
         URIBuilder builder = new URIBuilder(this.stopwordsUrl);
         URI uri = builder.build();
@@ -110,8 +120,8 @@ public class StopWordsHandler {
                 }
             }
         }
-
     }
+    */
 
     private void parse(String data) {
         String[] lines = data.split("\r?\n");

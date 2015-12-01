@@ -154,6 +154,21 @@ public class Utils {
         return docEl.getRootElement();
     }
 
+    public static String loadAsStringFromClasspath(String textFile) throws IOException {
+        StringBuilder buf = new StringBuilder(4096);
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(Utils.class.getClassLoader().getResourceAsStream(textFile)));
+            String line;
+            while ((line = in.readLine()) != null) {
+                buf.append(line).append('\n');
+            }
+        } finally {
+            close(in);
+        }
+        return buf.toString().trim();
+    }
+
     public static String loadAsString(String textFile) throws IOException {
         StringBuilder buf = new StringBuilder((int) new File(textFile).length());
         BufferedReader in = null;
@@ -288,32 +303,32 @@ public class Utils {
         return id;
     }
 
-public static String formatText(String str, int maxLineLen) {
-		if (str.length() <= maxLineLen) {
-			return str;
-		}
-		StringBuilder buf = new StringBuilder(str.length() + 10);
-		StringTokenizer stok = new StringTokenizer(str);
-		int count = 0;
-		boolean first = true;
-		while (stok.hasMoreTokens()) {
-			String tok = stok.nextToken();
-			int tokLen = tok.length();
-			if (count + tokLen + 1 > maxLineLen) {
-				buf.append("\n");
-				buf.append(tok);
-				count = tokLen;
-			} else {
-				if (first) {
-					buf.append(tok);
-					first = false;
-					count += tokLen;
-				} else {
-					buf.append(' ').append(tok);
-					count += tokLen + 1;
-				}
-			}
-		}
-		return buf.toString();
-	}
+    public static String formatText(String str, int maxLineLen) {
+        if (str.length() <= maxLineLen) {
+            return str;
+        }
+        StringBuilder buf = new StringBuilder(str.length() + 10);
+        StringTokenizer stok = new StringTokenizer(str);
+        int count = 0;
+        boolean first = true;
+        while (stok.hasMoreTokens()) {
+            String tok = stok.nextToken();
+            int tokLen = tok.length();
+            if (count + tokLen + 1 > maxLineLen) {
+                buf.append("\n");
+                buf.append(tok);
+                count = tokLen;
+            } else {
+                if (first) {
+                    buf.append(tok);
+                    first = false;
+                    count += tokLen;
+                } else {
+                    buf.append(' ').append(tok);
+                    count += tokLen + 1;
+                }
+            }
+        }
+        return buf.toString();
+    }
 }

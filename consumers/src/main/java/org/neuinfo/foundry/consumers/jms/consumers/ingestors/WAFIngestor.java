@@ -58,6 +58,9 @@ public class WAFIngestor implements Ingestor {
                 links.add(href);
             } else if (href.length() > this.ingestURL.length()){
                 collectLinks(href, links);
+                if (maxNumDocs2Ingest > 0 && links.size() >= maxNumDocs2Ingest) {
+                    break;
+                }
             }
         }
         System.out.println("# of xml docs:" + links.size());

@@ -116,8 +116,10 @@ public class OrganizationEnhancer implements IPlugin {
                 inFile.delete();
                 if (kd.jsArr.length() > 0) {
                     DBObject data = (DBObject) docWrapper.get("Data");
-                    Map<String, List<KeywordInfo>> category2KWIListMap = EnhancerUtils.getKeywordsToBeAdded(kd.jsArr, json);
-                    kd.jsArr = EnhancerUtils.filter(kd.jsArr, category2KWIListMap, kd.keywordMap);
+                    // Do not filter organizations 11/30/2015
+                    Map<String, List<KeywordInfo>> category2KWIListMap = null;
+                    //Map<String, List<KeywordInfo>> category2KWIListMap = EnhancerUtils.getKeywordsToBeAdded(kd.jsArr, json);
+                    //kd.jsArr = EnhancerUtils.filter(kd.jsArr, category2KWIListMap, kd.keywordMap);
                     data.put("orgKeywords", JSONUtils.encode(kd.jsArr));
                     provData.setSourceName(sourceName).setSrcId(srcId);
                     EnhancerUtils.prepKeywordsProv(category2KWIListMap, provData);
@@ -166,13 +168,15 @@ public class OrganizationEnhancer implements IPlugin {
                 Filters.element(), null, gmd);
         List<Element> orgEls = expr.evaluate(doc);
         if (!orgEls.isEmpty()) {
+            Set<String> seenSet = new HashSet<String>(7);
             for (Element orgEl : orgEls) {
                 String orgName = orgEl.getChildTextTrim("CharacterString", gco);
                 if (orgName != null && !orgName.equalsIgnoreCase("unknown")) {
                     Keyword kw = handler.getOrganizationVIAF(orgName, kwData.keywordMap);
-                    if (kw != null) {
+                    if (kw != null && !seenSet.contains(kw.getTerm())) {
                         System.out.println("adding VIAF from lookup: " + kw.getTerm());
                         kwData.add(kw);
+                        seenSet.add(kw.getTerm());
                     }
                 }
             }

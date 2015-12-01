@@ -44,8 +44,6 @@ public class KeywordEnhancer implements IPlugin {
         if (options.containsKey("serviceURL")) {
             this.serviceURL = options.get("serviceURL");
         }
-        String stopwordsUrl = options.get("stopwordsUrl");
-        Assertion.assertNotNull(stopwordsUrl, "stopwordsUrl");
 
         this.useNER = options.containsKey("useNER") ? Boolean.parseBoolean(options.get("useNER")) : false;
 
@@ -56,7 +54,7 @@ public class KeywordEnhancer implements IPlugin {
 
         this.nerKeywordEnhancer = NERKeywordEnhancer.getInstance();
         this.keywordHierarchyHandler = KeywordHierarchyHandler.getInstance();
-        this.stopWordsHandler = StopWordsHandler.getInstance(stopwordsUrl);
+        this.stopWordsHandler = StopWordsHandler.getInstance();
     }
 
     public boolean isUseNER() {
@@ -106,7 +104,7 @@ public class KeywordEnhancer implements IPlugin {
                 allowedCategorySet.add("platform");
             }
             // add any related terms also
-           // List<Keyword> mainKeywords = new ArrayList<Keyword>(keywordMap.values());
+            // List<Keyword> mainKeywords = new ArrayList<Keyword>(keywordMap.values());
 
 
             for (Keyword keyword : keywordMap.values()) {
@@ -310,7 +308,6 @@ public class KeywordEnhancer implements IPlugin {
             return categories;
         }
     }
-
 
 
 }

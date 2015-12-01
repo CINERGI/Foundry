@@ -1,14 +1,11 @@
 package org.neuinfo.foundry.common.util;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.jdom2.Comment;
 import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
 
-import java.net.URISyntaxException;
 import java.text.DateFormat;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -198,6 +195,7 @@ public class CinergiXMLUtils {
         return csEl;
     }
 
+
     public static Set<String> getExistingKeywords(Element docEl) {
         Element identificationInfo = docEl.getChild("identificationInfo", gmd);
         Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
@@ -303,6 +301,34 @@ public class CinergiXMLUtils {
         return kwiList;
     }
 
+    public static Element addFacets2ExistingKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap,
+                                                     FacetHierarchyHandler fhh) {
+        Element identificationInfo = docEl.getChild("identificationInfo", gmd);
+        Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
+        Assertion.assertNotNull(dataIdentification);
+        List<Element> descriptiveKeywords = dataIdentification.getChildren("descriptiveKeywords", gmd);
+        Assertion.assertTrue(descriptiveKeywords != null && !descriptiveKeywords.isEmpty());
+        List<Content> contents = dataIdentification.getContent();
+        int pivot = getPivot(contents);
+        Assertion.assertTrue(pivot != -1);
+        addKeywords(category2KwiListMap, contents, pivot, fhh);
+        return docEl;
+    }
+
+    private static int getPivot(List<Content> contents) {
+        int pivot = -1;
+        for (int i = 0; i < contents.size(); i++) {
+            Content content = contents.get(i);
+            if (content instanceof Element) {
+                Element e = (Element) content;
+                if (e.getName().equals("descriptiveKeywords")) {
+                    pivot = i;
+                }
+            }
+        }
+        return pivot;
+    }
+
     public static Element addKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap,
                                       FacetHierarchyHandler fhh) {
         Element identificationInfo = docEl.getChild("identificationInfo", gmd);
@@ -314,16 +340,7 @@ public class CinergiXMLUtils {
         List<Element> descriptiveKeywords = dataIdentification.getChildren("descriptiveKeywords", gmd);
         List<Content> contents = dataIdentification.getContent();
         if (descriptiveKeywords != null && !descriptiveKeywords.isEmpty()) {
-            int pivot = -1;
-            for (int i = 0; i < contents.size(); i++) {
-                Content content = contents.get(i);
-                if (content instanceof Element) {
-                    Element e = (Element) content;
-                    if (e.getName().equals("descriptiveKeywords")) {
-                        pivot = i;
-                    }
-                }
-            }
+            int pivot = getPivot(contents);
 
             Assertion.assertTrue(pivot != -1);
             Set<String> existingKeywords = getExistingKeywords(docEl);
