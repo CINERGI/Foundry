@@ -7,10 +7,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bozyurt on 10/27/14.
@@ -41,6 +38,13 @@ public class JavaPluginCoordinator {
     private JavaPluginCoordinator(String pluginDir, String libDir) {
         this.pluginDir = pluginDir;
         this.libDir = libDir;
+        if (!new File(libDir).exists() || !new File(pluginDir).exists()) {
+            this.libJars = Collections.emptyList();
+            this.pluginJars = Collections.emptyList();
+            System.err.println("Invalid libDir:"+ libDir);
+            System.err.println("Invalid pluginDir:" + pluginDir);
+            return;
+        }
         File[] files = new File(libDir).listFiles();
         this.libJars = new ArrayList<File>(files.length);
         for (File f : files) {

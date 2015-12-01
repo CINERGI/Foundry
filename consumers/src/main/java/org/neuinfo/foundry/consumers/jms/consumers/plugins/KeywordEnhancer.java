@@ -110,12 +110,10 @@ public class KeywordEnhancer implements IPlugin {
             for (Keyword keyword : keywordMap.values()) {
                 // if (keyword.hasCategory() && keyword.hasAnyCategory(allowedCategorySet)) {
                 // no category exclusions 04/22/2015
-                if (keyword.hasCategory()) {
-                    JSONObject kwJson = keyword.toJSON();
-                    jsArr.put(kwJson);
-                    logger.info(kwJson.toString(2));
-                    logger.info("---------------------------");
-                }
+                JSONObject kwJson = keyword.toJSON();
+                jsArr.put(kwJson);
+                logger.info(kwJson.toString(2));
+                logger.info("---------------------------");
             }
             if (useNER) {
                 Map<String, Keyword> nerKeywordsMap = this.nerKeywordEnhancer.findKeywords(text2AnnotateList);
