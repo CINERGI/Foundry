@@ -35,11 +35,18 @@ public class ExistingKeywordsFacetHandler {
         docEl = Utils.loadXML(isoXmlFile.getAbsolutePath());
     }
 
+    public void handleAndSave() throws Exception {
+        handle();
+        String path = isoXmlFile.getAbsolutePath().replaceFirst("\\.xml", "_existing.xml");
+        File enhancedXmlFile = new File(path);
+        System.out.println(enhancedXmlFile);
+        Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
+    }
 
-    public void handle() throws Exception {
+    public Element handle() throws Exception {
         Set<String> existingKeywords = CinergiXMLUtils.getExistingKeywords(docEl);
         if (existingKeywords.isEmpty()) {
-            return;
+            return docEl;
         }
         StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
         for (Iterator<String> it = existingKeywords.iterator(); it.hasNext(); ) {
@@ -68,13 +75,10 @@ public class ExistingKeywordsFacetHandler {
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
 
             docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh);
-            String path = isoXmlFile.getAbsolutePath().replaceFirst("\\.xml", "_existing.xml");
-            File enhancedXmlFile = new File(path);
-            System.out.println(enhancedXmlFile);
-            Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
+
         }
 
-
+        return docEl;
     }
 
     static Map<String, List<KeywordInfo>> prepKeywordFacets(List<Keyword> kwList) throws Exception {
@@ -99,7 +103,9 @@ public class ExistingKeywordsFacetHandler {
                         kwiList = new ArrayList<KeywordInfo>(10);
                         category2KWIListMap.put(category, kwiList);
                     }
-                    kwiList.add(kwi);
+                    if (!kwiList.contains(kwi)) {
+                        kwiList.add(kwi);
+                    }
                 }
             }
         }
@@ -110,9 +116,22 @@ public class ExistingKeywordsFacetHandler {
     public static void main(String[] args) throws Exception {
         String HOME_DIR = System.getProperty("user.home");
         File isoXmlFile = new File(HOME_DIR + "/work/Foundry/029E458C-96A7-4D17-BC46-DF84CA30DFA8.xml");
+        File rootDir = new File("/tmp/waf/Data.gov");
         isoXmlFile = new File("/tmp/waf/Data.gov/9066b916-9dc0-46bc-8a73-b52eb10bdd0e.xml");
-        ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(isoXmlFile);
+        isoXmlFile = new File("/tmp/waf/Data.gov/f6e16a7a-d433-46c6-a2fd-a70ea80f26db.xml");
 
-        handler.handle();
+        //ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(isoXmlFile);
+
+        // handler.handleAndSave();
+
+        File[] files = rootDir.listFiles();
+        for(File f : files) {
+            if (f.getName().endsWith(".xml") && !f.getName().endsWith("_existing.xml")) {
+                ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(f);
+                handler.handleAndSave();
+
+            }
+        }
+
     }
 }

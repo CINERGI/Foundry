@@ -7,6 +7,7 @@ import org.jdom2.Namespace;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils;
+import org.neuinfo.foundry.common.util.ExistingKeywordsFacetHandler;
 import org.neuinfo.foundry.common.util.ISOXMLGenerator;
 import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
@@ -38,6 +39,9 @@ public class WAFExporter implements IPlugin {
 
             ISOXMLGenerator generator = new ISOXMLGenerator();
             Element docEl = generator.generate(docWrapper);
+            // also enhance existing keywords 12/01/2015
+            ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(docEl);
+            docEl = handler.handle();
 
             saveEnhancedXmlFile(primaryKey, docEl, srcName, status);
             return new Result(docWrapper, Result.Status.OK_WITHOUT_CHANGE);
@@ -110,6 +114,7 @@ public class WAFExporter implements IPlugin {
             sourceDir.mkdirs();
         }
         fileIdentifier = fileIdentifier.replaceAll("/","__");
+        fileIdentifier = fileIdentifier.replaceAll("\\.+","_");
         File enhancedXmlFile = new File(sourceDir, fileIdentifier + ".xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
         logger.info("saved enhancedXmlFile to " + enhancedXmlFile);

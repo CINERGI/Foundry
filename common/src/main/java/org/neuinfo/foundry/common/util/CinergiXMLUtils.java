@@ -204,10 +204,27 @@ public class CinergiXMLUtils {
             List<Element> descriptiveKeywords = dataIdentification.getChildren("descriptiveKeywords", gmd);
             if (descriptiveKeywords != null && !descriptiveKeywords.isEmpty()) {
                 for (Element dkEl : descriptiveKeywords) {
+
                     Element mdkEl = dkEl.getChild("MD_Keywords", gmd);
+                    // skip any Cinergi keywords
+                    Element thesaurusNameEl = mdkEl.getChild("thesaurusName", gmd);
+                    if (thesaurusNameEl != null) {
+                        Element citationEl = thesaurusNameEl.getChild("CI_Citation", gmd);
+                        if (citationEl != null) {
+                            Element otherCDEl = citationEl.getChild("otherCitationDetails", gmd);
+                            if (otherCDEl != null) {
+
+                                Element csEl = otherCDEl.getChild("CharacterString", gco);
+                                if (csEl.getTextTrim().toLowerCase().indexOf("cinergi") != -1) {
+                                    continue;
+                                }
+                            }
+                        }
+                    }
                     if (mdkEl != null) {
                         List<Element> kwEls = mdkEl.getChildren("keyword", gmd);
                         for (Element kwEl : kwEls) {
+
                             Element anchorEl = kwEl.getChild("Anchor", gmx);
                             if (anchorEl != null) {
                                 existingKeywordSet.add(anchorEl.getTextTrim().toUpperCase());
@@ -498,6 +515,26 @@ public class CinergiXMLUtils {
         public String getId() {
             return id;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            KeywordInfo that = (KeywordInfo) o;
+
+            if (!id.equals(that.id)) return false;
+            return term.equals(that.term);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = id.hashCode();
+            result = 31 * result + term.hashCode();
+            return result;
+        }
+
     }
 
 }
