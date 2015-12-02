@@ -110,6 +110,7 @@ public class WAFExporter implements IPlugin {
         if (!sourceDir.isDirectory()) {
             sourceDir.mkdirs();
         }
+        Assertion.assertTrue(sourceDir.isDirectory());
         if (srcName.equals("Data.gov") && !status.equals("annotated.1")) {
             LargeDataSetDirectoryAssigner assigner =
                     LargeDataSetDirectoryAssigner.getInstance(sourceDir.getAbsolutePath());
