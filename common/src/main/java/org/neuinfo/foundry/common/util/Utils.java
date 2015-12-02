@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -167,6 +168,21 @@ public class Utils {
             close(in);
         }
         return buf.toString().trim();
+    }
+
+    public static void appendToFile(String filePath, List<String> records) throws IOException {
+        BufferedWriter bout = null;
+        try {
+            bout = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true),
+                    Charset.forName("UTF-8")));
+            for(String rec : records) {
+                bout.write(rec);
+                bout.newLine();
+            }
+        } finally {
+            close(bout);
+        }
+
     }
 
     public static String loadAsString(String textFile) throws IOException {

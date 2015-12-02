@@ -84,7 +84,9 @@ public class ExistingKeywordsFacetHandler {
     static Map<String, List<KeywordInfo>> prepKeywordFacets(List<Keyword> kwList) throws Exception {
         Inflector inflector = new Inflector();
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
+        List<String> unmatchedList = new ArrayList<String>(kwList.size());
         for (Keyword kw : kwList) {
+            boolean matched = false;
             String singularCCTerm = Inflector.toCamelCase(inflector.toSingular(kw.getTerm()));
             if (!singularCCTerm.equals(kw.getTerm())) {
                 Keyword kwNew = new Keyword(singularCCTerm);
@@ -104,12 +106,18 @@ public class ExistingKeywordsFacetHandler {
                         category2KWIListMap.put(category, kwiList);
                     }
                     if (!kwiList.contains(kwi)) {
+                        matched = true;
                         kwiList.add(kwi);
                     }
                 }
             }
+            if (!matched) {
+                unmatchedList.add(kw.getTerm());
+            }
         }
-
+        if (!unmatchedList.isEmpty()) {
+            Utils.appendToFile("/tmp/no_facet_keywords.txt", unmatchedList);
+        }
         return category2KWIListMap;
     }
 
@@ -125,7 +133,7 @@ public class ExistingKeywordsFacetHandler {
         // handler.handleAndSave();
 
         File[] files = rootDir.listFiles();
-        for(File f : files) {
+        for (File f : files) {
             if (f.getName().endsWith(".xml") && !f.getName().endsWith("_existing.xml")) {
                 ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(f);
                 handler.handleAndSave();

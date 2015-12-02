@@ -86,9 +86,11 @@ public class ISOXMLGenerator {
 
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
+            List<String> unmatchedList = new ArrayList<String>(jsArr.length());
             for (int i = 0; i < jsArr.length(); i++) {
                 JSONObject kwJson = jsArr.getJSONObject(i);
                 Keyword kw = Keyword.fromJSON(kwJson);
+                boolean matched = false;
                 for (String id : kw.getIds()) {
                     List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id);
                     for (List<FacetNode> fnList : fnListList) {
@@ -99,8 +101,14 @@ public class ISOXMLGenerator {
                             kwiList = new ArrayList<KeywordInfo>(10);
                             category2KWIListMap.put(category, kwiList);
                         }
-                        kwiList.add(kwi);
+                        if (!kwiList.contains(kwi)) {
+                            kwiList.add(kwi);
+                            matched = true;
+                        }
                     }
+                }
+                if (!matched) {
+                    unmatchedList.add(kw.getTerm());
                 }
                 /*
                 Set<String> categories = kw.getCategories();
@@ -119,6 +127,9 @@ public class ISOXMLGenerator {
                     kwiList.add(kwi);
                 }
                 */
+            }
+            if (!unmatchedList.isEmpty()) {
+                Utils.appendToFile("/tmp/no_facet_keywords.txt", unmatchedList);
             }
 
         }
