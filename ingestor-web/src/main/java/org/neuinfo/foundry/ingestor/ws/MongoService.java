@@ -27,15 +27,8 @@ import java.util.*;
 public class MongoService {
     MongoClient mongoClient;
     String dbName;
-    private static MongoService instance = null;
 
 
-    public synchronized static MongoService getInstance() throws Exception {
-        if (instance == null) {
-            instance = new MongoService();
-        }
-        return instance;
-    }
 
     public MongoClient getMongoClient() {
         return mongoClient;
@@ -45,7 +38,7 @@ public class MongoService {
         return dbName;
     }
 
-    private MongoService() throws Exception {
+    public MongoService() throws Exception {
         Configuration conf = ConfigLoader.load("ingestor-cfg.xml", false);
         this.dbName = conf.getMongoDBName();
         List<ServerAddress> servers = new ArrayList<ServerAddress>(conf.getServers().size());
@@ -57,7 +50,7 @@ public class MongoService {
         mongoClient.setWriteConcern(WriteConcern.SAFE);
     }
 
-    public synchronized void shutdown() {
+    public  void shutdown() {
         if (mongoClient != null) {
             mongoClient.close();
             mongoClient = null;

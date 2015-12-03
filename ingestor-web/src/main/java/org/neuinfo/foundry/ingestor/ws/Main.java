@@ -17,7 +17,6 @@ import java.net.URI;
 public class Main {
     // Base URI the Grizzly HTTP server will listen on
     public static final String BASE_URI = "http://localhost:7080/foundry/";
-    static MongoService mongoService;
 
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
@@ -31,7 +30,6 @@ public class Main {
        //         .register(MultiPartFeature.class);
         IngestorWSApp app = new IngestorWSApp();
 
-        mongoService = MongoService.getInstance();
         ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
         ScigraphUtils.setHandler(smHandler);
         // create and start a new instance of grizzly http server
@@ -52,7 +50,6 @@ public class Main {
                 + "%sapplication.wadl\nHit enter to stop it...", BASE_URI));
         System.in.read();
         server.shutdownNow();
-        Main.mongoService.shutdown();
     }
 }
 

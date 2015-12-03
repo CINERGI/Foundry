@@ -25,22 +25,28 @@ public class UserResource {
         System.out.println("action:" + action);
         System.out.println("content:" + content);
         System.out.println("=============================");
+        MongoService mongoService = null;
         try {
+            mongoService = new MongoService();
             JSONObject userJSON = new JSONObject(content);
             if (action.equals("create")) {
                 User user = User.fromJSON(userJSON);
-                ObjectId objectId = MongoService.getInstance().saveUser(user);
+                ObjectId objectId = mongoService.saveUser(user);
                 JSONObject js = new JSONObject();
                 js.put("id", objectId.toHexString());
                 return Response.ok(js.toString(2)).build();
             } else if (action.equals("delete")) {
                 String username = userJSON.has("username") ? userJSON.getString("username") : null;
                 String id = userJSON.has("id") ? userJSON.getString("id") : null;
-                MongoService.getInstance().removeUser(username, id);
+                mongoService.removeUser(username, id);
                 return Response.ok().build();
             }
         } catch (Exception x) {
             x.printStackTrace();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
         return Response.serverError().build();
     }
@@ -50,8 +56,10 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
 //    @ApiOperation(value="Find the user with the given userId")
     public Response getUser(@PathParam("userId") String userId) {
+        MongoService mongoService = null;
         try {
-            User user = MongoService.getInstance().findUser(null, userId);
+            mongoService = new MongoService();
+            User user = mongoService.findUser(null, userId);
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No user with the id:" + userId).build();
@@ -61,6 +69,10 @@ public class UserResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 
@@ -68,8 +80,10 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchOrganization(@QueryParam("username") String username) {
+        MongoService mongoService = null;
         try {
-            User user = MongoService.getInstance().findUser(username, null);
+            mongoService = new MongoService();
+            User user = mongoService.findUser(username, null);
             if (user == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No user with the username:" + username).build();
@@ -79,6 +93,10 @@ public class UserResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 }

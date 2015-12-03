@@ -30,8 +30,10 @@ public class SourceResource {
             response = String.class)
     public Response getSource(@ApiParam(value = "The resource ID for the harvest source", required = true)
                               @PathParam("resourceId") String resourceId) {
+        MongoService mongoService = null;
         try {
-            final JSONObject js = MongoService.getInstance().getSource(resourceId);
+            mongoService = new MongoService();
+            final JSONObject js = mongoService.getSource(resourceId);
             if (js == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity("No source with the resourceId:" + resourceId).build();
             }
@@ -40,6 +42,10 @@ public class SourceResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 
@@ -51,8 +57,10 @@ public class SourceResource {
             notes = "",
             response = String.class)
     public Response getAllSources() {
+        MongoService mongoService = null;
         try {
-            final List<JSONObject> allSources = MongoService.getInstance().getAllSources();
+            mongoService = new MongoService();
+            List<JSONObject> allSources = mongoService.getAllSources();
             JSONArray jsArr = new JSONArray();
             for (JSONObject js : allSources) {
                 if (!js.has("sourceInformation")) {
@@ -69,6 +77,10 @@ public class SourceResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 }

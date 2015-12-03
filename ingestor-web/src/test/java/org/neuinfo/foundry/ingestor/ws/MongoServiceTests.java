@@ -2,6 +2,7 @@ package org.neuinfo.foundry.ingestor.ws;
 
 import junit.framework.Assert;
 import org.bson.types.ObjectId;
+import org.glassfish.jersey.server.internal.scanning.PackageNamesScanner;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -12,26 +13,36 @@ import org.neuinfo.foundry.common.model.Organization;
  */
 public class MongoServiceTests {
 
-    @After
-    public void tearDown() throws Exception {
-        MongoService.getInstance().shutdown();
-    }
-
     @Test
     public void saveFindOrganization() throws Exception {
-        ObjectId id = MongoService.getInstance().saveOrganization("UCSD");
+        MongoService mongoService = null;
+        try {
+            mongoService = new MongoService();
+            ObjectId id = mongoService.saveOrganization("UCSD");
 
-        System.out.println("inserted id:" + id);
+            System.out.println("inserted id:" + id);
 
-        Organization org = MongoService.getInstance().findOrganization(null, id.toHexString());
+            Organization org = mongoService.findOrganization(null, id.toHexString());
 
-        Assert.assertNotNull(org);
-        System.out.println(org);
-
+            Assert.assertNotNull(org);
+            System.out.println(org);
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
+        }
     }
 
     @Ignore
     public void removeOrganization() throws Exception {
-        MongoService.getInstance().removeOrganization("UCSD", null);
+        MongoService mongoService = null;
+        try {
+            mongoService = new MongoService();
+            mongoService.removeOrganization("UCSD", null);
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
+        }
     }
 }

@@ -23,25 +23,32 @@ public class OrganizationSource {
         System.out.println("action:" + action);
         System.out.println("content:" + content);
         System.out.println("=============================");
+        MongoService mongoService = null;
         try {
+            mongoService = new MongoService();
             JSONObject orgJSON = new JSONObject(content);
             if (action.equals("create")) {
                 String orgName = orgJSON.getString("organization-name");
-                ObjectId objectId = MongoService.getInstance().saveOrganization(orgName);
+                ObjectId objectId = mongoService.saveOrganization(orgName);
 
                 JSONObject js = new JSONObject();
                 js.put("id", objectId.toHexString());
                 return Response.ok(js.toString(2)).build();
             } else if (action.equals("delete")) {
+
                 String orgName = orgJSON.has("organization-name") ? orgJSON.getString("organization-name") : null;
                 String id = orgJSON.has("id") ? orgJSON.getString("id") : null;
                 System.out.println("id:" + id);
-                MongoService.getInstance().removeOrganization(orgName, id);
+                mongoService.removeOrganization(orgName, id);
                 return Response.ok().build();
             }
 
         } catch (Exception x) {
             x.printStackTrace();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
         return null;
     }
@@ -50,8 +57,10 @@ public class OrganizationSource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getOrganization(@PathParam("orgId") String orgId) {
+        MongoService mongoService = null;
         try {
-            Organization organization = MongoService.getInstance().findOrganization(null, orgId);
+            mongoService = new MongoService();
+            Organization organization = mongoService.findOrganization(null, orgId);
             if (organization == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No organization with the id:" + orgId).build();
@@ -62,6 +71,10 @@ public class OrganizationSource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 
@@ -69,8 +82,10 @@ public class OrganizationSource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response searchOrganization(@QueryParam("organization-name") String orgName) {
+        MongoService mongoService = null;
         try {
-            Organization organization = MongoService.getInstance().findOrganization(orgName, null);
+            mongoService = new MongoService();
+            Organization organization = mongoService.findOrganization(orgName, null);
             if (organization == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No organization with the name:" + orgName).build();
@@ -81,6 +96,10 @@ public class OrganizationSource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 

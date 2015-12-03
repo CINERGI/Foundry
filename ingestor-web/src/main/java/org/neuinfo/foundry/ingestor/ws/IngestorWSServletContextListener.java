@@ -14,7 +14,6 @@ public class IngestorWSServletContextListener implements ServletContextListener 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         try {
             System.out.println("starting mongoService");
-            MongoService.getInstance();
             ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
             ScigraphUtils.setHandler(smHandler);
         } catch (Exception x) {
@@ -26,7 +25,6 @@ public class IngestorWSServletContextListener implements ServletContextListener 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         try {
             System.out.println("shutting down mongoService");
-            MongoService.getInstance().shutdown();
         } catch (Exception x) {
             x.printStackTrace();
         }

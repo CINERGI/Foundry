@@ -49,8 +49,9 @@ public class DocumentResource {
             notes = "",
             response = String.class)
     public Response getDocumentIdsForResource(@ApiParam(value = "The resource ID for the harvest source", required = true) @PathParam("resourceId") String resourceId) {
+        MongoService mongoService = null;
         try {
-            MongoService mongoService = MongoService.getInstance();
+            mongoService = new MongoService();
 
             Set<String> statusSet = new HashSet<>(7);
             statusSet.add("finished");
@@ -62,6 +63,10 @@ public class DocumentResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
     }
 
@@ -76,8 +81,9 @@ public class DocumentResource {
     public Response getDocument(@ApiParam(value = "The resource ID for the harvest source", required = true) @PathParam("resourceId") String resourceId,
                                 @ApiParam(value = "The document ID for the metadata document", required = true) @PathParam("docId") String docId) {
         String xmlStr = null;
+        MongoService mongoService = null;
         try {
-            final MongoService mongoService = MongoService.getInstance();
+            mongoService = new MongoService();
 
             BasicDBObject docWrapper = mongoService.findTheDocument(resourceId, docId);
             if (docWrapper == null) {
@@ -98,6 +104,10 @@ public class DocumentResource {
             xmlStr = sw.toString();
         } catch (Exception x) {
             x.printStackTrace();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
         return Response.ok(xmlStr).build();
     }
@@ -113,8 +123,9 @@ public class DocumentResource {
     public Response getKeywordHierarchies(
             @ApiParam(value = "The document ID for the metadata document", required = true) @QueryParam("id") String docId) {
         String jsonStr;
+        MongoService mongoService = null;
         try {
-            final MongoService mongoService = MongoService.getInstance();
+            mongoService = new MongoService();
             System.out.println("docId:" + docId);
             BasicDBObject docWrapper = mongoService.findTheDocument(docId);
             if (docWrapper == null) {
@@ -155,10 +166,33 @@ public class DocumentResource {
         } catch (Exception x) {
             x.printStackTrace();
             return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
         }
 
         return Response.ok(jsonStr).build();
     }
+
+    List<Element> findElementsWithName(Element rootEl, String selElemName) {
+        List<Element> selectList = new LinkedList<Element>();
+        collectElements(rootEl, selectList, selElemName);
+        return selectList;
+    }
+
+    void collectElements(Element parentEl, List<Element> selectList, String selElemName) {
+        if (parentEl.getName().equals(selElemName)) {
+            selectList.add(parentEl);
+        } else {
+            List<Element> children = parentEl.getChildren();
+            for(Element child : children) {
+                collectElements(child, selectList, selElemName);
+            }
+        }
+    }
+
+
 
     List<JSONObject> prepHierarchies(Element docEl, KeywordHierarchyHandler handler,
                                      IHierarchyHandler chh) {
@@ -172,6 +206,7 @@ public class DocumentResource {
         XPathExpression<Element> expr = null;
 
         Namespace ns = nsMap.get("gmd");
+        boolean geoscienceAustralia = false;
         if (ns != null) {
             expr = xpathFactory.compile("//gmd:MD_Keywords",
                     Filters.element(), null, ns);
@@ -180,15 +215,20 @@ public class DocumentResource {
             expr = xpathFactory.compile("//gmi:MD_Keywords",
                     Filters.element(), null, ns);
         } else {
-            // assume gmi
-            nsMap.put("gmi", Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi"));
-            ns = nsMap.get("gmi");
+            geoscienceAustralia = true;
+            // get default namespace
+            // nsMap.put("gmi", Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi"));
+            Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
+            ns = nsMap.get("");
             expr = xpathFactory.compile("//gmi:MD_Keywords",
-                    Filters.element(), null, ns);
+                    Filters.element(),null, gmi);
         }
         Assertion.assertNotNull(ns);
         Document doc = new Document(docEl);
         List<Element> elements = expr.evaluate(doc);
+        if (geoscienceAustralia) {
+            elements = findElementsWithName(docEl, "MD_Keywords");
+        }
         if (elements != null && !elements.isEmpty()) {
 
             Namespace gcoNS = nsMap.get("gco");
