@@ -42,15 +42,14 @@ public class DocIdAssignJMSConsumer extends JMSConsumerSupport implements Messag
             DBObject pi = (DBObject) theDoc.get("Processing");
 
             if (pi != null) {
-                System.out.println("pi:" + pi);
+                // System.out.println("pi:" + pi);
                 String status = (String) pi.get("status");
-                if (status.equals(getInStatus())) { //  "new")) {
+                if (status.equals(getInStatus())) {
                     final UUID uuid = UUID.randomUUID();
                     pi.put("docId", uuid.toString());
                     pi.put("status", getOutStatus());
-                    System.out.println("updating");
                     collection.update(query, theDoc);
-                    System.out.println("updated " + theDoc);
+                    logger.info("assigned id " + uuid.toString() + " to doc with oid:" + objectId);
                 }
             }
         } else {
@@ -64,16 +63,16 @@ public class DocIdAssignJMSConsumer extends JMSConsumerSupport implements Messag
         try {
             ObjectMessage om = (ObjectMessage) message;
             String payload = (String) om.getObject();
-            System.out.println("payload:" + payload);
+            //logger.info("payload:" + payload);
             JSONObject json = new JSONObject(payload);
 
             String status = json.getString("status");
             String objectId = json.getString("oid");
-            System.out.format("status:%s objectId:%s%n", status, objectId);
+            logger.info(String.format("status:%s objectId:%s%n", status, objectId));
             addDocId(objectId);
         } catch (Exception x) {
             //TODO proper error handling
-            x.printStackTrace();
+            logger.error(x);
         }
     }
 

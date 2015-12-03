@@ -112,7 +112,7 @@ public class DocIdAssigner implements Runnable {
                     pi.put("status", "id_added");
                     System.out.println("updating");
                     records.update(query, theDoc);
-                    System.out.println("updated " + theDoc);
+                    //System.out.println("updated " + theDoc);
                 }
             }
         } else {

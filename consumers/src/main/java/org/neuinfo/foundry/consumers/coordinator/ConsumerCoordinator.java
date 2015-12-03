@@ -65,7 +65,7 @@ public class ConsumerCoordinator implements MessageListener {
     }
 
     public void shutdown() {
-        System.out.println("shutting down the ConsumerCoordinator...");
+        logger.info("shutting down the ConsumerCoordinator...");
         try {
             if (this.con != null) {
                 con.close();

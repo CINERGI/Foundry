@@ -174,7 +174,7 @@ public class OrganizationEnhancer implements IPlugin {
                 if (orgName != null && !orgName.equalsIgnoreCase("unknown")) {
                     Keyword kw = handler.getOrganizationVIAF(orgName, kwData.keywordMap);
                     if (kw != null && !seenSet.contains(kw.getTerm())) {
-                        System.out.println("adding VIAF from lookup: " + kw.getTerm());
+                        logger.info("adding VIAF from lookup: " + kw.getTerm());
                         kwData.add(kw);
                         seenSet.add(kw.getTerm());
                     }
@@ -203,7 +203,7 @@ public class OrganizationEnhancer implements IPlugin {
             handler.findOrganizations(text, kwData.keywordMap, kwData.jsArr);
         }
         if (kwData.keywordMap.size() > origKWCount) {
-            System.out.println("Added VIAFs from lookup");
+            logger.info("Added VIAFs from lookup");
         }
     }
 

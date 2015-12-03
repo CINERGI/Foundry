@@ -36,7 +36,7 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
         if (theDoc != null) {
             DBObject pi = (DBObject) theDoc.get("Processing");
             if (pi != null) {
-                System.out.println("pi:" + pi);
+                logger.info("pi:" + pi);
                 String status = (String) pi.get("status");
                 BasicDBObject origDoc = (BasicDBObject) theDoc.get("OriginalDoc");
                 if (origDoc != null && status != null && status.equals(getInStatus())) {
@@ -59,7 +59,7 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
 
                     } catch (Throwable t) {
                         logger.error("Error", t);
-                       // t.printStackTrace();
+                        // t.printStackTrace();
                         if (pi != null) {
                             pi.put("status", "error");
                             logger.info("updating pi:" + pi.toString());
@@ -78,15 +78,15 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
         try {
             ObjectMessage om = (ObjectMessage) message;
             String payload = (String) om.getObject();
-            System.out.println("payload:" + payload);
+            //System.out.println("payload:" + payload);
             JSONObject json = new JSONObject(payload);
             String status = json.getString("status");
             String objectId = json.getString("oid");
-            System.out.format("status:%s objectId:%s%n", status, objectId);
+            logger.info(String.format("status:%s objectId:%s%n", status, objectId));
             handle(objectId);
         } catch (Exception x) {
+            logger.error(x);
             //TODO proper error handling
-            x.printStackTrace();
         }
     }
 

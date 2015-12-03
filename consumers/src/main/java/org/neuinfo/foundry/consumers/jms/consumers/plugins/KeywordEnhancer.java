@@ -84,7 +84,7 @@ public class KeywordEnhancer implements IPlugin {
                 if (objects != null && !objects.isEmpty()) {
                     String text2Annotate = (String) objects.get(0);
                     if (!text2Annotate.equals("REQUIRED FIELD")) {
-                        ScigraphUtils.annotateEntities(jsonPath, text2Annotate, keywordMap);
+                        ScigraphUtils.annotateEntities(jsonPath, text2Annotate, keywordMap, false);
                         text2AnnotateList.add(text2Annotate);
                         if (jsonPath.indexOf("title") != -1) {
                             docTitle = text2Annotate;
@@ -112,8 +112,10 @@ public class KeywordEnhancer implements IPlugin {
                 // no category exclusions 04/22/2015
                 JSONObject kwJson = keyword.toJSON();
                 jsArr.put(kwJson);
-                logger.info(kwJson.toString(2));
-                logger.info("---------------------------");
+                if (logger.isDebugEnabled()) {
+                    logger.debug(kwJson.toString(2));
+                    logger.debug("---------------------------");
+                }
             }
             if (useNER) {
                 Map<String, Keyword> nerKeywordsMap = this.nerKeywordEnhancer.findKeywords(text2AnnotateList);

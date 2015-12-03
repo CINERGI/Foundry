@@ -23,7 +23,7 @@ import java.util.*;
 public class ScigraphUtils {
     static String serviceURL = "http://tikki.neuinfo.org:9000/";
     static String annotationServiceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
-    private final static Logger logger = Logger.getLogger(ScigraphUtils.class);
+    private final static Logger logger = Logger.getLogger("ScigraphUtils");
     private static ScigraphMappingsHandler handler;
     static Map<String, List<List<FacetNode>>> idFacetNodeListCache =
             Collections.synchronizedMap(new LRUCache<String, List<List<FacetNode>>>(1000));
@@ -57,7 +57,7 @@ public class ScigraphUtils {
 
         URI uri = builder.build();
         HttpGet httpGet = new HttpGet(uri);
-        System.out.println("uri:" + uri);
+        logger.info("uri:" + uri);
         // httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("Accept", "application/json");
         try {
@@ -136,9 +136,7 @@ public class ScigraphUtils {
     }
 
     public static List<List<FacetNode>> getKeywordFacetHierarchy(String id) throws Exception {
-        System.out.println("id:" + id);
-
-
+        logger.info("id:" + id);
         List<List<FacetNode>> fnListList = idFacetNodeListCache.get(id);
         if (fnListList != null) {
             return fnListList;
@@ -158,7 +156,7 @@ public class ScigraphUtils {
                     }
                 }
                 if (facetHierarchy != null) {
-                    System.out.println("\t" + facetHierarchy);
+                    logger.info("\t" + facetHierarchy);
                 }
             }
         }
@@ -260,7 +258,7 @@ public class ScigraphUtils {
         builder.setParameter("direction", "OUTGOING");
         URI uri = builder.build();
         HttpGet httpGet = new HttpGet(uri);
-        System.out.println("uri:" + uri);
+        logger.info("uri:" + uri);
         httpGet.addHeader("Accept", "application/json");
         try {
             HttpResponse response = client.execute(httpGet);
@@ -273,9 +271,9 @@ public class ScigraphUtils {
 
                 opList = prepHierarchy(json, id);
                 for (OntologyPath op : opList) {
-                    System.out.println(op);
+                    logger.info(op);
                 }
-                System.out.println("--------------------------------------");
+                logger.info("--------------------------------------");
                 //System.out.println("hierarchy: " + hierarchy);
                 // lruCache.put(id, hierarchy);
                 //return hierarchy;

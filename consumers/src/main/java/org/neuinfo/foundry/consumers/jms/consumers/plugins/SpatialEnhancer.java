@@ -132,7 +132,7 @@ public class SpatialEnhancer implements IPlugin {
         // "http://localhost:9200/");
 
         URI uri = builder.build();
-        System.out.println("uri:" + uri);
+        logger.info("uri:" + uri);
         HttpPost httpPost = new HttpPost(uri);
         boolean ok = false;
         try {

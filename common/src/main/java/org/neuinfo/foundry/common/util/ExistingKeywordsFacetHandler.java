@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.common.util;
 
+import org.apache.log4j.Logger;
 import org.jdom2.Element;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
@@ -16,6 +17,7 @@ import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
 public class ExistingKeywordsFacetHandler {
     File isoXmlFile;
     Element docEl;
+    private final static Logger logger = Logger.getLogger("ExistingKeywordsFacetHandler");
 
     static {
         try {
@@ -67,7 +69,7 @@ public class ExistingKeywordsFacetHandler {
         for (Keyword kw : keywordMap.values()) {
             if (existingKeywordsLC.contains(kw.getTerm().toLowerCase())) {
                 filteredKeywordList.add(kw);
-                System.out.println(kw);
+                logger.info(kw);
             }
         }
         if (!filteredKeywordList.isEmpty()) {
