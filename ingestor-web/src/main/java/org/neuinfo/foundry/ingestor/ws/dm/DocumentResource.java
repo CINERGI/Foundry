@@ -169,11 +169,18 @@ public class DocumentResource {
             nsMap.put(ns.getPrefix(), ns);
         }
         XPathFactory xpathFactory = XPathFactory.instance();
+        XPathExpression<Element> expr = null;
 
         Namespace ns = nsMap.get("gmd");
+        if (ns != null) {
+            expr = xpathFactory.compile("//gmd:MD_Keywords",
+                    Filters.element(), null, ns);
+        } else if (nsMap.containsKey("gmi")) {
+            ns = nsMap.get("gmi");
+            expr = xpathFactory.compile("//gmi:MD_Keywords",
+                    Filters.element(), null, ns);
+        }
         Assertion.assertNotNull(ns);
-        XPathExpression<Element> expr = xpathFactory.compile("//gmd:MD_Keywords",
-                Filters.element(), null, ns);
         Document doc = new Document(docEl);
         List<Element> elements = expr.evaluate(doc);
         if (elements != null && !elements.isEmpty()) {
