@@ -179,6 +179,12 @@ public class DocumentResource {
             ns = nsMap.get("gmi");
             expr = xpathFactory.compile("//gmi:MD_Keywords",
                     Filters.element(), null, ns);
+        } else {
+            // assume gmi
+            nsMap.put("gmi", Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi"));
+            ns = nsMap.get("gmi");
+            expr = xpathFactory.compile("//gmi:MD_Keywords",
+                    Filters.element(), null, ns);
         }
         Assertion.assertNotNull(ns);
         Document doc = new Document(docEl);
