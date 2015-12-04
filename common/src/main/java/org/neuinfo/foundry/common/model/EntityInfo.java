@@ -92,7 +92,7 @@ public class EntityInfo {
     }
 
     public static EntityInfo fromJSON(JSONObject json) {
-        String contentLocation = json.getString("contentLocation");
+        String contentLocation = json.has("contentLocation") ?  json.getString("contentLocation") : null;
         String id = json.getString("id");
         int start = json.getInt("start");
         int end = json.getInt("end");

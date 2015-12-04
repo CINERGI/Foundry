@@ -156,11 +156,20 @@ public class DocumentResource {
             Element docEl = converter.toXML(origDocJson);
             // Utils.saveXML(docEl, "/tmp/xpath_test.xml");
 
+            List<Keyword> existingKeywords = getExistingKeywords(docEl);
+            for(Keyword kw : existingKeywords) {
+                JSONObject kwJson = kw.toJSON();
+                JSONObject kwhJson = prepHierarchyForKeyword2(kwJson);
+                    if (kwhJson.has("hierarchy")) {
+                        keywordsArr.put(kwhJson);
+                    }
+            }
+            /*
             List<JSONObject> jsonObjects = prepHierarchies(docEl, handler, chh);
             for (JSONObject js : jsonObjects) {
                 keywordsArr.put(js);
             }
-
+            */
 
             jsonStr = result.toString(2);
         } catch (Exception x) {
@@ -192,6 +201,33 @@ public class DocumentResource {
         }
     }
 
+    List<Keyword> getExistingKeywords(Element docEl) throws Exception {
+        Set<String> existingKeywords = CinergiXMLUtils.getExistingKeywords(docEl);
+        if (existingKeywords.isEmpty()) {
+            return Collections.emptyList();
+        }
+         StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
+        for (Iterator<String> it = existingKeywords.iterator(); it.hasNext(); ) {
+            sb.append(it.next());
+            if (it.hasNext()) {
+                sb.append(" , ");
+            }
+        }
+        Set<String> existingKeywordsLC = new HashSet<String>();
+        for (String ekw : existingKeywords) {
+            existingKeywordsLC.add(ekw.toLowerCase());
+        }
+        Map<String, Keyword> keywordMap = new HashMap<String, Keyword>();
+
+        ScigraphUtils.annotateEntities(null, sb.toString(), keywordMap, false);
+        List<Keyword> filteredKeywordList = new ArrayList<Keyword>(keywordMap.size());
+        for (Keyword kw : keywordMap.values()) {
+            if (existingKeywordsLC.contains(kw.getTerm().toLowerCase())) {
+                filteredKeywordList.add(kw);
+            }
+        }
+        return filteredKeywordList;
+    }
 
 
     List<JSONObject> prepHierarchies(Element docEl, KeywordHierarchyHandler handler,
