@@ -29,6 +29,10 @@ public class ScigraphMappingsHandler {
                 List<FacetNode> fnList = new ArrayList<FacetNode>(3);
                 for (String tok : toks) {
                     int idx = tok.indexOf("http:");
+                    if (idx == -1) {
+                        // try https
+                        idx = tok.indexOf("https:");
+                    }
                     if (idx != -1) {
                         String label = tok.substring(0, idx).trim();
                         String id = tok.substring(idx).trim();
@@ -38,6 +42,8 @@ public class ScigraphMappingsHandler {
                 if (fnList.size() == 3) {
                     String key = ScigraphUtils.toCurie(fnList.get(2).getId());
                     mappings.put(key, fnList);
+                } else {
+                    System.err.println("line:" + line);
                 }
             }
         }
