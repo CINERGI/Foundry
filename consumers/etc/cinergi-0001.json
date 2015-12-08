@@ -7,7 +7,7 @@
     
     "ingestConfiguration": {
       "ingestMethod": "WAF",
-      "ingestURL": "http://hydro10.sdsc.edu/metadata/ScienceBase_WAF_dump/",
+      "ingestURL": "http://maxim.ucsd.edu/waf/sciencebase/",
       "allowDuplicates": "False",
       
       "crawlFrequency": {

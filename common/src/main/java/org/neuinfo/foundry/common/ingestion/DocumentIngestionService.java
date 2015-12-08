@@ -165,7 +165,7 @@ public class DocumentIngestionService extends BaseIngestionService {
         return docWrapper;
     }
 
-    public DocWrapper saveDocument(DocWrapper docWrapper, String collectionName) throws Exception {
+    public ObjectId saveDocument(DocWrapper docWrapper, String collectionName) throws Exception {
         DB db = mongoClient.getDB(dbName);
         DBCollection collection = db.getCollection(collectionName); // "records");
 
@@ -174,7 +174,7 @@ public class DocumentIngestionService extends BaseIngestionService {
         DBObject dbObject = JSONUtils.encode(json, true);
 
         collection.insert(dbObject, WriteConcern.SAFE);
-        return docWrapper;
+        return (ObjectId) dbObject.get("_id");
     }
 
 

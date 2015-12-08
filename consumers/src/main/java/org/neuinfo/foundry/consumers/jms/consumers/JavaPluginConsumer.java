@@ -22,10 +22,25 @@ import javax.jms.ObjectMessage;
  */
 public class JavaPluginConsumer extends JMSConsumerSupport implements MessageListener, Pluggable {
     private IPlugin plugin;
+    MessagePublisher messagePublisher;
     private final static Logger logger = Logger.getLogger(JavaPluginConsumer.class);
 
     public JavaPluginConsumer(String queueName) {
         super(queueName);
+    }
+
+    @Override
+    public void startup(String configFile) throws Exception {
+        super.startup(configFile);
+        messagePublisher = new MessagePublisher(this.config.getBrokerURL());
+    }
+
+    @Override
+    public void shutdown() {
+        if (messagePublisher != null) {
+            messagePublisher.close();
+        }
+        super.shutdown();
     }
 
     void handle(String objectId) throws Exception {
@@ -48,13 +63,16 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
                             pi = (DBObject) theDoc.get("Processing");
                             pi.put("status", getOutStatus());
                             collection.update(query, theDoc);
+                            messagePublisher.sendMessage(objectId, getOutStatus());
                         } else if (result.getStatus() == Result.Status.OK_WITHOUT_CHANGE) {
                             pi.put("status", getOutStatus());
                             collection.update(query, theDoc);
+                            messagePublisher.sendMessage(objectId, getOutStatus());
                         } else {
                             pi.put("status", "error");
                             logger.info("updating pi:" + pi.toString());
                             collection.update(query, theDoc);
+                            messagePublisher.sendMessage(objectId, "error");
                         }
 
                     } catch (Throwable t) {
@@ -64,6 +82,7 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
                             pi.put("status", "error");
                             logger.info("updating pi:" + pi.toString());
                             collection.update(query, theDoc);
+                            messagePublisher.sendMessage(objectId, "error");
                         }
                     }
                 }

@@ -2,7 +2,6 @@
     <mongo-config db="discotest" collection="records">
         <servers>
             <server host="burak.crbs.ucsd.edu" port="27017"/>
-            <server host="burak.crbs.ucsd.edu" port="27018"/>
         </servers>
     </mongo-config>
     <activemq-config>
@@ -21,7 +20,7 @@
     </wf-mappings>
     <workflows>
 
-         <workflow name="CINERGI Test workflow">
+        <workflow name="CINERGI Test workflow">
             <routes>
                 <route>
                     <condition>
@@ -29,15 +28,17 @@
                     </condition>
                     <to>foundry.uuid.1</to>
                 </route>
+                <!--
+                     <route>
+                         <condition>
+                             <predicate name="processing.status" op="eq" value="id_assigned.1"/>
+                         </condition>
+                         <to>foundry.xml2cinergi.1</to>
+                     </route>
+                     -->
                 <route>
                     <condition>
                         <predicate name="processing.status" op="eq" value="id_assigned.1"/>
-                    </condition>
-                    <to>foundry.xml2cinergi.1</to>
-                </route>
-                <route>
-                    <condition>
-                        <predicate name="processing.status" op="eq" value="xml2cinergi_finished.1"/>
                     </condition>
                     <to>foundry.spatial.1</to>
                 </route>

@@ -2,6 +2,7 @@ package org.neuinfo.foundry.consumers.jms.consumers;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.ingestion.DocumentIngestionService;
 import org.neuinfo.foundry.common.model.DocWrapper;
@@ -44,17 +45,17 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
 
 
         DocumentIngestionService dis = new DocumentIngestionService();
+        MessagePublisher messagePublisher = null;
         try {
             ingestor.startup();
             dis.start(this.config);
-
+            messagePublisher = new MessagePublisher(this.config.getBrokerURL());
             Source source = dis.findSource(srcNifId, dataSource);
             Assertion.assertNotNull(source, "Cannot find source for sourceID:" + srcNifId);
             dis.setSource(source);
             int submittedCount = 0;
             int ingestedCount = 0;
             dis.beginBatch(source, batchId);
-
 
             while (ingestor.hasNext()) {
                 try {
@@ -92,10 +93,12 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                                             provData, startDate, dw);
                                     // delete previous record first
                                     dis.removeDocument(document, getCollectionName());
-                                    dis.saveDocument(dw, getCollectionName());
+                                    ObjectId oid = dis.saveDocument(dw, getCollectionName());
+                                    messagePublisher.sendMessage(oid.toString(), getOutStatus());
                                 } else {
                                     pi.put("status", "finished");
                                     dis.updateDocument(document, getCollectionName(), batchId);
+
                                 }
                             } else {
                                 DBObject dbObject = JSONUtils.encode(payload, true);
@@ -104,6 +107,8 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                                 document.put("CrawlDate", JSONUtils.toBsonDate(new Date()));
                                 pi.put("status", updateOutStatus);
                                 dis.updateDocument(document, getCollectionName(), batchId);
+                                String oidStr = document.get("_id").toString();
+                                messagePublisher.sendMessage(oidStr, updateOutStatus);
                             }
 
                         } else {
@@ -118,7 +123,8 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                             ProvenanceHelper.removeProvenance(dw.getPrimaryKey());
                             ProvenanceHelper.saveIngestionProvenance("ingestion",
                                     provData, startDate, dw);
-                            dis.saveDocument(dw, getCollectionName());
+                            ObjectId oid = dis.saveDocument(dw, getCollectionName());
+                            messagePublisher.sendMessage(oid.toString(), getOutStatus());
                         }
                         ingestedCount++;
                     }
@@ -134,6 +140,9 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
         } finally {
             dis.shutdown();
             ingestor.shutdown();
+            if (messagePublisher != null) {
+                messagePublisher.close();
+            }
         }
 
     }

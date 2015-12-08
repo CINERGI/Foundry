@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.jms.common;
 
+import org.neuinfo.foundry.common.config.IMongoConfig;
 import org.neuinfo.foundry.common.config.ServerInfo;
 
 import java.io.File;
@@ -10,7 +11,7 @@ import java.util.Map;
 /**
  * Created by bozyurt on 4/24/14.
  */
-public class Configuration {
+public class Configuration implements IMongoConfig {
     Map<String, Object> mongoListenerSettings;
     List<Workflow> workflows = new ArrayList<Workflow>(5);
     List<WorkflowMapping> workflowMappings = new ArrayList<WorkflowMapping>(5);
@@ -58,6 +59,11 @@ public class Configuration {
 
     public String getMongoDBName() {
         return mongoDBName;
+    }
+
+    @Override
+    public List<ServerInfo> getServers() {
+        return mongoServers;
     }
 
     public void setMongoServers(List<ServerInfo> mongoServers) {
