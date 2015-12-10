@@ -118,6 +118,7 @@ public class WAFExporter implements IPlugin {
         }
         fileIdentifier = fileIdentifier.replaceAll("/", "__");
         fileIdentifier = fileIdentifier.replaceAll("\\.+", "_");
+        fileIdentifier = fileIdentifier.replaceAll("[:;,]+","_");
         File enhancedXmlFile = new File(sourceDir, fileIdentifier + ".xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
         logger.info("saved enhancedXmlFile to " + enhancedXmlFile);
