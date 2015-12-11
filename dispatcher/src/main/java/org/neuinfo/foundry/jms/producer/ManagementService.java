@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.neuinfo.foundry.common.config.ServerInfo;
 import org.neuinfo.foundry.common.ingestion.DocumentIngestionService;
 import org.neuinfo.foundry.common.model.Source;
+import org.neuinfo.foundry.common.util.MongoUtils;
 import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.jms.common.ConfigLoader;
 import org.neuinfo.foundry.jms.common.Configuration;
@@ -57,12 +58,8 @@ public class ManagementService {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        MongoClientOptions options = MongoClientOptions.builder()
-                .autoConnectRetry(true).maxAutoConnectRetryTime(1200000)
-                .socketTimeout(30000).connectTimeout(15000).build();
-        mongoClient = new MongoClient(servers, options);
 
-        mongoClient.setWriteConcern(WriteConcern.SAFE);
+        mongoClient = MongoUtils.createMongoClient(servers);
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
         this.con = factory.createConnection();
         session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);

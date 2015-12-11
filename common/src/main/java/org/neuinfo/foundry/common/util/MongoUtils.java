@@ -1,10 +1,9 @@
 package org.neuinfo.foundry.common.util;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import org.neuinfo.foundry.common.model.Source;
+
+import java.util.List;
 
 /**
  * Created by bozyurt on 11/4/15.
@@ -23,5 +22,14 @@ public class MongoUtils {
             cursor.close();
         }
         return source;
+    }
+
+    public static MongoClient createMongoClient(List<ServerAddress> servers) {
+        MongoClientOptions mco = new MongoClientOptions.Builder().socketKeepAlive(false).
+                maxConnectionIdleTime(60000).connectionsPerHost(10).build();
+        MongoClient mongoClient = new MongoClient(servers, mco);
+
+        mongoClient.setWriteConcern(WriteConcern.SAFE);
+        return mongoClient;
     }
 }
