@@ -21,7 +21,7 @@ import java.net.URI;
  * Created by bozyurt on 12/4/14.
  */
 public class ProvenanceClient {
-    private String serverURL = "http://provaas.org/"; // "http://geoprovdb.webfactional.com/";
+    private String serverURL = "http://provaas.cloudapp.net/"; //"http://provaas.org/"; // "http://geoprovdb.webfactional.com/";
     private String user = "cinergi";
     private String pwd = "4cinergi_prov";
 
