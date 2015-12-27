@@ -5,6 +5,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.WriteConcern;
 import org.neuinfo.foundry.common.config.IMongoConfig;
 import org.neuinfo.foundry.common.config.ServerInfo;
+import org.neuinfo.foundry.common.util.MongoUtils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,7 +26,8 @@ public class BaseIngestionService {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = new MongoClient(servers);
+        mongoClient = MongoUtils.createMongoClient(servers);
+
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);
     }
