@@ -85,6 +85,7 @@ Further Documentation
 ---------------------
 
  * [System Architecture](doc/architecture.md)
+ * [Developer Guide](doc/dev_guide.md) 
  * [Guide](doc/guide.md) 
  * [Document Ingestion](doc/doc_ingestion.md)
  * [Management Interface Web Services](doc/management_ws.md)
