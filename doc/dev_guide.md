@@ -78,45 +78,25 @@ The `org.neuinfo.foundry.consumers.plugin.IPlugin` interface is shown below;
 ```java
 public interface IPlugin {
 
-    public void setDocumentIngestionService(DocumentIngestionService dis);
-
-    public void setGridFSService(GridFSService gridFSService);
-
     public void initialize(Map<String, String> options) throws Exception;
 
     public Result handle(DBObject docWrapper);
 
     public String getPluginName();
-
 }
 ```
 
 The enhancement is done in the `handle(DBObject docWrapper)` method which takes a Mongo `DBObject` 
 object corresponding to the currently processed [document wrapper](doc_ingestion.md) from the Mongo database. 
-If the original document is small (less than 1MB) it will be stored inline in the document wrapper 
-otherwise it will be stored in the Mongo GridFS storage with a pointer in the document wrapper. 
-Below is a code fragment to get the original document converted to JSON from the `docWrapper` regardless
-of where the original document is stored.
+The original document is stored inline in the document wrapper. 
+Below is a code fragment to get the original document converted to JSON from the `docWrapper`.
 
 ```java
 BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
-String originalFileIDstr = (String) docWrapper.get("originalFileId");
-JSONObject json;
-if (!Utils.isEmpty(originalFileIDstr)) {
-   // large file
-   Assertion.assertNotNull(this.gridFSService);
-   json = gridFSService.findJSONFile(new ObjectId(originalFileIDstr));
-} else {
-   DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
-   json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
-}
+DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
+JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
 
 ```
-
-The GridFS service `org.neuinfo.foundry.common.ingestion.GridFSService` and mongo document service 
-`org.neuinfo.foundry.common.ingestion.DocumentIngestionService` are injected to the plugin by the 
-ES-Foundry using the setters `setGridFSService(GridFSService gridFSService)` and 
-`setDocumentIngestionService(DocumentIngestionService dis)` methods of the IPlugin interface.
 
 If you want to work on and update/add to the transformed data prepared by the downstream enhancers 
 in the pipeline which is stored under `Data.transformedRec` branch of the document wrapper, you can 
