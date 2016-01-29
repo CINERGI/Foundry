@@ -88,7 +88,9 @@ public class KeywordInfo {
         json.put("category", category);
         json.put("hierarchyPath", hierarchyPath);
         json.put("type", type.toString());
-        json.put("lastChangedDate", df.format(lastChangedDate));
+        if (lastChangedDate != null) {
+            json.put("lastChangedDate", df.format(lastChangedDate));
+        }
         return json;
     }
 

@@ -74,10 +74,8 @@ public class ExistingKeywordsFacetHandler {
             category2KWIListMap = prepKeywordFacets(filteredKeywordList);
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
 
-            docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh);
-
+            docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh, null);
         }
-
         return docEl;
     }
 

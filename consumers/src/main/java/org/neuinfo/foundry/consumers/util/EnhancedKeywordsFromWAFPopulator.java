@@ -16,10 +16,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by bozyurt on 1/28/16.
@@ -68,13 +65,15 @@ public class EnhancedKeywordsFromWAFPopulator {
                         if (docWrapper != null) {
                             List<KeywordInfo> kiList = fromISO2KeywordInfos(enhancedKeywordElements);
                             JSONArray jsArr = new JSONArray();
-                            for(KeywordInfo ki : kiList) {
+                            for (KeywordInfo ki : kiList) {
                                 jsArr.put(ki.toJSON());
                             }
                             DBObject data = (DBObject) docWrapper.get("Data");
                             data.put("enhancedKeywords", JSONUtils.encode(jsArr));
+                            System.out.println(jsArr.toString(2));
+                            System.out.println("===========================");
                             // save docWrapper
-                            // helper.saveDocWrapper(docWrapper);
+                            helper.saveDocWrapper(docWrapper);
                         }
                     }
                 }
@@ -88,7 +87,7 @@ public class EnhancedKeywordsFromWAFPopulator {
 
 
     List<KeywordInfo> fromISO2KeywordInfos(List<Element> enhancedDescriptiveKeywords) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat df = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         List<KeywordInfo> kiList = new ArrayList<KeywordInfo>();
         for (Element el : enhancedDescriptiveKeywords) {
             Element mdKWEl = el.getChild("MD_Keywords", gmd);
@@ -100,14 +99,17 @@ public class EnhancedKeywordsFromWAFPopulator {
                 category = "theme";
             }
 
-            Element outDateEl = citationEl.getChild("date", gmd);
-            Element ciDateEl = outDateEl.getChild("CI_Date", gmd);
-            Element gcoDateEl = ciDateEl.getChild("Date", gco);
-            String dateStr = gcoDateEl.getTextTrim();
-            Date date = null;
+            Element otherCitationDetailsEl = citationEl.getChild("otherCitationDetails", gmd);
+            String text = otherCitationDetailsEl.getChildTextTrim("CharacterString", gco);
+            String timeStampStr = text.substring(text.indexOf("at") + 2).trim();
 
+            //Element outDateEl = citationEl.getChild("date", gmd);
+            //Element ciDateEl = outDateEl.getChild("CI_Date", gmd);
+            //Element gcoDateEl = ciDateEl.getChild("Date", gco);
+
+            Date date = null;
             try {
-                date = df.parse(dateStr);
+                date = df.parse(timeStampStr);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -158,6 +160,17 @@ public class EnhancedKeywordsFromWAFPopulator {
             }
         }
         return enhancedDescriptiveKeywords;
+    }
+
+
+    public static void main(String[] args) throws Exception {
+        String homeDir = System.getProperty("user.home");
+        String wafDir = homeDir + "/etc/OpenTopography";
+        EnhancedKeywordsFromWAFPopulator populator = new EnhancedKeywordsFromWAFPopulator(wafDir, "cinergi-0012");
+
+        populator.handle();
+
+
     }
 
 }
