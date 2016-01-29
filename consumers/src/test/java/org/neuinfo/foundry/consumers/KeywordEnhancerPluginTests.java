@@ -10,10 +10,11 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
-import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
+import org.neuinfo.foundry.common.util.KeywordInfo;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 import java.io.File;
 import java.util.*;
@@ -48,16 +49,16 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
     public void testAddKeyword() throws Exception {
         Element docEl = Utils.loadXML("/tmp/00C9D45F-F6DF-4B80-B24B-B10883A282CB.xml");
-        List<CinergiXMLUtils.KeywordInfo> kwiList = new ArrayList<CinergiXMLUtils.KeywordInfo>(10);
-        CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("", "geyser",
+        List<KeywordInfo> kwiList = new ArrayList<KeywordInfo>(10);
+        KeywordInfo kwi = new KeywordInfo("", "geyser",
                 "theme", null);
         kwiList.add(kwi);
-        kwi = new CinergiXMLUtils.KeywordInfo("", "Laser", "instrument", null);
+        kwi = new KeywordInfo("", "Laser", "instrument", null);
         kwiList.add(kwi);
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         category2KWIListMap.put("instrument", kwiList);
         FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
-        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
+        docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, null);
         File enhancedXmlFile = new File("/tmp/kwd_test.xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
         System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
@@ -198,11 +199,11 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             Set<String> categories = kw.getCategories();
                             if (categories.size() == 1) { // && categories.iterator().next().equalsIgnoreCase("instrument")) {
                                 String category = categories.iterator().next();
-                                CinergiXMLUtils.KeywordInfo kwi = new CinergiXMLUtils.KeywordInfo("", kw.getTerm(),
+                                KeywordInfo kwi = new KeywordInfo("", kw.getTerm(),
                                         category, null);
                                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                                 if (kwiList == null) {
-                                    kwiList = new ArrayList<CinergiXMLUtils.KeywordInfo>(10);
+                                    kwiList = new ArrayList<KeywordInfo>(10);
                                     category2KWIListMap.put(category, kwiList);
                                 }
                                 kwiList.add(kwi);
@@ -214,7 +215,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             JSONObject originalDocJson = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
                             XML2JSONConverter converter = new XML2JSONConverter();
                             Element docEl = converter.toXML(originalDocJson);
-                            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
+                            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, docWrapper);
                             File enhancedXmlFile = new File("/tmp/kwd_" + primaryKey + ".xml");
                             Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
                             System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);

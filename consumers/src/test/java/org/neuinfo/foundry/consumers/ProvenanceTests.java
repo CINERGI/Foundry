@@ -9,6 +9,7 @@ import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.consumers.common.ProvenanceClient;
 import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import java.util.Date;

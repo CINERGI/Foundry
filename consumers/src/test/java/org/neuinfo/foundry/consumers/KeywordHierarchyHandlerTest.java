@@ -3,6 +3,7 @@ package org.neuinfo.foundry.consumers;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import junit.framework.TestCase;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 import java.util.List;
 

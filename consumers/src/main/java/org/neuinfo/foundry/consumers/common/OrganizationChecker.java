@@ -12,6 +12,7 @@ import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils;
+import org.neuinfo.foundry.common.util.KeywordInfo;
 import org.neuinfo.foundry.common.util.Utils;
 
 import java.io.BufferedReader;
@@ -157,10 +158,10 @@ public class OrganizationChecker {
     KeywordData addOrganizations(File outFile) throws Exception {
         Element docEl = Utils.loadXML(outFile.getAbsolutePath());
         Map<String, Keyword> keywordMap = new LinkedHashMap<String, Keyword>();
-        List<CinergiXMLUtils.KeywordInfo> organizationKeywords = CinergiXMLUtils.getOrganizationKeywords(docEl);
+        List<KeywordInfo> organizationKeywords = CinergiXMLUtils.getOrganizationKeywords(docEl);
         JSONArray jsArr = new JSONArray();
         if (!organizationKeywords.isEmpty()) {
-            for (CinergiXMLUtils.KeywordInfo kwi : organizationKeywords) {
+            for (KeywordInfo kwi : organizationKeywords) {
                 Keyword kw = new Keyword(kwi.getTerm());
                 EntityInfo ei = new EntityInfo("", "", -1, -1, kwi.getCategory());
                 kw.addEntityInfo(ei);

@@ -8,7 +8,6 @@ import org.jdom2.Namespace;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.Keyword;
-import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
 import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 
 import java.util.*;
@@ -70,7 +69,7 @@ public class ISOXMLGenerator {
                         KeywordInfo kwi = new KeywordInfo(ids.iterator().next(),
                                 kw.getTerm(), category, null,
                                 CinergiXMLUtils.KeywordType.Organization);
-                        List<CinergiXMLUtils.KeywordInfo> kwiList = category2KWIListMap.get(category);
+                        List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                         if (kwiList == null) {
                             kwiList = new ArrayList<KeywordInfo>(10);
                             category2KWIListMap.put(category, kwiList);
@@ -138,7 +137,7 @@ public class ISOXMLGenerator {
                 CinergiXMLUtils.filterPlurals(kwiList);
             }
 
-            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
+            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, docWrapper);
         }
         // fix anchor problem if exists
         docEl = ISOXMLFixer.fixAnchorProblem(docEl);

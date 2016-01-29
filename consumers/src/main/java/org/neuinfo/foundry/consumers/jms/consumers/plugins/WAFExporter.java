@@ -41,7 +41,7 @@ public class WAFExporter implements IPlugin {
             docEl = handler.handle();
 
             saveEnhancedXmlFile(primaryKey, docEl, srcName, status);
-            return new Result(docWrapper, Result.Status.OK_WITHOUT_CHANGE);
+            return new Result(docWrapper, Result.Status.OK_WITH_CHANGE);
         } catch (Throwable t) {
             t.printStackTrace();
             Result r = new Result(docWrapper, Result.Status.ERROR);
@@ -50,56 +50,7 @@ public class WAFExporter implements IPlugin {
         }
     }
 
-    /*
-        Element addSpatialExtent(Element docEl, JSONObject spatial) throws Exception {
-            Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
-            JSONArray boundingBoxes = spatial.getJSONArray("bounding_boxes");
-            boolean hasBB = boundingBoxes.length() > 0;
-            boolean hasBBFromPlaces = false;
 
-            Element identificationInfo = docEl.getChild("identificationInfo", gmd);
-            Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
-            if (dataIdentification == null) {
-                dataIdentification = new Element("MD_DataIdentification", gmd);
-                identificationInfo.addContent(dataIdentification);
-            }
-
-            if (!hasBB) {
-                JSONObject derivedBoundingBoxes = spatial.getJSONObject("derived_bounding_boxes_from_places");
-                if (derivedBoundingBoxes.length() > 0) {
-                    for (String place : derivedBoundingBoxes.keySet()) {
-                        JSONObject placeJson = derivedBoundingBoxes.getJSONObject(place);
-                        JSONObject swJson = placeJson.getJSONObject("southwest");
-                        JSONObject neJson = placeJson.getJSONObject("northeast");
-                        String wbLongVal = String.valueOf(swJson.getDouble("lng"));
-                        String sblatVal = String.valueOf(swJson.getDouble("lat"));
-                        String ebLongVal = String.valueOf(neJson.getDouble("lng"));
-                        String nbLatVal = String.valueOf(neJson.getDouble("lat"));
-                        Element bbEl = CinergiXMLUtils.createBoundaryBox(wbLongVal, ebLongVal, sblatVal, nbLatVal, place);
-                        dataIdentification.addContent(bbEl);
-                    }
-                    hasBBFromPlaces = true;
-                }
-            }
-            if (!hasBB && !hasBBFromPlaces) {
-                JSONObject derivedBoundingBoxes = spatial.getJSONObject("derived_bounding_boxes_from_derived_place");
-                if (derivedBoundingBoxes.length() > 0) {
-                    for (String place : derivedBoundingBoxes.keySet()) {
-                        JSONObject placeJson = derivedBoundingBoxes.getJSONObject(place);
-                        JSONObject swJson = placeJson.getJSONObject("southwest");
-                        JSONObject neJson = placeJson.getJSONObject("northeast");
-                        String wbLongVal = String.valueOf(swJson.getDouble("lng"));
-                        String sblatVal = String.valueOf(swJson.getDouble("lat"));
-                        String ebLongVal = String.valueOf(neJson.getDouble("lng"));
-                        String nbLatVal = String.valueOf(neJson.getDouble("lat"));
-                        Element bbEl = CinergiXMLUtils.createBoundaryBox(wbLongVal, ebLongVal, sblatVal, nbLatVal, place);
-                        dataIdentification.addContent(bbEl);
-                    }
-                }
-            }
-            return docEl;
-        }
-    */
     private void saveEnhancedXmlFile(String fileIdentifier, Element docEl, String srcName,
                                      String status) throws Exception {
         String sourceDirname = srcName.replaceAll("\\s+", "_");

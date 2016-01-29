@@ -1,9 +1,11 @@
 package org.neuinfo.foundry.common.util;
 
+import com.mongodb.DBObject;
 import org.jdom2.Comment;
 import org.jdom2.Content;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
+import org.json.JSONArray;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -319,7 +321,7 @@ public class CinergiXMLUtils {
     }
 
     public static Element addFacets2ExistingKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap,
-                                                     FacetHierarchyHandler fhh) {
+                                                     FacetHierarchyHandler fhh, DBObject docWrapper) {
         Element identificationInfo = docEl.getChild("identificationInfo", gmd);
         Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
         Assertion.assertNotNull(dataIdentification);
@@ -328,7 +330,7 @@ public class CinergiXMLUtils {
         List<Content> contents = dataIdentification.getContent();
         int pivot = getPivot(contents);
         Assertion.assertTrue(pivot != -1);
-        addKeywords(category2KwiListMap, contents, pivot, fhh);
+        addKeywords(category2KwiListMap, contents, pivot, fhh, docWrapper);
         return docEl;
     }
 
@@ -347,7 +349,7 @@ public class CinergiXMLUtils {
     }
 
     public static Element addKeywords(Element docEl, Map<String, List<KeywordInfo>> category2KwiListMap,
-                                      FacetHierarchyHandler fhh) {
+                                      FacetHierarchyHandler fhh, DBObject docWrapper) {
         Element identificationInfo = docEl.getChild("identificationInfo", gmd);
         Element dataIdentification = identificationInfo.getChild("MD_DataIdentification", gmd);
         if (dataIdentification == null) {
@@ -385,7 +387,7 @@ public class CinergiXMLUtils {
                     }
                 }
             }
-            addKeywords(category2KwiListMap, contents, pivot, fhh);
+            addKeywords(category2KwiListMap, contents, pivot, fhh, docWrapper);
         } else {
             int pivot = -1;
             for (int i = 0; i < contents.size(); i++) {
@@ -413,13 +415,16 @@ public class CinergiXMLUtils {
                 }
             }
             Assertion.assertTrue(pivot != -1);
-            addKeywords(category2KwiListMap, contents, pivot, fhh);
+            addKeywords(category2KwiListMap, contents, pivot, fhh, docWrapper);
         }
         return docEl;
     }
 
     private static void addKeywords(Map<String, List<KeywordInfo>> category2KwiListMap,
-                                    List<Content> contents, int pivot, FacetHierarchyHandler fhh) {
+                                    List<Content> contents, int pivot, FacetHierarchyHandler fhh, DBObject docWrapper) {
+        DBObject data = (DBObject) docWrapper.get("Data");
+        JSONArray enhancedKeywords = new JSONArray();
+
         for (String category : category2KwiListMap.keySet()) {
             List<KeywordInfo> kwiList = category2KwiListMap.get(category);
             Element dkEl = new Element("descriptiveKeywords", gmd);
@@ -428,17 +433,22 @@ public class CinergiXMLUtils {
             dkEl.addContent(comment);
             List<Element> keywords = new ArrayList<Element>(kwiList.size());
             for (KeywordInfo kwi : kwiList) {
+                kwi.setLastChangedDate(now);
                 keywords.add(createKeywordTag(kwi.getTerm(), kwi.getCategory(), kwi));
                 // descriptiveKeywords.add(dkEl);
+                enhancedKeywords.put(kwi.toJSON());
             }
+
             KeywordType type = kwiList.get(0).getType();
             Element keywordEl = createKeywords(keywords, category, type, now, fhh);
             dkEl.addContent(keywordEl);
             contents.add(pivot + 1, dkEl);
         }
+        // store the enhanced keywords to the document wrapper data subdocument
+        data.put("enhancedKeywords", JSONUtils.encode(enhancedKeywords));
     }
 
-    public static void filterPlurals(List<CinergiXMLUtils.KeywordInfo> kwiList) {
+    public static void filterPlurals(List<KeywordInfo> kwiList) {
         Set<KeywordInfo> plurals = new HashSet<KeywordInfo>();
         for (int i = 0; i < kwiList.size(); i++) {
             KeywordInfo kwiRef = kwiList.get(i);
@@ -474,67 +484,6 @@ public class CinergiXMLUtils {
 
     public static enum KeywordType {
         Keyword, Organization
-    }
-
-    public static class KeywordInfo {
-        String id;
-        String term;
-        String category;
-        String hierarchyPath;
-        KeywordType type;
-
-
-        public KeywordInfo(String id, String term, String category, String hierarchyPath) {
-            this(id, term, category, hierarchyPath, KeywordType.Keyword);
-        }
-
-        public KeywordInfo(String id, String term, String category, String hierarchyPath, KeywordType type) {
-            this.term = term;
-            this.category = category;
-            this.hierarchyPath = hierarchyPath;
-            this.type = type;
-            this.id = id;
-        }
-
-        public KeywordType getType() {
-            return type;
-        }
-
-        public String getTerm() {
-            return term;
-        }
-
-        public String getCategory() {
-            return category;
-        }
-
-        public String getHierarchyPath() {
-            return hierarchyPath;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            KeywordInfo that = (KeywordInfo) o;
-
-            if (!id.equals(that.id)) return false;
-            return term.equals(that.term);
-
-        }
-
-        @Override
-        public int hashCode() {
-            int result = id.hashCode();
-            result = 31 * result + term.hashCode();
-            return result;
-        }
-
     }
 
 }

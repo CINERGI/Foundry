@@ -12,6 +12,7 @@ import org.neuinfo.foundry.common.util.CinergiXMLUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 import java.util.HashMap;
 import java.util.List;

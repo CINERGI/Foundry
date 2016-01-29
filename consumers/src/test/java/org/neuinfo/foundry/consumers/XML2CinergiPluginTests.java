@@ -7,6 +7,7 @@ import org.neuinfo.foundry.consumers.coordinator.JavaPluginCoordinator;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.XML2CinergiPlugin;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 /**
  * Created by bozyurt on 11/20/14.

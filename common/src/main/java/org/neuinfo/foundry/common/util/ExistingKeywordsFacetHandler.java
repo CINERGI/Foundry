@@ -9,8 +9,6 @@ import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 import java.io.File;
 import java.util.*;
 
-import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
-
 /**
  * Created by bozyurt on 10/13/15.
  */

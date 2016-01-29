@@ -14,7 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.util.*;
-import org.neuinfo.foundry.common.util.CinergiXMLUtils.KeywordInfo;
+import org.neuinfo.foundry.common.util.KeywordInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.consumers.common.OrgLookupHandler;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper.ProvData;

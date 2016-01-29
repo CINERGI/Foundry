@@ -6,6 +6,7 @@ import junit.framework.TestCase;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
+import org.neuinfo.foundry.consumers.util.Helper;
 
 import java.io.File;
 import java.util.HashMap;
