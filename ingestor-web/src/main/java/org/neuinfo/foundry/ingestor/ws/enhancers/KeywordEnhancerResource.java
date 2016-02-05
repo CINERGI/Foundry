@@ -105,7 +105,7 @@ public class KeywordEnhancerResource {
                 for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
                     filterPlurals(kwiList);
                 }
-                docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh);
+                docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, null);
             }
             XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
             StringWriter sw = new StringWriter(isoMetaXml.length());
