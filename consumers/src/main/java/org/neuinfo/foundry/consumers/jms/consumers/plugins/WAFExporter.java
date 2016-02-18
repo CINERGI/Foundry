@@ -37,9 +37,10 @@ public class WAFExporter implements IPlugin {
             ISOXMLGenerator generator = new ISOXMLGenerator();
             Element docEl = generator.generate(docWrapper);
             // also enhance existing keywords 12/01/2015
+            /* FIXME not enhancing existing keywords
             ExistingKeywordsFacetHandler handler = new ExistingKeywordsFacetHandler(docEl);
-            docEl = handler.handle();
-
+            docEl = handler.handle(docWrapper);
+            */
             saveEnhancedXmlFile(primaryKey, docEl, srcName, status);
             return new Result(docWrapper, Result.Status.OK_WITH_CHANGE);
         } catch (Throwable t) {

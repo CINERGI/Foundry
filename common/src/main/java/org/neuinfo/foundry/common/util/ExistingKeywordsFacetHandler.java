@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.common.util;
 
+import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
 import org.jdom2.Element;
 import org.neuinfo.foundry.common.model.EntityInfo;
@@ -36,14 +37,14 @@ public class ExistingKeywordsFacetHandler {
     }
 
     public void handleAndSave() throws Exception {
-        handle();
+        handle(null);
         String path = isoXmlFile.getAbsolutePath().replaceFirst("\\.xml", "_existing.xml");
         File enhancedXmlFile = new File(path);
         System.out.println(enhancedXmlFile);
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
     }
 
-    public Element handle() throws Exception {
+    public Element handle(DBObject docWrapper) throws Exception {
         Set<String> existingKeywords = CinergiXMLUtils.getExistingKeywords(docEl);
         if (existingKeywords.isEmpty()) {
             return docEl;
@@ -70,11 +71,12 @@ public class ExistingKeywordsFacetHandler {
                 logger.info(kw);
             }
         }
+
         if (!filteredKeywordList.isEmpty()) {
             category2KWIListMap = prepKeywordFacets(filteredKeywordList);
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
 
-            docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh, null);
+            docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh, docWrapper);
         }
         return docEl;
     }
