@@ -39,7 +39,7 @@ public class SpatialEnhancerTest extends TestCase {
         assertNull(extent);
 
         String xmlDocStr = Utils.loadAsString(sampleDocFile);
-        String serverUrl = "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer";
+        String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
         JSONObject json = SpatialEnhancer.callSpatialEnhancer(serverUrl, xmlDocStr);
 
         JSONObject derivedBoundingBoxes = json.getJSONObject("derived_bounding_boxes_from_derived_place");
@@ -73,7 +73,7 @@ public class SpatialEnhancerTest extends TestCase {
         sampleDocFile = HOME_DIR + "/etc/hydro10/ScienceBase/00F67830-9DB7-4968-BE91-F5A82791B7B8.xml";
 
         String xmlDocStr = Utils.loadAsString(sampleDocFile);
-        String serverUrl = "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer";
+        String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
         JSONObject json = SpatialEnhancer.callSpatialEnhancer(serverUrl, xmlDocStr);
         assertNotNull(json);
         System.out.println(json.toString(2));
@@ -107,5 +107,10 @@ public class SpatialEnhancerTest extends TestCase {
         } finally {
             helper.shutdown();
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        SpatialEnhancerTest test = new SpatialEnhancerTest("");
+        test.testCallSpatialEnhancer();
     }
 }
