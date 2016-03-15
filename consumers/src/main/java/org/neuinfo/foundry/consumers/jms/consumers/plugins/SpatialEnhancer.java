@@ -51,6 +51,7 @@ public class SpatialEnhancer implements IPlugin {
 
             String xmlStr = Utils.xmlAsString(docEl);
             xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + xmlStr;
+            logger.info("calling callSpatialEnhancer");
             JSONObject spatialJson = callSpatialEnhancer(serverURL, xmlStr);
 
             ProvData provData = new ProvData(primaryKey, ProvenanceHelper.ModificationType.Added);

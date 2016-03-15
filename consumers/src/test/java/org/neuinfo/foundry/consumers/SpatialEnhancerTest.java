@@ -73,7 +73,9 @@ public class SpatialEnhancerTest extends TestCase {
         sampleDocFile = HOME_DIR + "/etc/hydro10/ScienceBase/00F67830-9DB7-4968-BE91-F5A82791B7B8.xml";
 
         String xmlDocStr = Utils.loadAsString(sampleDocFile);
-        String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
+       // String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
+      //  String serverUrl = "http://cinergi.sdsc.edu:8080/cinergi_spatial/SpatialEnhancer";
+        String serverUrl = "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer";
         JSONObject json = SpatialEnhancer.callSpatialEnhancer(serverUrl, xmlDocStr);
         assertNotNull(json);
         System.out.println(json.toString(2));
