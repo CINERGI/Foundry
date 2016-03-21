@@ -50,42 +50,6 @@ public class DocProcessingStatsService extends BaseIngestionService {
         return ssList;
     }
 
-    public List<SourceStats> getDocCountsPerStatusPerSource(String collectionName) {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection collection = db.getCollection(collectionName);
-        DBObject groupFields = new BasicDBObject("_id",
-                new BasicDBObject("source", "$SourceInfo.SourceID")
-                        .append("status", "$Processing.status"));
-        groupFields.put("count", new BasicDBObject("$sum", 1));
-        DBObject group = new BasicDBObject("$group", groupFields);
-
-        AggregationOutput aggregationOutput = collection.aggregate(Arrays.asList(group));
-        Map<String, SourceStats> ssMap = new HashMap<String, SourceStats>();
-        for (DBObject dbo : aggregationOutput.results()) {
-            BasicDBObject idDBO = (BasicDBObject) dbo.get("_id");
-            String sourceID = idDBO.getString("source");
-            String status = idDBO.getString("status");
-            int count = ((BasicDBObject) dbo).getInt("count");
-            SourceStats ss = ssMap.get(sourceID);
-            if (ss == null) {
-                ss = new SourceStats(sourceID);
-                ssMap.put(sourceID, ss);
-            }
-            ss.put(status, count);
-            // System.out.println(dbo);
-        }
-
-        List<SourceStats> ssList = new ArrayList<SourceStats>(ssMap.values());
-        Collections.sort(ssList, new Comparator<SourceStats>() {
-            @Override
-            public int compare(SourceStats o1, SourceStats o2) {
-                return o1.getSourceID().compareTo(o2.getSourceID());
-            }
-        });
-        return ssList;
-    }
-
-
     public static class SourceStats implements Serializable{
         final String sourceID;
         Map<String, Integer> statusCountMap = new HashMap<String, Integer>(3);

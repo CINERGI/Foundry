@@ -37,7 +37,6 @@ import java.util.*;
  */
 public class ManagementService {
     private transient Connection con;
-    //private transient Session session;
     private String queueName;
     private Configuration config;
     private String dbName;
@@ -66,8 +65,6 @@ public class ManagementService {
         mongoClient = MongoUtils.createMongoClient(servers);
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
         this.con = factory.createConnection();
-        //   session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        //   this.producer = session.createProducer(null);
 
         docService = new DocumentIngestionService();
         docService.initialize(this.dbName, mongoClient);
@@ -105,7 +102,6 @@ public class ManagementService {
     }
 
     List<Source> findSources() {
-
         DB db = mongoClient.getDB(dbName);
         DBCollection sources = db.getCollection("sources");
         List<Source> srcList = new LinkedList<Source>();
@@ -121,9 +117,7 @@ public class ManagementService {
             cursor.close();
         }
         return srcList;
-
     }
-
 
     void deleteDocuments(String sourceID) {
         docService.deleteDocuments4Resource(config.getCollectionName(), sourceID, null);
@@ -160,13 +154,6 @@ public class ManagementService {
         json.put("oid", oid);
         json.put("status", status);
         return json;
-    }
-
-    public static String ensureIndexPathStartsWithSlash(String indexPath) {
-        if (!indexPath.startsWith("/")) {
-            indexPath = "/" + indexPath;
-        }
-        return indexPath;
     }
 
     boolean deleteIndex(String url) throws Exception {
@@ -407,10 +394,8 @@ public class ManagementService {
                     break;
                 }
             }
-
         } finally {
             ms.shutdown();
         }
-
     }
 }
