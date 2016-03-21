@@ -3,20 +3,24 @@ package org.neuinfo.foundry.jms.producer;
 import com.mongodb.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.cli.*;
+import org.apache.commons.lang.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.log4j.Logger;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.config.ServerInfo;
+import org.neuinfo.foundry.common.ingestion.DocProcessingStatsService;
 import org.neuinfo.foundry.common.ingestion.DocumentIngestionService;
 import org.neuinfo.foundry.common.model.Source;
+import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.MongoUtils;
-import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.jms.common.ConfigLoader;
 import org.neuinfo.foundry.jms.common.Configuration;
-import org.neuinfo.foundry.jms.common.WorkflowMapping;
+import org.neuinfo.foundry.utils.MessagingUtils;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -33,13 +37,13 @@ import java.util.*;
  */
 public class ManagementService {
     private transient Connection con;
-    private transient Session session;
-    private transient MessageProducer producer;
+    //private transient Session session;
     private String queueName;
     private Configuration config;
     private String dbName;
     private MongoClient mongoClient;
     private DocumentIngestionService docService;
+    private final static Logger logger = Logger.getLogger(ManagementService.class);
 
     public ManagementService(String queueName) {
         this.queueName = queueName;
@@ -62,8 +66,8 @@ public class ManagementService {
         mongoClient = MongoUtils.createMongoClient(servers);
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
         this.con = factory.createConnection();
-        session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        this.producer = session.createProducer(null);
+        //   session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        //   this.producer = session.createProducer(null);
 
         docService = new DocumentIngestionService();
         docService.initialize(this.dbName, mongoClient);
@@ -107,7 +111,7 @@ public class ManagementService {
         List<Source> srcList = new LinkedList<Source>();
         DBCursor cursor = sources.find();
         try {
-            while(cursor.hasNext()) {
+            while (cursor.hasNext()) {
                 DBObject dbo = cursor.next();
                 Source source = Source.fromDBObject(dbo);
                 srcList.add(source);
@@ -126,50 +130,36 @@ public class ManagementService {
     }
 
     void sendMessage(JSONObject messageBody) throws JMSException {
-        Destination destination = session.createQueue(this.queueName);
-        System.out.println("sending user JMS message with payload:" + messageBody.toString(2) +
-                " to queue:" + this.queueName);
-        Message message = session.createObjectMessage(messageBody.toString());
-        this.producer.send(destination, message);
+        sendMessage(messageBody, this.queueName);
     }
 
-    JSONObject prepareMessageBody(String cmd, Source source) throws Exception {
-        // check if source has a valid workflow
-
-        WorkflowMapping wm = hasValidWorkflow(source);
-        if (wm == null) {
-            throw new Exception("No matching workflow for source " + source.getResourceID());
-        }
-        String batchId = Utils.prepBatchId(new Date());
-        JSONObject json = new JSONObject();
-        json.put("cmd", cmd);
-        json.put("batchId", batchId);
-        json.put("srcNifId", source.getResourceID());
-        json.put("dataSource", source.getDataSource());
-        json.put("ingestConfiguration", source.getIngestConfiguration());
-        json.put("contentSpecification", source.getContentSpecification());
-
-        json.put("ingestorOutStatus", wm.getIngestorOutStatus());
-        json.put("updateOutStatus", wm.getUpdateOutStatus());
-
-        return json;
-    }
-
-    WorkflowMapping hasValidWorkflow(Source source) {
-        List<String> workflowSteps = source.getWorkflowSteps();
-        List<WorkflowMapping> workflowMappings = this.config.getWorkflowMappings();
-        for (WorkflowMapping wm : workflowMappings) {
-            if (workflowSteps.size() == wm.getSteps().size()) {
-                for (int i = 0; i < workflowSteps.size(); i++) {
-                    String step = workflowSteps.get(i);
-                    if (!step.equals(wm.getSteps().get(i))) {
-                        break;
-                    }
-                }
-                return wm;
+    void sendMessage(JSONObject messageBody, String queue2Send) throws JMSException {
+        Session session = null;
+        try {
+            session = con.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer producer = session.createProducer(null);
+            Destination destination = session.createQueue(queue2Send);
+            System.out.println("sending user JMS message with payload:" + messageBody.toString(2) +
+                    " to queue:" + queue2Send);
+            Message message = session.createObjectMessage(messageBody.toString());
+            producer.send(destination, message);
+        } finally {
+            if (session != null) {
+                session.close();
             }
         }
-        return null;
+    }
+
+
+    JSONObject prepareMessageBody(String cmd, Source source) throws Exception {
+        return MessagingUtils.prepareMessageBody(cmd, source, config.getWorkflowMappings());
+    }
+
+    public JSONObject prepareMessageBody(String oid, String status) {
+        JSONObject json = new JSONObject();
+        json.put("oid", oid);
+        json.put("status", status);
+        return json;
     }
 
     public static String ensureIndexPathStartsWithSlash(String indexPath) {
@@ -199,6 +189,95 @@ public class ManagementService {
         return ok;
     }
 
+    void triggerPipeline(Source source, String status2Match, String queue2Send, String newStatus) throws Exception {
+        DB db = mongoClient.getDB(dbName);
+        DBCollection records = db.getCollection(this.config.getCollectionName());
+        BasicDBObject query = new BasicDBObject("Processing.status", status2Match)
+                .append("SourceInfo.SourceID", source.getResourceID());
+        DBCursor cursor = records.find(query, new BasicDBObject("Processing.status", 1));
+        if (newStatus == null) {
+            try {
+                while (cursor.hasNext()) {
+                    DBObject dbo = cursor.next();
+                    String oid = dbo.get("_id").toString();
+                    JSONObject mb = prepareMessageBody(oid, status2Match);
+                    sendMessage(mb, queue2Send);
+                }
+
+            } finally {
+                cursor.close();
+            }
+        } else {
+            List<String> matchingOIdList = new LinkedList<String>();
+            try {
+                while (cursor.hasNext()) {
+                    DBObject dbo = cursor.next();
+                    String oid = dbo.get("_id").toString();
+                    matchingOIdList.add(oid);
+                }
+            } finally {
+                cursor.close();
+            }
+            logger.info("updating status of " + matchingOIdList.size() + " records to " + newStatus);
+            for (String oidStr : matchingOIdList) {
+                ObjectId oid = new ObjectId(oidStr);
+                BasicDBObject update = new BasicDBObject();
+                update.append("$set", new BasicDBObject("Processing.status", newStatus));
+                query = new BasicDBObject("_id", oid);
+                records.update(query, update, false, false, WriteConcern.SAFE);
+            }
+            for (String oidStr : matchingOIdList) {
+                JSONObject mb = prepareMessageBody(oidStr, newStatus);
+                sendMessage(mb, queue2Send);
+            }
+        }
+    }
+
+    void showProcessingStats(String sourceID) {
+        DocProcessingStatsService dpss = new DocProcessingStatsService();
+        dpss.setMongoClient(this.mongoClient);
+        dpss.setDbName(this.dbName);
+        List<DocProcessingStatsService.SourceStats> processingStats = dpss.getDocCountsPerStatusPerSource2(
+                config.getCollectionName());
+        if (sourceID == null) {
+            for (DocProcessingStatsService.SourceStats ss : processingStats) {
+                showSourceStats(ss);
+            }
+        } else {
+            for (DocProcessingStatsService.SourceStats ss : processingStats) {
+                if (ss.getSourceID().equals(sourceID)) {
+                    showSourceStats(ss);
+                    break;
+                }
+            }
+        }
+    }
+
+    void showSourceStats(DocProcessingStatsService.SourceStats ss) {
+        StringBuilder sb = new StringBuilder(128);
+        sb.append(ss.getSourceID()).append("\t");
+        Map<String, Integer> statusCountMap = ss.getStatusCountMap();
+        int totCount = 0;
+        for (Integer count : statusCountMap.values()) {
+            totCount += count;
+        }
+        sb.append("total:").append(StringUtils.leftPad(String.valueOf(totCount), 10)).append("\t");
+        Integer finishedCount = statusCountMap.get("finished");
+        Integer errorCount = statusCountMap.get("error");
+        finishedCount = finishedCount == null ? 0 : finishedCount;
+        errorCount = errorCount == null ? 0 : errorCount;
+        sb.append("finished:").append(StringUtils.leftPad(finishedCount.toString(), 10)).append("\t");
+        sb.append("error:").append(StringUtils.leftPad(errorCount.toString(), 10)).append("\t");
+        for (String status : statusCountMap.keySet()) {
+            if (status.equals("finished") || status.equals("error")) {
+                continue;
+            }
+            Integer statusCount = statusCountMap.get(status);
+            sb.append(status).append(':').append(StringUtils.leftPad(statusCount.toString(), 10)).append("\t");
+        }
+        System.out.println(sb.toString().trim());
+    }
+
     public static void showHelp() {
         System.out.println("Available commands");
         System.out.println("\thelp - shows this message.");
@@ -206,6 +285,8 @@ public class ManagementService {
         System.out.println("\th - show all command history");
         System.out.println("\tdelete <url> - [e.g. http://localhost:9200/nif]");
         System.out.println("\tdd <sourceID>  - delete docs for a sourceID");
+        System.out.println("\ttrigger <sourceID> <status-2-match> <queue-2-send> [<new-status>] (e.g. trigger nif-0000-00135 new.1 foundry.uuid.1)");
+        System.out.println("\tstatus [<sourceID>] - show processing status of data source(s)");
         System.out.println("\tlist - lists all of the existing sources.");
         System.out.println("\texit - exits the management client.");
     }
@@ -294,8 +375,33 @@ public class ManagementService {
                     }
                 } else if (ans.startsWith("list")) {
                     List<Source> sources = ms.findSources();
-                    for(Source source : sources) {
-                        System.out.println(String.format("%s - (%s)", source.getResourceID() , source.getName()));
+                    for (Source source : sources) {
+                        System.out.println(String.format("%s - (%s)", source.getResourceID(), source.getName()));
+                    }
+                } else if (ans.startsWith("trigger")) {
+                    String[] toks = ans.split("\\s+");
+                    if (toks.length == 4 || toks.length == 5) {
+                        String srcNifId = toks[1];
+                        String status2Match = toks[2];
+                        String toQueue = toks[3];
+                        String newStatus = null;
+                        if (toks.length == 5) {
+                            newStatus = toks[4];
+                        }
+                        Source source = ms.findSource(srcNifId);
+                        Assertion.assertNotNull(source);
+                        ms.triggerPipeline(source, status2Match, toQueue, newStatus);
+                        history.add(ans);
+                    }
+                } else if (ans.startsWith("status")) {
+                    String[] toks = ans.split("\\s+");
+                    if (toks.length == 1 || toks.length == 2) {
+                        if (toks.length == 2) {
+                            String srcNifId = toks[1];
+                            ms.showProcessingStats(srcNifId);
+                        } else {
+                            ms.showProcessingStats(null);
+                        }
                     }
                 } else if (ans.equals("exit")) {
                     break;
