@@ -98,31 +98,26 @@ JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
 
 ```
 
-If you want to work on and update/add to the transformed data prepared by the downstream enhancers 
-in the pipeline which is stored under `Data.transformedRec` branch of the document wrapper, you can 
-use the following code snippet to retrieve the transformed document; 
+To convert a Mongo Java driver database object to JSON you can use the following snippet
 
 ```java
-BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
-BasicDBObject trDBO = (BasicDBObject) data.get("transformedRec");
-JSONObject json = JSONUtils.toJSON(trDBO, false);
-
+JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
 ```
 
-After you have done with enhancement, you can put back the enhanced JSON object and return the result using
-the following Java code snippet
+Similarly, a manipulated json object can be put to the document wrapper using Java code similar to the following
 
 ```java
-BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
-BasicDBObject trDBO = (BasicDBObject) data.get("transformedRec");
-JSONObject json = JSONUtils.toJSON(trDBO, false);
+DBObject data = (DBObject) docWrapper.get("Data");
+DBObject spatial = JSONUtils.encode(spatialJson, false);
+data.put("spatial", spatial);
+```
 
-// enhancement of json
+The `handle` method returns its result using the following Java code snippet
 
-data.put("transformedRec", JSONUtils.encode(json, true));
+```java
 return new Result(docWrapper, Result.Status.OK_WITH_CHANGE);
-
 ```
+
 If there is an error occurred during the enhancement you need to return an error result as shown below;
 
 ```java
@@ -130,5 +125,9 @@ Result r = new Result(docWrapper, Result.Status.ERROR);
 r.setErrMessage(errorMessage);
 return r;
 ```
+
+To get more information about writing new enhancers, please check to code of the existing enhancers under the 
+package `org.neuinfo.foundry.consumers.jms.consumers.plugins` namely 
+`KeywordEnhancer`, `SpatialEnhancer`, `OrganizationEnhancer` and `WAFExporter`.
 
 
