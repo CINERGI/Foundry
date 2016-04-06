@@ -65,6 +65,10 @@ public class ProvenanceUploader {
                 String primaryKey = docWrapper.get("primaryKey").toString();
                 BasicDBObject history = (BasicDBObject) docWrapper.get("History");
                 BasicDBObject prov = (BasicDBObject) history.get("prov");
+                if (prov == null) {
+                    System.out.println("Skipping " + primaryKey + " for missing provenance");
+                    continue;
+                }
 
                 BasicDBList events = (BasicDBList) prov.get("events");
                 if (events.size() >= 4) {
@@ -131,16 +135,16 @@ public class ProvenanceUploader {
             pu.setConfigFile(configFile);
         }
 
-        for(String sourceID : sourceIDs) {
+        for (String sourceID : sourceIDs) {
             System.out.println("Adding provenance for " + sourceID);
             pu.addProvenanceChains2ProvServer(sourceID);
         }
 
-       // pu.addProvenanceChains2ProvServer("cinergi-0002");
-       // pu.addProvenanceChains2ProvServer("cinergi-0003");
-       // pu.addProvenanceChains2ProvServer("cinergi-0004");
-       // pu.addProvenanceChains2ProvServer("cinergi-0005");
-       // pu.addProvenanceChains2ProvServer("cinergi-0006");
-       // pu.addProvenanceChains2ProvServer("cinergi-0007");
+        // pu.addProvenanceChains2ProvServer("cinergi-0002");
+        // pu.addProvenanceChains2ProvServer("cinergi-0003");
+        // pu.addProvenanceChains2ProvServer("cinergi-0004");
+        // pu.addProvenanceChains2ProvServer("cinergi-0005");
+        // pu.addProvenanceChains2ProvServer("cinergi-0006");
+        // pu.addProvenanceChains2ProvServer("cinergi-0007");
     }
 }
