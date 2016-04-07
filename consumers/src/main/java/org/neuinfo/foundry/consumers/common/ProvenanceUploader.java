@@ -2,6 +2,7 @@ package org.neuinfo.foundry.consumers.common;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import org.apache.commons.cli.*;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.Assertion;
@@ -59,9 +60,11 @@ public class ProvenanceUploader {
         try {
             ProvenanceClient pc = new ProvenanceClient();
             helper.startup(configFile);
-            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
+//            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
+            List<String> oidList = helper.getDocWrapperIds(sourceID);
             int count = 0;
-            for (BasicDBObject docWrapper : docWrappers) {
+            for (String oid : oidList) {
+                DBObject docWrapper = helper.getDocWrapper(oid);
                 String primaryKey = docWrapper.get("primaryKey").toString();
                 BasicDBObject history = (BasicDBObject) docWrapper.get("History");
                 BasicDBObject prov = (BasicDBObject) history.get("prov");
