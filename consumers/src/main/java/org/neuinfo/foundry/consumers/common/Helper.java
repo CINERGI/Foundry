@@ -2,6 +2,9 @@ package org.neuinfo.foundry.consumers.common;
 
 import com.mongodb.*;
 import org.bson.types.ObjectId;
+import org.json.JSONObject;
+import org.neuinfo.foundry.common.model.User;
+import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.ConsumerSupport;
 
 import javax.jms.JMSException;
@@ -24,6 +27,15 @@ public class Helper extends ConsumerSupport {
         DB db = mongoClient.getDB(super.mongoDbName);
         DBCollection collection = db.getCollection("records");
         return collection.findOne();
+    }
+
+    public void saveUser(String username, String pwd) {
+        DB db = mongoClient.getDB(super.mongoDbName);
+        DBCollection users = db.getCollection("users");
+        User user = new User.Builder(username, pwd, "").build();
+        JSONObject json = user.toJSON();
+        DBObject dbo = JSONUtils.encode(json, true);
+        users.save(dbo);
     }
 
     public List<BasicDBObject> getDocWrappers(String sourceID) {
