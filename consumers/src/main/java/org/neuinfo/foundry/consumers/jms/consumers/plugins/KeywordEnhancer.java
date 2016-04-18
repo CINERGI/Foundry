@@ -31,7 +31,7 @@ import java.util.*;
 public class KeywordEnhancer implements IPlugin {
     String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
     List<String> jsonPaths = new ArrayList<String>(5);
-    NERKeywordEnhancer nerKeywordEnhancer;
+    // NERKeywordEnhancer nerKeywordEnhancer;
     KeywordHierarchyHandler keywordHierarchyHandler;
     StopWordsHandler stopWordsHandler;
     boolean useNER = false;
@@ -52,7 +52,7 @@ public class KeywordEnhancer implements IPlugin {
         jsonPaths.add("$..'abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'title'.'gco:CharacterString'.'_$'");
 
-        this.nerKeywordEnhancer = NERKeywordEnhancer.getInstance();
+        //  this.nerKeywordEnhancer = NERKeywordEnhancer.getInstance();
         this.keywordHierarchyHandler = KeywordHierarchyHandler.getInstance();
         this.stopWordsHandler = StopWordsHandler.getInstance();
     }
@@ -118,6 +118,7 @@ public class KeywordEnhancer implements IPlugin {
                 }
             }
             if (useNER) {
+                /*
                 Map<String, Keyword> nerKeywordsMap = this.nerKeywordEnhancer.findKeywords(text2AnnotateList);
                 for (Keyword kw : nerKeywordsMap.values()) {
                     // skip location category
@@ -129,7 +130,7 @@ public class KeywordEnhancer implements IPlugin {
                     }
                 }
                 keywordMap.putAll(nerKeywordsMap);
-
+                */
             }
             if (jsArr.length() > 0) {
                 // apply Cinergi specific stop word/phrase filtering
