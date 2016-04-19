@@ -112,14 +112,10 @@ public class Condition {
                     }
                 }
             }
-
             return ok;
-
         } else {
             // TODO
-
         }
-
         return false;
     }
 
@@ -187,9 +183,9 @@ public class Condition {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Condition{");
+        final StringBuilder sb = new StringBuilder("Condition::[");
         sb.append("groups=").append(groups);
-        sb.append('}');
+        sb.append(']');
         return sb.toString();
     }
 }

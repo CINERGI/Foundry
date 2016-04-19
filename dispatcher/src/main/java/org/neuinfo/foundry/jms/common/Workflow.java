@@ -61,4 +61,16 @@ public class Workflow {
         }
         return json;
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("Workflow::[");
+        sb.append("name='").append(name).append("'");
+        sb.append("\nRoutes\n----------\n");
+        for(Route r : routes) {
+            sb.append("\n\t").append(r);
+        }
+        sb.append("\n]");
+        return sb.toString();
+    }
 }

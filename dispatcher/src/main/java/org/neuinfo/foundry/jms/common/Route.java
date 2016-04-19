@@ -75,10 +75,10 @@ public class Route {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Route{");
+        final StringBuilder sb = new StringBuilder("Route::[");
         sb.append("condition=").append(condition);
         sb.append(", queueNames=").append(queueNames);
-        sb.append('}');
+        sb.append(']');
         return sb.toString();
     }
 }
