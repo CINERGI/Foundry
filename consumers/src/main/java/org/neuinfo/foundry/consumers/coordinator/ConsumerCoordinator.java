@@ -89,7 +89,9 @@ public class ConsumerCoordinator implements MessageListener {
         }
         for (ConsumerWorker worker : consumerWorkers) {
             Assertion.assertNotNull(worker.consumer);
-            logger.info("starting consumer " + worker.consumer);
+            logger.info("starting consumer  inStatus:" + worker.consumer.getInStatus()
+                    + " outStatus:" + worker.consumer.getOutStatus() +
+                    " successQueue:" + worker.consumer.getSuccessMessageQueueName());
             executorService.submit(worker);
         }
 
