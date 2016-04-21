@@ -7,6 +7,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 
@@ -79,7 +80,7 @@ public class ISOXMLGenerator {
                 }
             }
         }
-        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
+        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         if (data.containsField("keywords")) {
             //CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
 

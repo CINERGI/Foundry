@@ -10,6 +10,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
@@ -21,8 +22,8 @@ import java.util.*;
  * Created by bozyurt on 9/1/15.
  */
 public class ScigraphUtils {
-    static String serviceURL = "http://tikki.neuinfo.org:9000/";
-    static String annotationServiceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+    static String serviceURL = Constants.SCIGRAPH_URL;
+    static String annotationServiceURL = serviceURL + "scigraph/annotations/entities";
     private final static Logger logger = Logger.getLogger("ScigraphUtils");
     private static ScigraphMappingsHandler handler;
     static Map<String, List<List<FacetNode>>> idFacetNodeListCache =
@@ -415,8 +416,14 @@ public class ScigraphUtils {
         public List<KWNode> getThirdLevelCandidateNodes() {
             int len = path.size();
             List<KWNode> candidates = new LinkedList<KWNode>();
-            for (int i = len - 3; i >= 0; i--) {
-                candidates.add(path.get(i));
+            if (len <= 3) {
+                for (int i = len - 1; i >= 0; i--) {
+                    candidates.add(path.get(i));
+                }
+            } else {
+                for (int i = len - 3; i >= 0; i--) {
+                    candidates.add(path.get(i));
+                }
             }
             return candidates;
         }

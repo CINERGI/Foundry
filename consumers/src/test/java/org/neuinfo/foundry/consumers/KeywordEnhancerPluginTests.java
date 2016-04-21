@@ -8,6 +8,7 @@ import junit.framework.TestSuite;
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.KeywordInfo;
@@ -57,7 +58,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
         kwiList.add(kwi);
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         category2KWIListMap.put("instrument", kwiList);
-        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
+        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, null);
         File enhancedXmlFile = new File("/tmp/kwd_test.xml");
         Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
@@ -102,11 +103,13 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "505b9142e4b08c986b3197e9";
         thePrimaryKey = "4f4e48b4e4b07f02db532964";
         thePrimaryKey = "4f4e4a51e4b07f02db62a174";
-        boolean filter = false;
+        thePrimaryKey = "org.marine-geo:metadata:10000";
+        boolean filter = true;
         // runKeywordEnhancer("cinergi-0001", thePrimaryKey, filter, new File("/tmp/kw2"));
         //runKeywordEnhancer("cinergi-0011", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Sonar_Water_Column"));
         //runKeywordEnhancer("cinergi-0012", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC_Collection"));
-        runKeywordEnhancer("cinergi-0007", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC"));
+        // runKeywordEnhancer("cinergi-0007", thePrimaryKey, filter, new File("/tmp/NOAA_NGDC"));
+        runKeywordEnhancer("cinergi-0023", thePrimaryKey, filter, new File("/tmp/IEDA"));
     }
 
     public void testBadKeywords() throws Exception {
@@ -128,7 +131,10 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
             Map<String, String> optionMap = new HashMap<String, String>();
             optionMap.put("stopwordsUrl", "file:///var/data/cinergi/stopwords.txt");
+            optionMap.put("serviceURL",
+                    "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities");
             plugin.initialize(optionMap);
+
             ((KeywordEnhancer) plugin).setUseNER(false);
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {
@@ -179,7 +185,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
             List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
             IPlugin plugin = new KeywordEnhancer();
 
-            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
+            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
             plugin.initialize(new HashMap<String, String>(1));
             int count = 0;
             for (BasicDBObject docWrapper : docWrappers) {

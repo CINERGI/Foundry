@@ -3,6 +3,7 @@ package org.neuinfo.foundry.common.util;
 import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
 import org.jdom2.Element;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
@@ -74,7 +75,7 @@ public class ExistingKeywordsFacetHandler {
 
         if (!filteredKeywordList.isEmpty()) {
             category2KWIListMap = prepKeywordFacets(filteredKeywordList);
-            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance();
+            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
 
             docEl = CinergiXMLUtils.addFacets2ExistingKeywords(docEl, category2KWIListMap, fhh, docWrapper);
         }

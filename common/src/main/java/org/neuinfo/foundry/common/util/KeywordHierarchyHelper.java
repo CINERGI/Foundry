@@ -9,6 +9,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWEdge;
 import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWNode;
 
@@ -19,7 +20,7 @@ import java.util.*;
  * Created by bozyurt on 8/28/15.
  */
 public class KeywordHierarchyHelper {
-    String serviceURL = "http://tikki.neuinfo.org:9000/";
+    String serviceURL = Constants.SCIGRAPH_URL;
     static Map<String, String> lruCache = Collections.synchronizedMap(new LRUCache<String, String>(1000));
 
     public String getImmediateParent(String ontologyId) throws Exception {

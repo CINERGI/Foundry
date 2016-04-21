@@ -3,6 +3,7 @@ package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
@@ -22,7 +23,7 @@ public class EnhancerUtils {
 
     static {
         try {
-            chh = FacetHierarchyHandler.getInstance();
+            chh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,7 +97,7 @@ public class EnhancerUtils {
         for (int i = 0; i < keywordsArr.length(); i++) {
             JSONObject kwJson = keywordsArr.getJSONObject(i);
             Keyword kw = Keyword.fromJSON(kwJson);
-            for(String id : kw.getIds()) {
+            for (String id : kw.getIds()) {
                 String key = ScigraphUtils.prepKeywordMapKey(kw.getTerm(), id);
                 Keyword keyword = keywordMap.get(key);
                 if (keyword != null) {

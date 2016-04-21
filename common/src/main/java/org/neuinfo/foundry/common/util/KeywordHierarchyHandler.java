@@ -20,19 +20,21 @@ import java.util.*;
  * Created by bozyurt on 4/20/15.
  */
 public class KeywordHierarchyHandler {
-    String serviceURL = "http://tikki.neuinfo.org:9000/";
+    String serviceURL; //  = "http://tikki.neuinfo.org:9000/";
     Map<String, String> lruCache = new LRUCache<String, String>(100);
     Map<String, List<String>> parentKeywordsCache = new LRUCache<String, List<String>>(1000);
     private static KeywordHierarchyHandler instance = null;
 
-    public static KeywordHierarchyHandler getInstance() {
+
+    public static KeywordHierarchyHandler getInstance(String serviceURL) {
         if (instance == null) {
-            instance = new KeywordHierarchyHandler();
+            instance = new KeywordHierarchyHandler(serviceURL);
         }
         return instance;
     }
 
-    private KeywordHierarchyHandler() {
+    private KeywordHierarchyHandler(String serviceURL) {
+        this.serviceURL = serviceURL;
     }
 
 
@@ -441,7 +443,7 @@ public class KeywordHierarchyHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance();
+        KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance("http://tikki.neuinfo.org:9000/");
 
 //        handler.getKeywordHierarchy("Manometer", "Manometer");
         // handler.getKeywordHierarchy("mercury","b0e515cf-ed97-4870-bdde-6c00b0c998ee");

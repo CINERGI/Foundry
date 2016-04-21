@@ -30,7 +30,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
     static Map<String, String> exceptionMap = new HashMap<String, String>();
     Map<String, String> cinergiCategory2OntologyIdMap = new HashMap<String, String>();
 
-    String serviceURL = "http://tikki.neuinfo.org:9000/";
+    String serviceURL; // "http://tikki.neuinfo.org:9000/";
     private static FacetHierarchyHandler instance;
 
     static {
@@ -41,14 +41,15 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
     }
 
 
-    public static synchronized FacetHierarchyHandler getInstance() throws Exception {
+    public static synchronized FacetHierarchyHandler getInstance(String serviceURL) throws Exception {
         if (instance == null) {
-            instance = new FacetHierarchyHandler();
+            instance = new FacetHierarchyHandler(serviceURL);
         }
         return instance;
     }
 
-    private FacetHierarchyHandler() throws Exception {
+    private FacetHierarchyHandler(String serviceURL) throws Exception {
+        this.serviceURL = serviceURL;
         getFacetHierarchy();
     }
 
@@ -328,7 +329,7 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        FacetHierarchyHandler handler = FacetHierarchyHandler.getInstance();
+        FacetHierarchyHandler handler = FacetHierarchyHandler.getInstance("http://ec-scigraph.sdsc.edu:9000/");
 
         List<String> sortedCinergiCategories = handler.getSortedCinergiCategories();
         System.out.println("============================");

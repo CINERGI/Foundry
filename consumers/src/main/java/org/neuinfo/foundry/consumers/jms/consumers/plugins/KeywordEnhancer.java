@@ -23,13 +23,14 @@ import org.neuinfo.foundry.consumers.plugin.Result;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 /**
  * Created by bozyurt on 12/8/14.
  */
 public class KeywordEnhancer implements IPlugin {
-    String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+    String serviceURL; // = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
     List<String> jsonPaths = new ArrayList<String>(5);
     // NERKeywordEnhancer nerKeywordEnhancer;
     KeywordHierarchyHandler keywordHierarchyHandler;
@@ -48,12 +49,19 @@ public class KeywordEnhancer implements IPlugin {
         this.useNER = options.containsKey("useNER") ? Boolean.parseBoolean(options.get("useNER")) : false;
 
         jsonPaths.add("$..'gmd:abstract'.'gco:CharacterString'.'_$'");
-        jsonPaths.add("$..'gmd:title'.'gco:CharacterString'.'_$'");
+        jsonPaths.add("$..'gmd:citation'.'gmd:CI_Citation'.'gmd:title'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'title'.'gco:CharacterString'.'_$'");
 
         //  this.nerKeywordEnhancer = NERKeywordEnhancer.getInstance();
-        this.keywordHierarchyHandler = KeywordHierarchyHandler.getInstance();
+        String serviceHostURL = serviceURL;
+        int idx = serviceHostURL.indexOf("://");
+        Assertion.assertTrue(idx != -1);
+        int idx2 = serviceHostURL.indexOf("/", idx + 3);
+        if (idx2 != -1) {
+            serviceHostURL = serviceHostURL.substring(0, idx2+1);
+        }
+        this.keywordHierarchyHandler = KeywordHierarchyHandler.getInstance(serviceHostURL);
         this.stopWordsHandler = StopWordsHandler.getInstance();
     }
 
