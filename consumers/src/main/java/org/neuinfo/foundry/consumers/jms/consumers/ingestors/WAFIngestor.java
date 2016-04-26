@@ -48,7 +48,8 @@ public class WAFIngestor implements Ingestor {
     @Override
     public void startup() throws Exception {
         List<String> links = new LinkedList<String>();
-        final Document doc = Jsoup.connect(this.ingestURL).timeout(15000).get();
+
+        Document doc = Jsoup.connect(this.ingestURL).timeout(15000).maxBodySize(0).get();
         final Elements anchorEls = doc.select("a");
         final Iterator<Element> it = anchorEls.iterator();
         while (it.hasNext()) {
