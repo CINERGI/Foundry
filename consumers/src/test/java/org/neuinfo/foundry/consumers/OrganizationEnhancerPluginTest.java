@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import junit.framework.TestCase;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer;
+import org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer2;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 import org.neuinfo.foundry.consumers.util.Helper;
@@ -19,6 +20,31 @@ import java.util.Map;
 public class OrganizationEnhancerPluginTest extends TestCase {
     public OrganizationEnhancerPluginTest(String name) {
         super(name);
+    }
+
+
+    public void testOrgEnhancher2() throws Exception {
+        Helper helper = new Helper("");
+        boolean filter = true;
+        try {
+            String sourceID = "cinergi-0023";
+            String thePrimaryKey = "org.marine-geo:metadata:10000";
+            helper.startup("cinergi-consumers-cfg.xml");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
+
+            IPlugin plugin = new OrganizationEnhancer2();
+            plugin.initialize(new HashMap<String, String>(3));
+            for (BasicDBObject docWrapper : docWrappers) {
+                String primaryKey = docWrapper.get("primaryKey").toString();
+                if (!filter || primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                    Result result = plugin.handle(docWrapper);
+                    break;
+                }
+            }
+
+        } finally {
+            helper.shutdown();
+        }
     }
 
     public void testOrganizationEnhancer() throws Exception {
@@ -49,7 +75,7 @@ public class OrganizationEnhancerPluginTest extends TestCase {
                     System.out.println(data.toString());
 
                 }
-               // break;
+                // break;
                 if (count > 1000) {
                     break;
                 }

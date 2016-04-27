@@ -13,6 +13,7 @@ import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
@@ -35,7 +36,7 @@ public class DocumentResource {
 
     static {
         try {
-            fhh = FacetHierarchyHandler.getInstance();
+            fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -132,13 +133,13 @@ public class DocumentResource {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with id:" + docId + " is not found!").build();
             }
-            KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance();
+            KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
             JSONObject result = new JSONObject();
             BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
             BasicDBList keywords = (BasicDBList) data.get("keywords");
             JSONArray keywordsArr = new JSONArray();
             result.put("keywords", keywordsArr);
-            IHierarchyHandler chh = FacetHierarchyHandler.getInstance();
+            IHierarchyHandler chh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
             if (keywords != null && !keywords.isEmpty()) {
                 for (Object o : keywords) {
                     JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);

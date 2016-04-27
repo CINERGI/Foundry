@@ -14,8 +14,10 @@ import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.KeywordInfo;
+import scala.collection.immutable.Stream;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -34,7 +36,7 @@ public class KeywordEnhancerResource {
     String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
     static {
         try {
-            fhh = FacetHierarchyHandler.getInstance();
+            fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         } catch (Exception e) {
             e.printStackTrace();
         }

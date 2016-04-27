@@ -110,23 +110,7 @@ public class ISOXMLGenerator {
                 if (!matched) {
                     unmatchedList.add(kw.getTerm());
                 }
-                /*
-                Set<String> categories = kw.getCategories();
-                if (categories.size() > 0) {
-                    String category = kw.getTheCategory(fhh);
-                    String cinergiCategory = fhh.getCinergiCategory(category.toLowerCase());
-                    if (cinergiCategory != null) {
-                        category = cinergiCategory;
-                    }
-                    KeywordInfo kwi = new KeywordInfo(kw.getTerm(), category, null);
-                    List<KeywordInfo> kwiList = category2KWIListMap.get(category);
-                    if (kwiList == null) {
-                        kwiList = new ArrayList<KeywordInfo>(10);
-                        category2KWIListMap.put(category, kwiList);
-                    }
-                    kwiList.add(kwi);
-                }
-                */
+
             }
             if (!unmatchedList.isEmpty()) {
                 Utils.appendToFile("/tmp/no_facet_keywords.txt", unmatchedList);
