@@ -92,7 +92,7 @@ public class ISOXMLGenerator {
                 Keyword kw = Keyword.fromJSON(kwJson);
                 boolean matched = false;
                 for (String id : kw.getIds()) {
-                    List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id);
+                    List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id, kw.getTerm());
                     for (List<FacetNode> fnList : fnListList) {
                         String category = ScigraphUtils.toCinergiCategory(fnList);
                         KeywordInfo kwi = new KeywordInfo(id, kw.getTerm(), category, null);

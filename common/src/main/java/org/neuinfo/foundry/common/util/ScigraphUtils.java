@@ -8,6 +8,7 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.apache.velocity.texen.util.FileUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.Constants;
@@ -137,6 +138,10 @@ public class ScigraphUtils {
     }
 
     public static List<List<FacetNode>> getKeywordFacetHierarchy(String id) throws Exception {
+        return getKeywordFacetHierarchy(id, null);
+    }
+
+    public static List<List<FacetNode>> getKeywordFacetHierarchy(String id, String keyword) throws Exception {
         logger.info("id:" + id);
         List<List<FacetNode>> fnListList = idFacetNodeListCache.get(id);
         if (fnListList != null) {
@@ -145,6 +150,7 @@ public class ScigraphUtils {
 
         fnListList = new LinkedList<List<FacetNode>>();
         List<OntologyPath> keywordHierarchies = getKeywordHierarchy(id, "subClassOf");
+
         if (keywordHierarchies != null) {
             for (OntologyPath op : keywordHierarchies) {
                 List<KWNode> thirdLevelCandidateNodes = op.getThirdLevelCandidateNodes();
@@ -160,6 +166,42 @@ public class ScigraphUtils {
                     logger.info("\t" + facetHierarchy);
                 }
             }
+        }
+        /*
+        if (fnListList.isEmpty()) {
+            keywordHierarchies = getKeywordHierarchy(id, "cinergiParent");
+            if (keywordHierarchies != null) {
+                for (OntologyPath op : keywordHierarchies) {
+                    List<KWNode> thirdLevelCandidateNodes = op.getThirdLevelCandidateNodes();
+                    List<FacetNode> facetHierarchy = null;
+                    for (KWNode node : thirdLevelCandidateNodes) {
+                        facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
+                        if (facetHierarchy != null) {
+                            fnListList.add(facetHierarchy);
+                            break;
+                        }
+                    }
+                    if (facetHierarchy != null) {
+                        logger.info("\t" + facetHierarchy);
+                    }
+                }
+            }
+
+        }
+        */
+        if (keyword != null && fnListList.isEmpty()) {
+            StringBuilder sb = new StringBuilder(256);
+            sb.append(keyword).append(" | id:").append(id).append(" | ");
+            if (keywordHierarchies != null) {
+                for (Iterator<OntologyPath> iter = keywordHierarchies.iterator(); iter.hasNext(); ) {
+                    OntologyPath op = iter.next();
+                    sb.append(op.toString());
+                    if (iter.hasNext()) {
+                        sb.append(" , ");
+                    }
+                }
+            }
+            Utils.appendToFile("/tmp/no_mappings_keywords.txt", Arrays.asList(sb.toString()));
         }
         idFacetNodeListCache.put(id, fnListList);
         return fnListList;
