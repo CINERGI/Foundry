@@ -28,7 +28,9 @@ public class ProvenanceClient {
 
 
     public void getProvenance(String docUUID) throws Exception {
-        HttpClient client = new DefaultHttpClient();
+        DefaultHttpClient client = new DefaultHttpClient();
+        client.getCredentialsProvider().setCredentials(AuthScope.ANY,
+                new UsernamePasswordCredentials(user, pwd));
         URIBuilder builder = new URIBuilder(serverURL).setPath("/api/foundry/provenance/" + docUUID);
         URI uri = builder.build();
         System.out.println("uri:" + uri);

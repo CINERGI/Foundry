@@ -71,7 +71,8 @@ public class ProvenanceTests extends TestCase {
     public void testProvQ1() throws Exception {
         //String[] fidArr = {"52d969c0e4b08fdd52822387", "52d969c0e4b08fdd52822380"};
 //        String[] fidArr = {"52d969c0e4b08fdd528223678", "52d969c0e4b08fdd528223800"};
-        String[] fidArr = {"51220a00e4b0b37542fda86e"}; //  "gov.noaa.nodc:7600529"};
+       // String[] fidArr = {"51220a00e4b0b37542fda86e"}; //  "gov.noaa.nodc:7600529"};
+        String[] fidArr = {"3592f7bc37ea27adea06455fbf7dfd87"};
         // 51220a00e4b0b37542fda86e
         for (String fileIdentifier : fidArr) {
             String entityUUID = fileIdentifier;

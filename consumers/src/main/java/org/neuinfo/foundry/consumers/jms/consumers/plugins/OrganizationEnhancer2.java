@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
@@ -56,8 +57,18 @@ public class OrganizationEnhancer2 implements IPlugin {
             }
             // points of contacts
             jpp = new JSONPathProcessor();
-            objects = jpp.find("$..'gmd:identificationInfo'.'gmd:MD_DataIdentification'.'gmd:pointOfContact'[*].'gmd:CI_ResponsibleParty'.'gmd:organisationName'.'gco:CharacterString'.'_$'",
-                    json);
+            try {
+                objects = jpp.find("$..'gmd:identificationInfo'.'gmd:MD_DataIdentification'.'gmd:pointOfContact'[*].'gmd:CI_ResponsibleParty'.'gmd:organisationName'.'gco:CharacterString'.'_$'",
+                        json);
+            } catch (JSONException je) {
+                logger.info(je.getMessage());
+                try {
+                    objects = jpp.find("$..'gmd:identificationInfo'.'gmd:MD_DataIdentification'.'gmd:pointOfContact'.'gmd:CI_ResponsibleParty'.'gmd:organisationName'.'gco:CharacterString'.'_$'",
+                            json);
+                } catch (JSONException jex) {
+                    logger.error(je);
+                }
+            }
             if (objects != null) {
                 for (Object o : objects) {
                     orgStrings.add(o.toString());
