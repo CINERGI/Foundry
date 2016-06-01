@@ -60,12 +60,21 @@ public class DocumentResourceTest {
         System.out.println(response.readEntity(String.class));
     }
 
-     @Test
+    @Test
     public void testGetKeywordHierarchiesRemote() throws Exception {
         String docId = "4f4e4ae1e4b07f02db6887ce";
         docId = "4f4e48b4e4b07f02db532964";
         WebTarget remoteTarget = c.target("http://ec-pipe-stage.cloudapp.net:8080/foundry/api/");
         Response response = remoteTarget.path("cinergi/docs/keyword/hierarchies/").queryParam("id", docId)
+                .request(MediaType.APPLICATION_JSON_TYPE).get();
+        System.out.println(response.getStatus());
+        System.out.println(response.readEntity(String.class));
+    }
+
+    @Test
+    public void testGetProvenance() throws Exception {
+        String docId = "http://www.czo.arizona.edu/data/pub/valle/MetStation/met1_daily/data_daily_met1_metadata.hdr";
+        Response response = target.path("cinergi/prov/doc").queryParam("id", docId)
                 .request(MediaType.APPLICATION_JSON_TYPE).get();
         System.out.println(response.getStatus());
         System.out.println(response.readEntity(String.class));

@@ -5,6 +5,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import org.apache.commons.cli.*;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.provenance.ProvUtils;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONUtils;
 
@@ -55,6 +56,34 @@ public class ProvenanceUploader {
         en2.getJSONObject("foundry:version").put("$", en2Version);
     }
 
+    public void prepProvenanceJSON4Viewer(String sourceID) throws Exception {
+        Helper helper = new Helper("");
+        try {
+            helper.startup(configFile);
+            List<String> oidList = helper.getDocWrapperIds(sourceID);
+            for (String oid : oidList) {
+                DBObject docWrapper = helper.getDocWrapper(oid);
+                String primaryKey = docWrapper.get("primaryKey").toString();
+                System.out.println(primaryKey);
+                BasicDBObject history = (BasicDBObject) docWrapper.get("History");
+                BasicDBObject prov = (BasicDBObject) history.get("prov");
+                if (prov == null) {
+                    System.out.println("Skipping " + primaryKey + " for missing provenance");
+                    continue;
+                }
+
+                BasicDBList events = (BasicDBList) prov.get("events");
+                JSONObject combined = ProvUtils.prepare4Viewer(events);
+
+                System.out.println(combined.toString(2));
+                break;
+            }
+        } finally {
+            helper.shutdown();
+        }
+    }
+
+
     public void addProvenanceChains2ProvServer(String sourceID) throws Exception {
         Helper helper = new Helper("");
         try {
@@ -74,9 +103,11 @@ public class ProvenanceUploader {
                 }
 
                 BasicDBList events = (BasicDBList) prov.get("events");
-                if (events.size() >= 4) {
+                // 4
+                int NO_EVENTS = 3; // FIXME orig is 4
+                if (events.size() >= NO_EVENTS) {
                     pc.deleteProvenance(primaryKey);
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i < NO_EVENTS; i++) {
                         BasicDBObject provData = (BasicDBObject) events.get(i);
                         JSONObject json = JSONUtils.toJSON(provData, true);
                         //fixVersionNumbers(json, i);
@@ -106,6 +137,10 @@ public class ProvenanceUploader {
     }
 
     public static void main(String[] args) throws Exception {
+        ProvenanceUploader pu = new ProvenanceUploader();
+
+        pu.prepProvenanceJSON4Viewer("cinergi-0022");
+
         Option help = new Option("h", "print this message");
         Option configFileOption = OptionBuilder.withArgName("config-file")
                 .hasArg().withDescription("config-file e.g. cinergi-consumers-cfg.xml").create('c');
@@ -129,7 +164,7 @@ public class ProvenanceUploader {
             usage(options);
         }
 
-        ProvenanceUploader pu = new ProvenanceUploader();
+
         String sourceIdsStr = line.getOptionValue('s');
         String[] sourceIDs = sourceIdsStr.split("\\s*,\\s*");
 

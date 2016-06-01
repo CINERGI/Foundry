@@ -22,16 +22,28 @@ import java.net.URI;
  */
 public class ProvenanceClient {
     //private String serverURL = "http://provaas.cloudapp.net/"; //"http://provaas.org/"; // "http://geoprovdb.webfactional.com/";
+
+/*
     private String serverURL = "http://132.249.238.127/";
     private String user = "cinergi";
     private String pwd = "4cinergi_prov";
+    private String PREFIX = "/api/foundry/provenance/";
+    private String PREFIX_POST = "/api/provenance/";
+*/
+
+    private String serverURL = "http://127.0.0.1:5000/";
+    private String user = "akin";
+    private String pwd = "akin";
+    private String PREFIX = "/foundry/provenance/";
+    private String PREFIX_POST = "/provenance/";
+
 
 
     public void getProvenance(String docUUID) throws Exception {
         DefaultHttpClient client = new DefaultHttpClient();
         client.getCredentialsProvider().setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(user, pwd));
-        URIBuilder builder = new URIBuilder(serverURL).setPath("/api/foundry/provenance/" + docUUID);
+        URIBuilder builder = new URIBuilder(serverURL).setPath(PREFIX + docUUID);
         URI uri = builder.build();
         System.out.println("uri:" + uri);
         HttpGet httpGet = new HttpGet(uri);
@@ -58,7 +70,7 @@ public class ProvenanceClient {
 
         client.getCredentialsProvider().setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(user, pwd));
-        URIBuilder builder = new URIBuilder(serverURL).setPath("/api/foundry/provenance/" + docUUID);
+        URIBuilder builder = new URIBuilder(serverURL).setPath(PREFIX + docUUID);
         URI uri = builder.build();
         System.out.println("uri:" + uri);
         HttpDelete httpDel = new HttpDelete(uri);
@@ -83,7 +95,7 @@ public class ProvenanceClient {
         DefaultHttpClient client = new DefaultHttpClient();
         client.getCredentialsProvider().setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(user, pwd));
-        URIBuilder builder = new URIBuilder(serverURL).setPath("/api/provenance/");
+        URIBuilder builder = new URIBuilder(serverURL).setPath(PREFIX_POST); // was /api/provenance/
         URI uri = builder.build();
         System.out.println("uri:" + uri);
         HttpPost httpPost = new HttpPost(uri);
@@ -122,7 +134,7 @@ public class ProvenanceClient {
         DefaultHttpClient client = new DefaultHttpClient();
         client.getCredentialsProvider().setCredentials(AuthScope.ANY,
                 new UsernamePasswordCredentials(user, pwd));
-        URIBuilder builder = new URIBuilder(serverURL).setPath("/api/provenance/");
+        URIBuilder builder = new URIBuilder(serverURL).setPath(PREFIX_POST); // was /api/provenance/
         URI uri = builder.build();
         System.out.println("uri:" + uri);
         HttpPost httpPost = new HttpPost(uri);
