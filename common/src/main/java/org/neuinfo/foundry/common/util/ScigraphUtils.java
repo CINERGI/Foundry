@@ -167,28 +167,7 @@ public class ScigraphUtils {
                 }
             }
         }
-        /*
-        if (fnListList.isEmpty()) {
-            keywordHierarchies = getKeywordHierarchy(id, "cinergiParent");
-            if (keywordHierarchies != null) {
-                for (OntologyPath op : keywordHierarchies) {
-                    List<KWNode> thirdLevelCandidateNodes = op.getThirdLevelCandidateNodes();
-                    List<FacetNode> facetHierarchy = null;
-                    for (KWNode node : thirdLevelCandidateNodes) {
-                        facetHierarchy = handler.findFacetHierarchy(toCurie(node.id));
-                        if (facetHierarchy != null) {
-                            fnListList.add(facetHierarchy);
-                            break;
-                        }
-                    }
-                    if (facetHierarchy != null) {
-                        logger.info("\t" + facetHierarchy);
-                    }
-                }
-            }
 
-        }
-        */
         if (keyword != null && fnListList.isEmpty()) {
             StringBuilder sb = new StringBuilder(256);
             sb.append(keyword).append(" | id:").append(id).append(" | ");
@@ -251,6 +230,10 @@ public class ScigraphUtils {
         }
         idWSFacetsCache.put(id, fhList);
         return fhList;
+    }
+
+    public static List<FacetNode> findFacetHierarchyGivenFacet(String facet) {
+        return handler.findFacetHierarchyGivenFacet(facet);
     }
 
     public static String toCinergiCategory(List<FacetNode> fnList) {

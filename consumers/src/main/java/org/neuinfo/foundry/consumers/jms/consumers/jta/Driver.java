@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class Driver {
 		 * 
 		 */
 
-
+        long start = System.currentTimeMillis();
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory df = manager.getOWLDataFactory();
         manager.setSilentMissingImportsHandling(true);
@@ -40,6 +41,7 @@ public class Driver {
         OWLOntology cinergi_ont = manager.loadOntologyFromOntologyDocument(
                 IRI.create("http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl"));
         System.out.println("ontology loaded");
+        System.out.println("Time elapsed (msecs): " + (System.currentTimeMillis() - start));
 
         OWLOntology extensions = null;
         for (OWLOntology o : manager.getOntologies()) {
@@ -54,7 +56,7 @@ public class Driver {
         }
 
         String HOME_DIR = System.getProperty("user.home");
-        String ROOT_DIR = HOME_DIR + "/work/JSON-Text-Analyzer";
+        String ROOT_DIR = HOME_DIR + "/dev/java/Foundry/data";
         String jsonInput = ROOT_DIR + "/czo_contents.json";
         String jsonOutput = ROOT_DIR + "/czo_contents_out.json";
         String stopListFile = ROOT_DIR + "/stoplist.txt";
@@ -66,7 +68,6 @@ public class Driver {
             nullIRIsFile = argv[3];
         }
 
-        long start = System.currentTimeMillis();
         // load documents
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonInput));
@@ -76,8 +77,12 @@ public class Driver {
         List<String> nullIRIs = Files.readAllLines(Paths.get(nullIRIsFile), StandardCharsets.UTF_8);
         LinkedHashMap<String, IRI> exceptionMap = null; // Create this using label duplicates spreadsheet
 
+
+        // for testing
+        docs = Arrays.copyOf(docs, 100);
+        start = System.currentTimeMillis();
         KeywordAnalyzer analyzer = new KeywordAnalyzer(manager, df, cinergi_ont, extensions, gson,
-                stoplist, exceptionMap, nullIRIs);
+                stoplist, exceptionMap, nullIRIs, null);
 
 
         analyzer.processDocuments(docs);

@@ -8,6 +8,9 @@ import java.util.*;
  */
 public class ScigraphMappingsHandler {
     static Map<String, List<FacetNode>> mappings = new HashMap<String, List<FacetNode>>();
+    /** */
+    static Map<String, List<FacetNode>> mappings2 = new HashMap<String, List<FacetNode>>();
+
     static Map<String, String> label2PreferredLabelMap = new HashMap<String, String>();
     private static ScigraphMappingsHandler instance;
 
@@ -42,6 +45,11 @@ public class ScigraphMappingsHandler {
                 if (fnList.size() == 3) {
                     String key = ScigraphUtils.toCurie(fnList.get(2).getId());
                     mappings.put(key, fnList);
+                    String key1 = ScigraphUtils.toCurie(fnList.get(1).getLabel());
+                    mappings2.put(key1, fnList);
+                    key1 = ScigraphUtils.toCurie(fnList.get(0).getLabel());
+                    List<FacetNode> nfnList = Arrays.asList( fnList.get(0));
+                    mappings2.put(key1, nfnList);
                 } else {
                     System.err.println("line:" + line);
                 }
@@ -72,6 +80,16 @@ public class ScigraphMappingsHandler {
         }
         */
         return mappings.get(thirdLevelCurrie);
+    }
+
+
+    /**
+     *
+     * @param facet
+     * @return
+     */
+    public List<FacetNode> findFacetHierarchyGivenFacet(String facet) {
+        return mappings2.get(facet);
     }
 
     public List<String> getSortedCinergiFacets() {

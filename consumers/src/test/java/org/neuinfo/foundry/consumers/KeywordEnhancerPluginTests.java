@@ -13,6 +13,7 @@ import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.common.util.KeywordInfo;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer;
+import org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer2;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 import org.neuinfo.foundry.consumers.util.Helper;
@@ -116,6 +117,49 @@ public class KeywordEnhancerPluginTests extends TestCase {
         String thePrimaryKey = "SEN:0112";
         boolean filter = true;
         runKeywordEnhancer("cinergi-0015", thePrimaryKey, filter, new File("/tmp/SEN"));
+    }
+
+    public void testKeywordEnhancer2() throws Exception {
+        String thePrimaryKey = "org.marine-geo:metadata:10000";
+        boolean filter = true;
+        runKeywordEnhancer2("cinergi-0023", thePrimaryKey, filter, new File("/tmp/IEDA"));
+    }
+
+    void runKeywordEnhancer2(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {
+        Helper helper = new Helper("");
+        try {
+            ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
+            ScigraphUtils.setHandler(smHandler);
+
+            helper.startup("cinergi-consumers-cfg.xml");
+
+            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
+            IPlugin plugin = new KeywordEnhancer2();
+            Map<String, String> optionMap = new HashMap<String, String>();
+            optionMap.put("serviceURL", "http://tikki.neuinfo.org:9000");
+            plugin.initialize(optionMap);
+            for (BasicDBObject docWrapper : docWrappers) {
+                String primaryKey = docWrapper.get("primaryKey").toString();
+                if (!filter || primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                    Result result = plugin.handle(docWrapper);
+                    if (result.getStatus() == Result.Status.OK_WITH_CHANGE) {
+                        DBObject dw = result.getDocWrapper();
+                        DBObject data = (DBObject) dw.get("Data");
+                        if (data.containsField("keywords")) {
+                            DBObject kwDBO = (DBObject) data.get("keywords");
+                            JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
+                            System.out.println(jsArr.toString(2));
+                        }
+                    }
+                    if (filter) {
+                        break;
+                    }
+                }
+            }
+
+        } finally {
+            helper.shutdown();
+        }
     }
 
     void runKeywordEnhancer(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {

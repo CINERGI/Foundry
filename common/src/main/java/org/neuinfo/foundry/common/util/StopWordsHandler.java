@@ -97,31 +97,7 @@ public class StopWordsHandler {
         }
     }
 
-    /*
-    public void loadStopwords() throws Exception {
-        URIBuilder builder = new URIBuilder(this.stopwordsUrl);
-        URI uri = builder.build();
-        if (this.stopwordsUrl.startsWith("file://")) {
-            String data = Utils.loadAsString(this.stopwordsUrl.substring(7));
-            parse(data);
-        } else {
-            HttpClient client = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(uri);
-            try {
-                HttpResponse response = client.execute(httpGet);
-                HttpEntity entity = response.getEntity();
-                if (response.getStatusLine().getStatusCode() == 200 && entity != null) {
-                    String data = EntityUtils.toString(entity);
-                    parse(data);
-                }
-            } finally {
-                if (httpGet != null) {
-                    httpGet.releaseConnection();
-                }
-            }
-        }
-    }
-    */
+
 
     private void parse(String data) {
         String[] lines = data.split("\r?\n");

@@ -13,6 +13,7 @@ public class Keyword {
         setTerm(term);
     }
 
+
     public String getFacet() {
         return facet;
     }

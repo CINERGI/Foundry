@@ -12,10 +12,21 @@ import java.util.*;
  */
 public class Keyword {
     private String term;
+    private String ontId;
+    private String facet;
+    private String facetHierarchy;
+
     List<EntityInfo> entityInfos = new LinkedList<EntityInfo>();
 
     public Keyword(String term) {
         this.term = term;
+    }
+
+    public Keyword(String term, String ontId, String facet, String facetHierarchy) {
+        this.term = term;
+        this.ontId = ontId;
+        this.facet = facet;
+        this.facetHierarchy = facetHierarchy;
     }
 
     public void addEntityInfo(EntityInfo ei) {
@@ -30,6 +41,17 @@ public class Keyword {
         return entityInfos;
     }
 
+    public String getOntId() {
+        return ontId;
+    }
+
+    public String getFacet() {
+        return facet;
+    }
+
+    public String getFacetHierarchy() {
+        return facetHierarchy;
+    }
 
     public Set<String> getCategories() {
         Set<String> categories = new HashSet<String>(7);
@@ -179,6 +201,15 @@ public class Keyword {
     public JSONObject toJSON() {
         JSONObject js = new JSONObject();
         js.put("term", term);
+        if (ontId != null) {
+            js.put("ontId", ontId);
+        }
+        if (facet != null) {
+            js.put("facet", facet);
+        }
+        if (facetHierarchy != null) {
+            js.put("facetHierarchy", facetHierarchy);
+        }
         JSONArray jsArr = new JSONArray();
         js.put("entityInfos", jsArr);
         for (EntityInfo ei : entityInfos) {
@@ -189,7 +220,10 @@ public class Keyword {
 
     public static Keyword fromJSON(JSONObject json) {
         String term = json.getString("term");
-        Keyword kw = new Keyword(term);
+        String ontId = json.has("ontId") ? json.getString("ontId") : null;
+        String facet = json.has("facet") ? json.getString("facet") : null;
+        String facetHierarchy = json.has("facetHierarchy") ? json.getString("facetHierarchy") : null;
+        Keyword kw = new Keyword(term, ontId, facet, facetHierarchy);
         JSONArray jsArr = json.getJSONArray("entityInfos");
 
         for (int i = 0; i < jsArr.length(); i++) {

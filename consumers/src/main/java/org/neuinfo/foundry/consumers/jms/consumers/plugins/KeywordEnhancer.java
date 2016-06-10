@@ -87,8 +87,10 @@ public class KeywordEnhancer implements IPlugin {
             Map<String, Keyword> keywordMap = new LinkedHashMap<String, Keyword>();
             List<String> text2AnnotateList = new ArrayList<String>(2);
             String docTitle = null;
+
             for (String jsonPath : jsonPaths) {
                 List<Object> objects = processor.find(jsonPath, json);
+
                 if (objects != null && !objects.isEmpty()) {
                     String text2Annotate = (String) objects.get(0);
                     if (!text2Annotate.equals("REQUIRED FIELD")) {

@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.neuinfo.foundry.common.util.LRUCache;
+import org.neuinfo.foundry.common.util.Utils;
 import org.semanticweb.owlapi.model.*;
 
 import java.io.IOException;
@@ -19,12 +20,13 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
 public class KeywordAnalyzer {
 
     private OWLOntologyManager manager;
     private OWLDataFactory df;
     private OWLOntology cinergi, extensions;
-    private LRUCache<String, Vocab> vocabCache = new LRUCache<String,Vocab>(5000);
+    private LRUCache<String, Vocab> vocabCache = new LRUCache<String, Vocab>(5000);
     private Vocab nilVocab = new Vocab();
     private List<Output> output;
     private List<String> stoplist;
@@ -32,11 +34,12 @@ public class KeywordAnalyzer {
     private Gson gson;
     private LinkedHashMap<String, IRI> exceptionMap;
     private int counter;
-    public static final String SERVER_URL = "http://tikki.neuinfo.org:9000";
+    private NLPHelper nlpHelper;
+    private String SERVER_URL = "http://tikki.neuinfo.org:9000";
 
     public KeywordAnalyzer(OWLOntologyManager manager, OWLDataFactory df, OWLOntology ont,
                            OWLOntology extensions, Gson gson, List<String> stoplist,
-                           LinkedHashMap<String, IRI> exceptionMap, List<String> nullIRIs) {
+                           LinkedHashMap<String, IRI> exceptionMap, List<String> nullIRIs, String serviceURL) throws IOException {
         output = new ArrayList<Output>();
         this.manager = manager;
         this.df = df;
@@ -46,10 +49,41 @@ public class KeywordAnalyzer {
         this.exceptionMap = exceptionMap;
         this.nullIRIs = nullIRIs;
         counter = 0;
+
+        // IBO
+        this.nlpHelper = new NLPHelper();
+        if (serviceURL != null) {
+            SERVER_URL = serviceURL;
+        }
     }
 
     public List<Output> getOutput() {
         return output;
+    }
+
+
+    public List<Keyword> findKeywords(Document doc) throws UnsupportedEncodingException {
+        StringBuilder sb = new StringBuilder(2048);
+        if (!Utils.isEmpty(doc.getTitle())) {
+            sb.append(doc.getTitle()).append(' ');
+        }
+        if (!Utils.isEmpty(doc.getText())) {
+            sb.append(doc.getText());
+        }
+        String text = sb.toString().trim();
+        ArrayList<Keyword> keywords = new ArrayList<Keyword>();
+        if (text.length() == 0) {
+            return keywords;
+        }
+        HashSet<String> visited = new HashSet<String>();
+        try {
+            // keywords = process(text, visited); // ORIG
+            keywords = process2(text, visited);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+        return keywords;
     }
 
     public void processDocument(Document doc) throws UnsupportedEncodingException {
@@ -61,7 +95,8 @@ public class KeywordAnalyzer {
         ArrayList<Keyword> keywords = new ArrayList<Keyword>();
         HashSet<String> visited = new HashSet<String>();
         try {
-            keywords = process(text, visited);
+            // keywords = process(text, visited); // ORIG
+            keywords = process2(text, visited);
         } catch (Exception e1) {
             e1.printStackTrace();
         }
@@ -210,6 +245,48 @@ public class KeywordAnalyzer {
             }
         }
         return null;
+    }
+
+
+    private ArrayList<Keyword> process2(String testInput, HashSet<String> visited) throws Exception {
+        ArrayList<Keyword> keywords = new ArrayList<Keyword>();
+        List<NLPHelper.NP> npList = nlpHelper.processText(testInput);
+        for (NLPHelper.NP np : npList) {
+            Tokens tok = new Tokens(np.getText());
+            tok.setStart(String.valueOf(np.getStart()));
+            tok.setEnd(String.valueOf(np.getEnd()));
+            if (processChunk(tok, keywords, visited) == true) {
+                continue;
+            }
+            POS[] parts = np.getPosArr();
+            for (POS p : parts) {
+                if (p.pos.equals("NN") || p.pos.equals("NNP") ||
+                        p.pos.equals("NNPS") || p.pos.equals("NNS") || p.pos.equals("JJ")) {
+                    // if there is a hyphen
+                    if (p.token.contains("-")) {
+                        // if there is a hyphen in the array of POS, then
+                        // break it into separate parts and process them individually
+                        int i = p.token.indexOf("-");
+                        String[] substr = {p.token.substring(0, i), p.token.substring(i + 1)};
+                        Tokens tempToken = new Tokens(substr[0] + " " + substr[1]);
+                        if (processChunk(tempToken, keywords, visited) == true) // see if the phrase with a space replacing the hyphen exists
+                        {
+                            continue;
+                        }
+                    } else // doesnt contain a hyphen
+                    {
+                        // call vocab Term search for each of these tokens
+                        Tokens tempToken = new Tokens(tok);
+                        tempToken.setToken(p.token);
+                        if (processChunk(tempToken, keywords, visited) == true) {
+                            continue;
+                        }
+                    }
+                }
+            }
+
+        }
+        return keywords;
     }
 
     private ArrayList<Keyword> process(String testInput, HashSet<String> visited) throws Exception {
