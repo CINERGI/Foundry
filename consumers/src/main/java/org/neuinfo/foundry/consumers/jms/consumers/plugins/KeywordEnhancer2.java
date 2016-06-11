@@ -4,12 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
-import org.neuinfo.foundry.common.util.JSONPathProcessor;
-import org.neuinfo.foundry.common.util.JSONUtils;
-import org.neuinfo.foundry.common.util.KeywordInfo;
+import org.neuinfo.foundry.common.util.*;
 import org.neuinfo.foundry.consumers.jms.consumers.jta.Document;
 import org.neuinfo.foundry.consumers.jms.consumers.jta.Keyword;
 import org.neuinfo.foundry.consumers.jms.consumers.jta.KeywordAnalyzer;
@@ -24,10 +23,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bozyurt on 6/9/16.
@@ -89,14 +85,12 @@ public class KeywordEnhancer2 implements IPlugin {
 
             String docTitle = null;
             String docAbstract = null;
-            StringBuilder sb = new StringBuilder(2048);
             JSONPathProcessor processor = new JSONPathProcessor();
             for (String jsonPath : jsonPaths) {
                 List<Object> objects = processor.find(jsonPath, json);
                 if (objects != null && !objects.isEmpty()) {
                     String text2Annotate = (String) objects.get(0);
                     if (!text2Annotate.equals("REQUIRED FIELD")) {
-                        sb.append(' ').append(text2Annotate);
                         if (jsonPath.indexOf("title") != -1) {
                             docTitle = text2Annotate;
                         } else {
@@ -105,6 +99,23 @@ public class KeywordEnhancer2 implements IPlugin {
                     }
                 }
             }
+
+            XML2JSONConverter converter = new XML2JSONConverter();
+            Element docEl = converter.toXML(json);
+            Set<String> existingKeywords = CinergiXMLUtils.getExistingKeywords(docEl);
+
+            if (!existingKeywords.isEmpty()) {
+                StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
+                for (Iterator<String> it = existingKeywords.iterator(); it.hasNext(); ) {
+                    sb.append(it.next());
+                    if (it.hasNext()) {
+                        sb.append(" , ");
+                    }
+                }
+                String s = sb.toString().trim() + " .";
+                docAbstract += s;
+            }
+
             Document doc = new Document();
             if (docAbstract != null) {
                 doc.setText(docAbstract);
@@ -124,7 +135,7 @@ public class KeywordEnhancer2 implements IPlugin {
             for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
                 for (KeywordInfo kwi : kwiList) {
                     org.neuinfo.foundry.common.model.Keyword kw =
-                            new org.neuinfo.foundry.common.model.Keyword(kwi.getTerm(), kwi.getId(), null, kwi.getCategory());
+                            new org.neuinfo.foundry.common.model.Keyword(kwi.getTerm(), kwi.getId(), kwi.getHierarchyPath(), kwi.getCategory());
                     kw.addEntityInfo(new EntityInfo(null, kwi.getId(), -1, -1, kwi.getCategory()));
                     jsArr.put(kw.toJSON());
                 }

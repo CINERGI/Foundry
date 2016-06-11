@@ -79,7 +79,7 @@ public class Driver {
 
 
         // for testing
-        docs = Arrays.copyOf(docs, 100);
+        docs = Arrays.copyOf(docs, 10);
         start = System.currentTimeMillis();
         KeywordAnalyzer analyzer = new KeywordAnalyzer(manager, df, cinergi_ont, extensions, gson,
                 stoplist, exceptionMap, nullIRIs, null);

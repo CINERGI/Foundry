@@ -15,10 +15,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class KeywordAnalyzer {
@@ -197,7 +194,7 @@ public class KeywordAnalyzer {
     }
 
     // returns the cinegiFacet associated with any class, returns null if there is not one
-    private IRI getFacetIRI(OWLClass cls, HashSet<IRI> visited) {
+    private IRI getFacetIRI(OWLClass cls, Set<IRI> visited) {
         if (visited.contains(cls.getIRI())) {
             return null;
         }
@@ -400,7 +397,7 @@ public class KeywordAnalyzer {
             }
             toUse = vocab.concepts.get(0);
         }
-        HashSet<IRI> visitedIRI = new HashSet<IRI>();
+        LinkedHashSet<IRI> visitedIRI = new LinkedHashSet<IRI>();
 
         OWLClass cls = df.getOWLClass(IRI.create(toUse.uri));
         if (toUse.uri.contains("CHEBI") && t.getToken().length() <= 3) // filter chemical entities that cause errors
@@ -428,8 +425,27 @@ public class KeywordAnalyzer {
             return false;
         }
 
+        System.out.println("keyword:" + t.getToken() + " - " + facetIRI.toString() +
+                " facet:" + OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df));
+        StringBuilder sb = new StringBuilder();
+        Stack<IRI> stack = new Stack<IRI>();
+        for (IRI iri : visitedIRI) {
+            stack.push(iri);
+        }
+        while (!stack.isEmpty()) {
+            IRI iri = stack.pop();
+            sb.append(OWLFunctions.getLabel(df.getOWLClass(iri), manager, df));
+            if (!stack.isEmpty()) {
+                sb.append(" > ");
+            }
+        }
+
+        // System.out.println(visitedIRI);
+        String fullHierarchy = sb.toString();
+        System.out.println(fullHierarchy);
+
         keywords.add(new Keyword(t.getToken(), new String[]{t.getStart(), t.getEnd()}, facetIRI.toString(),
-                OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df)));
+                OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df), fullHierarchy));
 
         return true; //
 

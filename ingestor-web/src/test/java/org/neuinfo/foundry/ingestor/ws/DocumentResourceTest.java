@@ -53,6 +53,8 @@ public class DocumentResourceTest {
         docId = "4f4e48b4e4b07f02db532964";
         docId = "4f4e4a51e4b07f02db62a174";
         docId = "08b87e44-b48e-59f8-e054-00144fdd4fa6";
+        docId = "505ba4bbe4b08c986b320541";
+        docId = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr";
 
         Response response = target.path("cinergi/docs/keyword/hierarchies/").queryParam("id", docId)
                 .request(MediaType.APPLICATION_JSON_TYPE).get();

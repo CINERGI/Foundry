@@ -34,7 +34,7 @@ public class WAFExporter implements IPlugin {
             DBObject siDBO = (DBObject) docWrapper.get("SourceInfo");
             String srcName = siDBO.get("Name").toString();
 
-            ISOXMLGenerator generator = new ISOXMLGenerator();
+            ISOXMLGenerator2 generator = new ISOXMLGenerator2();
             Element docEl = generator.generate(docWrapper);
             // also enhance existing keywords 12/01/2015
             /* FIXME not enhancing existing keywords

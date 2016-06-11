@@ -7,18 +7,14 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.Keyword;
-import org.neuinfo.foundry.common.util.ScigraphMappingsHandler.FacetNode;
 
 import java.util.*;
 
 /**
- * given a mongodb document generates an enhanced version of the original ISO XML document.
- * <p/>
- * Created by bozyurt on 2/11/15.
+ * Created by bozyurt on 6/10/16.
  */
-public class ISOXMLGenerator {
+public class ISOXMLGenerator2 {
     private Namespace gmd = Namespace.getNamespace("gmd", "http://www.isotc211.org/2005/gmd");
     private Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
     private Namespace xlink = Namespace.getNamespace("xlink", "http://www.w3.org/1999/xlink");
@@ -54,7 +50,6 @@ public class ISOXMLGenerator {
             }
         }
 
-
         Map<String, List<KeywordInfo>> category2KWIListMap = new HashMap<String, List<KeywordInfo>>(7);
         if (data.containsField("orgKeywords")) {
             DBObject kwDBO = (DBObject) data.get("orgKeywords");
@@ -80,56 +75,35 @@ public class ISOXMLGenerator {
                 }
             }
         }
-        FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
         if (data.containsField("keywords")) {
-            //CategoryHierarchyHandler chh = CategoryHierarchyHandler.getInstance();
-
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
-            List<String> unmatchedList = new ArrayList<String>(jsArr.length());
             for (int i = 0; i < jsArr.length(); i++) {
                 JSONObject kwJson = jsArr.getJSONObject(i);
-                Keyword kw = Keyword.fromJSON(kwJson);
-                boolean matched = false;
-                for (String id : kw.getIds()) {
-                    List<List<FacetNode>> fnListList = ScigraphUtils.getKeywordFacetHierarchy(id, kw.getTerm());
-                    for (List<FacetNode> fnList : fnListList) {
-                        String category = ScigraphUtils.toCinergiCategory(fnList);
-                        KeywordInfo kwi = new KeywordInfo(id, kw.getTerm(), category, null);
-                        List<KeywordInfo> kwiList = category2KWIListMap.get(category);
-                        if (kwiList == null) {
-                            kwiList = new ArrayList<KeywordInfo>(10);
-                            category2KWIListMap.put(category, kwiList);
-                        }
-                        if (!kwiList.contains(kwi)) {
-                            kwiList.add(kwi);
-                            matched = true;
-                        }
-                    }
+                Keyword keyword = Keyword.fromJSON(kwJson);
+                String category = keyword.getFacetHierarchy();
+                // full hierarchy for web service
+                String fullHierarchyPath = keyword.getFullHierarchy();
+                if (category.indexOf(" > ") != -1) {
+                    int idx = category.lastIndexOf(" > ");
+                    fullHierarchyPath = category.substring(0, idx).trim() + " > " + fullHierarchyPath;
                 }
-                if (!matched) {
-                    unmatchedList.add(kw.getTerm());
+                KeywordInfo kwi = new KeywordInfo(keyword.getOntId(), keyword.getTerm(), category, keyword.getFullHierarchy());
+                List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+                if (kwiList == null) {
+                    kwiList = new ArrayList<KeywordInfo>(10);
+                    category2KWIListMap.put(category, kwiList);
                 }
-
+                if (!kwiList.contains(kwi)) {
+                    kwiList.add(kwi);
+                }
             }
-            if (!unmatchedList.isEmpty()) {
-                Utils.appendToFile("/tmp/no_facet_keywords.txt", unmatchedList);
-            }
-
         }
         if (!category2KWIListMap.isEmpty()) {
-            for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
-                CinergiXMLUtils.filterPlurals(kwiList);
-            }
-
-            docEl = CinergiXMLUtils.addKeywords(docEl, category2KWIListMap, fhh, docWrapper);
+            docEl = ISOXMLGeneratorSupport.addKeywords(docEl, category2KWIListMap, docWrapper);
         }
         // fix anchor problem if exists
         docEl = ISOXMLFixer.fixAnchorProblem(docEl);
         return docEl;
     }
-
-
-
-
 }

@@ -29,8 +29,6 @@ public class CinergiXMLUtils {
         thesaurusMap.put("dataCenter", "Datacenter from NASA/Global Change Master Directory (GCMD) Earth Science Keywords.");
         thesaurusMap.put("platform", "Platforms from NASA/Global Change Master Directory (GCMD) Earth Science Keywords.");
         thesaurusMap.put("organization", "Virtual International Authority File (VIAF) Corporate Names");
-
-
     }
 
     private CinergiXMLUtils() {
@@ -324,7 +322,7 @@ public class CinergiXMLUtils {
         return docEl;
     }
 
-    private static int getPivot(List<Content> contents) {
+    public static int getPivot(List<Content> contents) {
         int pivot = -1;
         for (int i = 0; i < contents.size(); i++) {
             Content content = contents.get(i);

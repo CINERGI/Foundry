@@ -82,9 +82,4 @@ public class OWLFunctions {
 	{		
 		return a.getValue().equals(df.getOWLLiteral(true));
 	}
-	
-	
-	
-	
-	
 }

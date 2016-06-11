@@ -21,7 +21,7 @@ public class KeywordEnhancer2Helper {
             String singularCCTerm = Inflector.toCamelCase(inflector.toSingular(keyword.getTerm()));
             if (!singularCCTerm.equals(keyword.getTerm())) {
                 Keyword kwNew = new Keyword(singularCCTerm, keyword.getSpan(),
-                        keyword.getOntID(), keyword.getFacet());
+                        keyword.getOntID(), keyword.getFacet(), keyword.getFullHierarchy());
 
                 keyword = kwNew;
             }
@@ -29,7 +29,14 @@ public class KeywordEnhancer2Helper {
             List<ScigraphMappingsHandler.FacetNode> fnList = ScigraphUtils.findFacetHierarchyGivenFacet(keyword.getFacet());
             if (fnList != null) {
                 String category = ScigraphUtils.toCinergiCategory(fnList);
-                KeywordInfo kwi = new KeywordInfo(keyword.getOntID(), keyword.getTerm(), category, null);
+                // full hierarchy for web service
+                String fullHierarchyPath = keyword.getFullHierarchy();
+                if (category.indexOf(" > ") != -1) {
+                    int idx = category.lastIndexOf(" > ");
+                    fullHierarchyPath = category.substring(0, idx).trim() + " > " + fullHierarchyPath;
+                }
+
+                KeywordInfo kwi = new KeywordInfo(keyword.getOntID(), keyword.getTerm(), category, fullHierarchyPath);
                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                 if (kwiList == null) {
                     kwiList = new ArrayList<KeywordInfo>(10);

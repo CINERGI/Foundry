@@ -5,12 +5,14 @@ public class Keyword {
     private String[] span;
     private String ontID;
     private String facet;
+    private String fullHierarchy;
 
-    public Keyword(String term, String[] span, String ontID, String facet) {
+    public Keyword(String term, String[] span, String ontID, String facet, String fullHierarchy) {
         setFacet(facet);
         setOntID(ontID);
         setSpan(span);
         setTerm(term);
+        this.fullHierarchy = fullHierarchy;
     }
 
 
@@ -46,6 +48,9 @@ public class Keyword {
         this.span = span;
     }
 
+    public String getFullHierarchy() {
+        return fullHierarchy;
+    }
 
     @Override
     public String toString() {

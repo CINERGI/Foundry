@@ -149,6 +149,20 @@ public class KeywordEnhancerPluginTests extends TestCase {
                             DBObject kwDBO = (DBObject) data.get("keywords");
                             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
                             System.out.println(jsArr.toString(2));
+                            ISOXMLGenerator2 generator = new ISOXMLGenerator2();
+                            Element docEl = generator.generate(docWrapper);
+                            File enhancedXmlFile;
+                            if (filter) {
+                                enhancedXmlFile = new File("/tmp/kwd_test.xml");
+                            } else {
+                                if (!outDir.isDirectory()) {
+                                    outDir.mkdir();
+                                }
+                                String filename = primaryKey.replaceAll("/", "_");
+                                enhancedXmlFile = new File(outDir, filename + "_test.xml");
+                            }
+                            Utils.saveXML(docEl, enhancedXmlFile.getAbsolutePath());
+                            System.out.println("saved enhancedXmlFile to " + enhancedXmlFile);
                         }
                     }
                     if (filter) {

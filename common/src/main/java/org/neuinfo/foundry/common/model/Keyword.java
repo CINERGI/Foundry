@@ -2,7 +2,6 @@ package org.neuinfo.foundry.common.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.neuinfo.foundry.common.util.CategoryHierarchyHandler;
 import org.neuinfo.foundry.common.util.IHierarchyHandler;
 
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
 public class Keyword {
     private String term;
     private String ontId;
-    private String facet;
+    private String fullHierarchy;
     private String facetHierarchy;
 
     List<EntityInfo> entityInfos = new LinkedList<EntityInfo>();
@@ -22,10 +21,10 @@ public class Keyword {
         this.term = term;
     }
 
-    public Keyword(String term, String ontId, String facet, String facetHierarchy) {
+    public Keyword(String term, String ontId, String fullHierarchy, String facetHierarchy) {
         this.term = term;
         this.ontId = ontId;
-        this.facet = facet;
+        this.fullHierarchy = fullHierarchy;
         this.facetHierarchy = facetHierarchy;
     }
 
@@ -45,8 +44,8 @@ public class Keyword {
         return ontId;
     }
 
-    public String getFacet() {
-        return facet;
+    public String getFullHierarchy() {
+        return fullHierarchy;
     }
 
     public String getFacetHierarchy() {
@@ -204,8 +203,8 @@ public class Keyword {
         if (ontId != null) {
             js.put("ontId", ontId);
         }
-        if (facet != null) {
-            js.put("facet", facet);
+        if (fullHierarchy != null) {
+            js.put("fullHierarchy", fullHierarchy);
         }
         if (facetHierarchy != null) {
             js.put("facetHierarchy", facetHierarchy);
@@ -221,7 +220,7 @@ public class Keyword {
     public static Keyword fromJSON(JSONObject json) {
         String term = json.getString("term");
         String ontId = json.has("ontId") ? json.getString("ontId") : null;
-        String facet = json.has("facet") ? json.getString("facet") : null;
+        String facet = json.has("fullHierarchy") ? json.getString("fullHierarchy") : null;
         String facetHierarchy = json.has("facetHierarchy") ? json.getString("facetHierarchy") : null;
         Keyword kw = new Keyword(term, ontId, facet, facetHierarchy);
         JSONArray jsArr = json.getJSONArray("entityInfos");

@@ -123,6 +123,56 @@ public class DocumentResource {
             response = String.class)
     public Response getKeywordHierarchies(
             @ApiParam(value = "The document ID for the metadata document", required = true) @QueryParam("id") String docId) {
+        String jsonStr = "";
+        MongoService mongoService = null;
+        try {
+            mongoService = new MongoService();
+            System.out.println("docId:" + docId);
+            BasicDBObject docWrapper = mongoService.findTheDocument(docId);
+            if (docWrapper == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No document with id:" + docId + " is not found!").build();
+            }
+
+            JSONObject result = new JSONObject();
+            BasicDBObject data = (BasicDBObject) docWrapper.get("Data");
+            BasicDBList enhancedKeywords = (BasicDBList) data.get("enhancedKeywords");
+            JSONArray keywordsArr = new JSONArray();
+            result.put("keywords", keywordsArr);
+            if (enhancedKeywords != null) {
+                for(Object o : enhancedKeywords) {
+                    JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);
+                    String term = keywordJson.getString("term");
+                    String hierarchy = keywordJson.getString("hierarchyPath");
+                    JSONObject khJson = new JSONObject();
+                    khJson.put("keyword", term);
+                    khJson.put("hierarchy", hierarchy);
+                    keywordsArr.put(khJson);
+                }
+            }
+            jsonStr = result.toString(2);
+        } catch (Exception x) {
+            x.printStackTrace();
+            return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
+        }
+        return Response.ok(jsonStr).build();
+    }
+
+
+    @Path("/keyword/hierarchiesOld/")
+    @GET
+    @Produces("application/json")
+    @ApiResponses(value = {@ApiResponse(code = 500, message = "An internal error occurred during the keyword hierarchy processing"),
+            @ApiResponse(code = 404, message = "No metadata document is found with the given document ID")})
+    @ApiOperation(value = "Retrieve keywords and their ontology hierarchies for a ISO metadata document",
+            notes = "",
+            response = String.class)
+    public Response getKeywordHierarchiesOld(
+            @ApiParam(value = "The document ID for the metadata document", required = true) @QueryParam("id") String docId) {
         String jsonStr;
         MongoService mongoService = null;
         try {
@@ -158,12 +208,12 @@ public class DocumentResource {
             // Utils.saveXML(docEl, "/tmp/xpath_test.xml");
 
             List<Keyword> existingKeywords = getExistingKeywords(docEl);
-            for(Keyword kw : existingKeywords) {
+            for (Keyword kw : existingKeywords) {
                 JSONObject kwJson = kw.toJSON();
                 JSONObject kwhJson = prepHierarchyForKeyword2(kwJson);
-                    if (kwhJson.has("hierarchy")) {
-                        keywordsArr.put(kwhJson);
-                    }
+                if (kwhJson.has("hierarchy")) {
+                    keywordsArr.put(kwhJson);
+                }
             }
             /*
             List<JSONObject> jsonObjects = prepHierarchies(docEl, handler, chh);
@@ -196,7 +246,7 @@ public class DocumentResource {
             selectList.add(parentEl);
         } else {
             List<Element> children = parentEl.getChildren();
-            for(Element child : children) {
+            for (Element child : children) {
                 collectElements(child, selectList, selElemName);
             }
         }
@@ -207,7 +257,7 @@ public class DocumentResource {
         if (existingKeywords.isEmpty()) {
             return Collections.emptyList();
         }
-         StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
+        StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
         for (Iterator<String> it = existingKeywords.iterator(); it.hasNext(); ) {
             sb.append(it.next());
             if (it.hasNext()) {
@@ -258,7 +308,7 @@ public class DocumentResource {
             Namespace gmi = Namespace.getNamespace("gmi", "http://www.isotc211.org/2005/gmi");
             ns = nsMap.get("");
             expr = xpathFactory.compile("//gmi:MD_Keywords",
-                    Filters.element(),null, gmi);
+                    Filters.element(), null, gmi);
         }
         Assertion.assertNotNull(ns);
         Document doc = new Document(docEl);

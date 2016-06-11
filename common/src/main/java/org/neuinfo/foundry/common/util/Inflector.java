@@ -5,9 +5,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
  * based on https://github.com/srkirkland/Inflector/blob/master/Inflector/Inflector.cs
- *
+ * <p/>
  * Created by bozyurt on 8/4/15.
  */
 public class Inflector {
@@ -55,7 +54,11 @@ public class Inflector {
     }
 
     public String toSingular(String phrase) {
+        if (phrase.length() < 4) {
+            return phrase;
+        }
         String[] toks = phrase.split("\\s+");
+
         String lastTerm = applyRules(singulars, toks[toks.length - 1]);
         toks[toks.length - 1] = lastTerm;
         StringBuilder sb = new StringBuilder(phrase.length());
