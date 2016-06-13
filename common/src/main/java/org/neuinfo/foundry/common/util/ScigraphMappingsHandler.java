@@ -113,6 +113,12 @@ public class ScigraphMappingsHandler {
                 }
             }
             cinergiFacetStrings.add(sb.toString());
+            // also add top level
+            String label = fnList.get(0).getLabel();
+            label = getPreferredLabel(label) != null ? getPreferredLabel(label) : label;
+            if (!cinergiFacetStrings.contains(label)) {
+                cinergiFacetStrings.add(label);
+            }
         }
         Collections.sort(cinergiFacetStrings);
         return cinergiFacetStrings;

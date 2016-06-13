@@ -443,12 +443,43 @@ public class KeywordAnalyzer {
         // System.out.println(visitedIRI);
         String fullHierarchy = sb.toString();
         System.out.println(fullHierarchy);
+        // strip any special chars at the beginning and the end of the term (IBO)
+        String term = t.getToken();
+        term = normalizeTerm(term);
 
-        keywords.add(new Keyword(t.getToken(), new String[]{t.getStart(), t.getEnd()}, facetIRI.toString(),
+        keywords.add(new Keyword(term, new String[]{t.getStart(), t.getEnd()}, facetIRI.toString(),
                 OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df), fullHierarchy));
 
         return true; //
 
+    }
+
+    public static String normalizeTerm(String term) {
+        char[] chars = term.toCharArray();
+        if (!Character.isLetterOrDigit(term.charAt(0))) {
+            int i = 0;
+            while (i < chars.length) {
+                if (Character.isLetterOrDigit(chars[i])) {
+                    break;
+                }
+                i++;
+            }
+            term = term.substring(i);
+        }
+        chars = term.toCharArray();
+        int i = term.length() -1;
+        while(i > 0) {
+            char c = chars[i];
+            if (c == '.' || c == '(' || c == ')' || c == ',' || c == '?' || c == ':' || c == ';') {
+                i--;
+            } else {
+                break;
+            }
+        }
+        if ((i + 1) < term.length()) {
+            term = term.substring(0, i + 1);
+        }
+        return term;
     }
 
     public POS[] pos(Gson gson, String input) throws Exception {
@@ -461,4 +492,7 @@ public class KeywordAnalyzer {
     }
 
 
+    public static void main(String[] args) {
+        System.out.println( normalizeTerm(".PH);"));
+    }
 }

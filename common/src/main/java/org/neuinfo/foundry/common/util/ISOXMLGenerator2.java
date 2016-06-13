@@ -82,7 +82,7 @@ public class ISOXMLGenerator2 {
                 JSONObject kwJson = jsArr.getJSONObject(i);
                 Keyword keyword = Keyword.fromJSON(kwJson);
                 String category = keyword.getFacetHierarchy();
-               
+
                 KeywordInfo kwi = new KeywordInfo(keyword.getOntId(), keyword.getTerm(), category, keyword.getFullHierarchy());
                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                 if (kwiList == null) {
