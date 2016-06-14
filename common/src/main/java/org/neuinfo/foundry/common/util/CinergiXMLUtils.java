@@ -196,17 +196,19 @@ public class CinergiXMLUtils {
                 for (Element dkEl : descriptiveKeywords) {
 
                     Element mdkEl = dkEl.getChild("MD_Keywords", gmd);
-                    // skip any Cinergi keywords
-                    Element thesaurusNameEl = mdkEl.getChild("thesaurusName", gmd);
-                    if (thesaurusNameEl != null) {
-                        Element citationEl = thesaurusNameEl.getChild("CI_Citation", gmd);
-                        if (citationEl != null) {
-                            Element otherCDEl = citationEl.getChild("otherCitationDetails", gmd);
-                            if (otherCDEl != null) {
+                    if (mdkEl != null) {
+                        // skip any Cinergi keywords
+                        Element thesaurusNameEl = mdkEl.getChild("thesaurusName", gmd);
+                        if (thesaurusNameEl != null) {
+                            Element citationEl = thesaurusNameEl.getChild("CI_Citation", gmd);
+                            if (citationEl != null) {
+                                Element otherCDEl = citationEl.getChild("otherCitationDetails", gmd);
+                                if (otherCDEl != null) {
 
-                                Element csEl = otherCDEl.getChild("CharacterString", gco);
-                                if (csEl.getTextTrim().toLowerCase().indexOf("cinergi") != -1) {
-                                    continue;
+                                    Element csEl = otherCDEl.getChild("CharacterString", gco);
+                                    if (csEl.getTextTrim().toLowerCase().indexOf("cinergi") != -1) {
+                                        continue;
+                                    }
                                 }
                             }
                         }
