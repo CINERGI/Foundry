@@ -69,6 +69,9 @@ public class ScigraphMappingsHandler {
         }
     }
 
+
+
+
     public String getPreferredLabel(String scigraphLabel) {
         return label2PreferredLabelMap.get(scigraphLabel);
     }

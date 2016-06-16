@@ -25,7 +25,7 @@ public class KeywordEnhancer2Helper {
 
                 keyword = kwNew;
             }
-
+/*
             List<ScigraphMappingsHandler.FacetNode> fnList = ScigraphUtils.findFacetHierarchyGivenFacet(keyword.getFacet());
             if (fnList != null) {
                 String category = ScigraphUtils.toCinergiCategory(fnList);
@@ -44,6 +44,19 @@ public class KeywordEnhancer2Helper {
                 }
                 kwiList.add(kwi);
             }
+*/
+            for(int i = 0; i < keyword.getFacet().length; i++) {
+                String category = keyword.getFacet()[i];
+                String fullHierarchyPath = keyword.getFullHierarchy()[i];
+                 KeywordInfo kwi = new KeywordInfo(keyword.getOntID()[i], keyword.getTerm(), category, fullHierarchyPath);
+                List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+                if (kwiList == null) {
+                    kwiList = new ArrayList<KeywordInfo>(10);
+                    category2KWIListMap.put(category, kwiList);
+                }
+                kwiList.add(kwi);
+
+            }
         } // for keywords
         if (!category2KWIListMap.isEmpty()) {
             for (List<KeywordInfo> kwiList : category2KWIListMap.values()) {
@@ -52,6 +65,8 @@ public class KeywordEnhancer2Helper {
         }
         return category2KWIListMap;
     }
+
+
 
     public static void prepKeywordsProv(Map<String, List<KeywordInfo>> category2KWIListMap, ProvenanceHelper.ProvData provData) {
         if (category2KWIListMap == null || category2KWIListMap.isEmpty()) {

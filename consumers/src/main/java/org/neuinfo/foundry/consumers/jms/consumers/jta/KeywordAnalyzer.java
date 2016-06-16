@@ -7,7 +7,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.neuinfo.foundry.common.model.Node;
 import org.neuinfo.foundry.common.util.LRUCache;
+import org.neuinfo.foundry.common.util.OWLFunctions;
 import org.neuinfo.foundry.common.util.Utils;
 import org.semanticweb.owlapi.model.*;
 
@@ -194,7 +196,7 @@ public class KeywordAnalyzer {
     }
 
     // returns the cinegiFacet associated with any class, returns null if there is not one
-    private IRI getFacetIRI(OWLClass cls, Set<IRI> visited) {
+    private List<IRI> getFacetIRI(OWLClass cls, Set<IRI> visited, Node<IRI> node) {
         if (visited.contains(cls.getIRI())) {
             return null;
         }
@@ -205,16 +207,23 @@ public class KeywordAnalyzer {
             return null;
         }
         if (OWLFunctions.hasCinergiFacet(cls, extensions, df)) {
-            return cls.getIRI();
+            return Arrays.asList(cls.getIRI());
         }
         if (OWLFunctions.hasParentAnnotation(cls, extensions, df)) {
-            return getFacetIRI(OWLFunctions.getParentAnnotationClass(cls, extensions, df), visited);
+            List<IRI> parentIRIs = new ArrayList<IRI>(10);
+            for (OWLClass c : OWLFunctions.getParentAnnotationClass(cls, extensions, df)) {
+                Node<IRI> child = node.addChild(c.getIRI());
+                parentIRIs.addAll(getFacetIRI(c, visited, child));
+            }
+            return parentIRIs;
         }
         if (!cls.getEquivalentClasses(manager.getOntologies()).isEmpty()) {
             for (OWLClassExpression oce : cls.getEquivalentClasses(manager.getOntologies())) // equivalencies
             {
                 if (oce.getClassExpressionType().toString().equals("Class")) {
-                    IRI retVal = getFacetIRI(oce.getClassesInSignature().iterator().next(), visited);
+                    OWLClass owlClass = oce.getClassesInSignature().iterator().next();
+                    Node<IRI> child = node.addChild(owlClass.getIRI());
+                    List<IRI> retVal = getFacetIRI(owlClass, visited, child);
                     if (retVal == null) {
                         continue;
                     }
@@ -232,7 +241,9 @@ public class KeywordAnalyzer {
                         if (OWLFunctions.getLabel(cl, manager, df).equals(OWLFunctions.getLabel(cls, manager, df)))
                             continue; // skip if child of the same class
                     }
-                    IRI retVal = getFacetIRI(oce.getClassesInSignature().iterator().next(), visited);
+                    OWLClass owlClass = oce.getClassesInSignature().iterator().next();
+                    Node<IRI> child = node.addChild(owlClass.getIRI());
+                    List<IRI> retVal = getFacetIRI(owlClass, visited, child);
 
                     if (retVal == null) {
                         continue;
@@ -244,6 +255,21 @@ public class KeywordAnalyzer {
         return null;
     }
 
+    // given a (2nd level) cinergiFacet, returns a string of path facet2, facet1
+    private String facetPath(OWLClass cls) {
+        if (OWLFunctions.getParentAnnotationClass(cls, extensions, df).size() == 0) {
+            System.err.println(OWLFunctions.getLabel(cls, manager, df) + " has no cinergiParent, terminating.");
+            return "";
+            //return null;
+        }
+        OWLClass cinergiParent = OWLFunctions.getParentAnnotationClass(cls, extensions, df).get(0);
+        if (OWLFunctions.isTopLevelFacet(cinergiParent, extensions, df) ||
+                cinergiParent.getIRI().equals(IRI.create("http://www.w3.org/2002/07/owl#Thing"))) {
+            return (OWLFunctions.getLabel(cls, manager, df) + " | " + OWLFunctions.getLabel(cinergiParent, manager, df));
+        } else {
+            return (OWLFunctions.getLabel(cls, manager, df) + " | " + facetPath(cinergiParent));
+        }
+    }
 
     private ArrayList<Keyword> process2(String testInput, HashSet<String> visited) throws Exception {
         ArrayList<Keyword> keywords = new ArrayList<Keyword>();
@@ -370,16 +396,17 @@ public class KeywordAnalyzer {
 
     // takes a token (phrase and span), a reference of keywords to add to, and a
     private boolean processChunk(Tokens t, ArrayList<Keyword> keywords, HashSet<String> visited) throws Exception {
-
+        /*
         if (visited.contains(t.getToken())) // this token has already been used
         {
             return false;
         }
+        */
         Vocab vocab = vocabTerm(t.getToken());
         if (vocab == null) {
             return false;
         }
-        visited.add(t.getToken());
+        // visited.add(t.getToken());
         if (vocab.concepts.isEmpty()) {
             return false;
         }
@@ -397,14 +424,29 @@ public class KeywordAnalyzer {
             }
             toUse = vocab.concepts.get(0);
         }
-        LinkedHashSet<IRI> visitedIRI = new LinkedHashSet<IRI>();
+        if (!t.getToken().equals(t.getToken().toUpperCase())
+                && toUse.labels.get(0).equals(toUse.labels.get(0).toUpperCase())) {
+            // check if the input token is all caps and if the response term is also all caps
+            return false;
+        }
 
         OWLClass cls = df.getOWLClass(IRI.create(toUse.uri));
+        // check for repeated terms
+        if (visited.contains(cls.getIRI().toString())) {
+            return false;
+        }
+        visited.add(cls.getIRI().toString());
         if (toUse.uri.contains("CHEBI") && t.getToken().length() <= 3) // filter chemical entities that cause errors
         {
             return false;
         }
-        IRI facetIRI = getFacetIRI(cls, visitedIRI);
+        if (t.getToken().length() <= 2) // any input less than 2
+        {
+            return false;
+        }
+        LinkedHashSet<IRI> visitedIRI = new LinkedHashSet<IRI>();
+        Node<IRI> rootNode = new Node<IRI>(cls.getIRI(), null);
+        List<IRI> facetIRI = getFacetIRI(cls, visitedIRI, rootNode);
         if (facetIRI == null) {
             //System.err.println("no facet for: " + toUse.uri);
             return false;
@@ -412,8 +454,7 @@ public class KeywordAnalyzer {
         // if equipement
         if (facetIRI.toString().contentEquals("http://sweet.jpl.nasa.gov/2.3/matrEquipment.owl#Equipment")) {
             boolean foundMatch = false;
-            for (String lbl : toUse.labels
-                    ) {
+            for (String lbl : toUse.labels) {
                 if (lbl.contentEquals(t.getToken())) {
                     foundMatch = true;
                 }
@@ -425,33 +466,94 @@ public class KeywordAnalyzer {
             return false;
         }
 
-        System.out.println("keyword:" + t.getToken() + " - " + facetIRI.toString() +
-                " facet:" + OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df));
-        StringBuilder sb = new StringBuilder();
-        Stack<IRI> stack = new Stack<IRI>();
-        for (IRI iri : visitedIRI) {
-            stack.push(iri);
-        }
-        while (!stack.isEmpty()) {
-            IRI iri = stack.pop();
-            sb.append(OWLFunctions.getLabel(df.getOWLClass(iri), manager, df));
-            if (!stack.isEmpty()) {
-                sb.append(" > ");
-            }
-        }
 
-        // System.out.println(visitedIRI);
-        String fullHierarchy = sb.toString();
-        System.out.println(fullHierarchy);
-        // strip any special chars at the beginning and the end of the term (IBO)
+        ArrayList<String> facetLabels = new ArrayList<String>(5);
+        ArrayList<String> IRIstr = new ArrayList<String>(5);
+        List<String> fullHierarchies = new ArrayList<String>(5);
+
+        Map<IRI, String> fullPathMap = prepFullPathMap(rootNode, manager, df, facetIRI);
+        for (IRI firi : facetIRI) {
+            //facetLabels.add(OWLFunctions.getLabel(df.getOWLClass(iri), manager, df));
+            //System.out.println(t.getToken());
+            String facetCSV = facetPath(df.getOWLClass(firi));
+            facetLabels.add(facet2Path(facetCSV));
+            IRIstr.add(firi.toString());
+
+            String fullPath = fullPathMap.get(firi);
+
+            //String fullHierarchy = prefixFullHierarchy(sb.toString(), facetCSV);
+            String fullHierarchy = prefixFullHierarchy(fullPath, facetCSV);
+
+            System.out.println(fullHierarchy);
+            fullHierarchies.add(fullHierarchy);
+        }
         String term = t.getToken();
         term = normalizeTerm(term);
-
-        keywords.add(new Keyword(term, new String[]{t.getStart(), t.getEnd()}, facetIRI.toString(),
-                OWLFunctions.getLabel(df.getOWLClass(facetIRI), manager, df), fullHierarchy));
+        Keyword keyword = new Keyword(term, new String[]{t.getStart(), t.getEnd()},
+                IRIstr.toArray(new String[IRIstr.size()]),
+                facetLabels.toArray(new String[facetLabels.size()]),
+                fullHierarchies.toArray(new String[fullHierarchies.size()]));
+        keywords.add(keyword);
+        System.out.println(keyword);
 
         return true; //
+    }
 
+    public static Map<IRI, String> prepFullPathMap(Node<IRI> rootNode, OWLOntologyManager manager,
+                                                   OWLDataFactory df, List<IRI> facetIRI) {
+        Set<IRI> facetIRISet = new HashSet<IRI>(facetIRI);
+        Map<IRI, String> map = new HashMap<IRI, String>();
+        List<Node<IRI>> leafNodes = Node.getLeafNodes(rootNode);
+        for (Node<IRI> leaf : leafNodes) {
+            StringBuilder sb = new StringBuilder();
+            Node<IRI> p = leaf;
+            IRI key = null;
+            Set<IRI> uniqSet = new HashSet<IRI>();
+            while (p != null) {
+                IRI iri = p.getPayload();
+                if (facetIRISet.contains(iri)) {
+                    key = iri;
+                }
+                if (!uniqSet.contains(iri)) {
+                    sb.append(OWLFunctions.getLabel(df.getOWLClass(iri), manager, df));
+                    if (!p.isRoot()) {
+                        sb.append(" > ");
+                    }
+                    uniqSet.add(iri);
+                }
+                p = p.getParent();
+            }
+
+            //  Assertion.assertNotNull(key);
+            if (key != null) {
+                map.put(key, sb.toString().trim());
+            } else {
+                System.out.println("No key for path:" + sb.toString().trim());
+            }
+        }
+        return map;
+    }
+
+    public static String prefixFullHierarchy(String fullHierarchy, String facetCSV) {
+        String[] tokens = facetCSV.split("\\s+\\|\\s+");
+        if (tokens.length == 2) {
+            if (!fullHierarchy.startsWith(tokens[1])) {
+                return tokens[1] + " > " + fullHierarchy;
+            }
+        }
+        return fullHierarchy;
+    }
+
+    public static String facet2Path(String facetStr) {
+        StringBuilder sb = new StringBuilder();
+        String[] tokens = facetStr.split("\\s+\\|\\s+");
+        if (tokens.length == 2) {
+            sb.append(tokens[1]).append(" > ").append(tokens[0]);
+        } else {
+            sb.append(facetStr);
+        }
+
+        return sb.toString().trim();
     }
 
     public static String normalizeTerm(String term) {
@@ -467,8 +569,8 @@ public class KeywordAnalyzer {
             term = term.substring(i);
         }
         chars = term.toCharArray();
-        int i = term.length() -1;
-        while(i > 0) {
+        int i = term.length() - 1;
+        while (i > 0) {
             char c = chars[i];
             if (c == '.' || c == '(' || c == ')' || c == ',' || c == '?' || c == ':' || c == ';') {
                 i--;
@@ -493,6 +595,6 @@ public class KeywordAnalyzer {
 
 
     public static void main(String[] args) {
-        System.out.println( normalizeTerm(".PH);"));
+        System.out.println(normalizeTerm(".PH);"));
     }
 }

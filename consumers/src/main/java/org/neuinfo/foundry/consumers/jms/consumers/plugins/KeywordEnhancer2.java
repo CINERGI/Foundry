@@ -43,27 +43,11 @@ public class KeywordEnhancer2 implements IPlugin {
         jsonPaths.add("$..'abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'title'.'gco:CharacterString'.'_$'");
 
-        long start = System.currentTimeMillis();
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLDataFactory df = manager.getOWLDataFactory();
-        manager.setSilentMissingImportsHandling(true);
-
-        System.out.println("loading ontology");
-        OWLOntology cinergi_ont = manager.loadOntologyFromOntologyDocument(
-                IRI.create("http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl"));
-        System.out.println("ontology loaded");
-        System.out.println("Time elapsed (msecs): " + (System.currentTimeMillis() - start));
-
-        OWLOntology extensions = null;
-        for (OWLOntology o : manager.getOntologies()) {
-            if (o.getOntologyID().getOntologyIRI().toString().equals(
-                    "http://hydro10.sdsc.edu/cinergi_ontology/cinergiExtensions.owl")) {
-                extensions = o;
-            }
-        }
-        if (extensions == null) {
-            throw new Exception("failed to gather extensions");
-        }
+        OntologyHandler handler = OntologyHandler.getInstance();
+        OWLOntologyManager manager = handler.getManager();
+        OWLDataFactory df = handler.getDf();
+        OWLOntology extensions = handler.getExtensions();
+        OWLOntology cinergi_ont = handler.getCinergi_ont();
         List<String> stoplist = Files.readAllLines(Paths.get(stopListFile), StandardCharsets.UTF_8);
         List<String> nullIRIs = Files.readAllLines(Paths.get(nullIRIsFile), StandardCharsets.UTF_8);
         LinkedHashMap<String, IRI> exceptionMap = null; // Create this using label duplicates spreadsheet

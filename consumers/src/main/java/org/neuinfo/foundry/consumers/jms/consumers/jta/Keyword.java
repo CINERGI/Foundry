@@ -1,34 +1,36 @@
 package org.neuinfo.foundry.consumers.jms.consumers.jta;
 
+import java.util.Arrays;
+
 public class Keyword {
     private String term;
     private String[] span;
-    private String ontID;
-    private String facet;
-    private String fullHierarchy;
+    private String[] ontID;
+    private String[] facet;
+    private String[] fullHierarchy;
 
-    public Keyword(String term, String[] span, String ontID, String facet, String fullHierarchy) {
-        setFacet(facet);
-        setOntID(ontID);
-        setSpan(span);
-        setTerm(term);
+    public Keyword(String term, String[] span, String[] ontID, String[] facet, String[] fullHierarchy) {
+        this.facet = facet;
+        this.span = span;
+        this.term = term;
+        this.ontID = ontID;
         this.fullHierarchy = fullHierarchy;
     }
 
 
-    public String getFacet() {
+    public String[] getFacet() {
         return facet;
     }
 
-    public void setFacet(String facet) {
+    public void setFacet(String[] facet) {
         this.facet = facet;
     }
 
-    public String getOntID() {
+    public String[] getOntID() {
         return ontID;
     }
 
-    public void setOntID(String ontID) {
+    public void setOntID(String[] ontID) {
         this.ontID = ontID;
     }
 
@@ -48,12 +50,19 @@ public class Keyword {
         this.span = span;
     }
 
-    public String getFullHierarchy() {
+    public String[] getFullHierarchy() {
         return fullHierarchy;
     }
 
     @Override
     public String toString() {
-        return "Keyword [facet = " + facet + ", ontID = " + ontID + ", term = " + term + ", span = " + span + "]";
+        final StringBuilder sb = new StringBuilder("Keyword{");
+        sb.append("term='").append(term).append('\'');
+        sb.append(", span=").append(Arrays.toString(span));
+        sb.append(", ontID=").append(Arrays.toString(ontID));
+        sb.append(", facet=").append(Arrays.toString(facet));
+        sb.append(", fullHierarchy=").append(Arrays.toString(fullHierarchy));
+        sb.append('}');
+        return sb.toString();
     }
 }
