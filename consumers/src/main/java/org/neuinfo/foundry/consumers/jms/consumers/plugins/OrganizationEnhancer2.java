@@ -22,11 +22,14 @@ import java.util.*;
  * Created by bozyurt on 4/27/16.
  */
 public class OrganizationEnhancer2 implements IPlugin {
+    private boolean lenient = false;
     private final static Logger logger = Logger.getLogger(OrganizationEnhancer2.class);
 
     @Override
     public void initialize(Map<String, String> options) throws Exception {
-
+        if (options.containsKey("lenient")) {
+            this.lenient = Boolean.parseBoolean(options.get("lenient"));
+        }
     }
 
     @Override
@@ -86,7 +89,7 @@ public class OrganizationEnhancer2 implements IPlugin {
                         organizationSet.add(tok);
                         String orgName = Organization.normalizeOrgName(tok);
                         logger.info("Organization: " + orgName);
-                        Organization organization = Organization.validateInViaf(orgName);
+                        Organization organization = Organization.validateInViaf(orgName, lenient);
                         if (organization != null) {
                             logger.info("**** Validated Organization: " + organization.getName() + " [" + organization.getUri() + "]");
                             organizations.add(organization);

@@ -347,4 +347,17 @@ public class Utils {
         }
         return buf.toString();
     }
+
+    public static boolean isAllCapital(String phrase) {
+        if (! Character.isUpperCase(phrase.charAt(0))) {
+            return false;
+        }
+        char[] carr = phrase.toCharArray();
+        for(char c : carr) {
+            if (!Character.isUpperCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -121,10 +121,13 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
     public void testKeywordEnhancer2() throws Exception {
         String thePrimaryKey = "org.marine-geo:metadata:10000";
-        thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr";
+        // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr"; // cinergi-0022
+        thePrimaryKey = "5053eb2de4b097cd4fcf67af";
+
         boolean filter = true;
         // runKeywordEnhancer2("cinergi-0023", thePrimaryKey, filter, new File("/tmp/IEDA"));
-        runKeywordEnhancer2("cinergi-0022", thePrimaryKey, filter, new File("/tmp/CZO"));
+        // runKeywordEnhancer2("cinergi-0022", thePrimaryKey, filter, new File("/tmp/CZO"));
+        runKeywordEnhancer2("cinergi-0001", thePrimaryKey, filter, new File("/tmp/ScienceBase"));
     }
 
     void runKeywordEnhancer2(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {

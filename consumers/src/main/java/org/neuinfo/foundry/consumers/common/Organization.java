@@ -53,7 +53,7 @@ public class Organization {
         return name.replaceAll("'[^a-zA-Z0-9 -.]", "");
     }
 
-    public static Organization validateInViaf(String orgName) throws Exception {
+    public static Organization validateInViaf(String orgName, boolean lenient) throws Exception {
         Organization organization = organizationCache.get(orgName);
         if (organization != null) {
             if (organization == NULL_ORG) {
@@ -64,20 +64,22 @@ public class Organization {
         HttpClient client = new DefaultHttpClient();
         String encodedOrgName = orgName.replaceAll("\\s", "%2B");
         StringBuilder sb = new StringBuilder(200);
-        sb.append("http://viaf.org/viaf/search?query=");
+        // sb.append("http://viaf.org/viaf/search?query=");
+        sb.append("http://rdap02pxdu.dev.oclc.org:8080/viaf/search?query=");
         String query = "local.corporateNames+all+" + encodedOrgName;
         sb.append(query).append("&");
         sb.append("recordSchema=BriefVIAF&sortKeys=holdingscount");
 
         URI uri = new URI(sb.toString());
         HttpGet httpGet = new HttpGet(uri);
+        httpGet.addHeader("Accept", "application/xml");
         System.out.println("uri:" + uri);
         try {
             HttpResponse response = client.execute(httpGet);
             HttpEntity entity = response.getEntity();
             if (entity != null) {
                 String xmlContent = EntityUtils.toString(entity);
-              //  System.out.println(xmlContent);
+                //  System.out.println(xmlContent);
                 Element rootEl = Utils.readXML(xmlContent);
                 Element records = rootEl.getChild("records", srw);
                 if (records == null) {
@@ -113,6 +115,12 @@ public class Organization {
                 }
             }
             organizationCache.put(orgName, NULL_ORG);
+        } catch (Exception x) {
+            if (lenient) {
+                return null;
+            } else {
+                throw x;
+            }
         } finally {
             if (httpGet != null) {
                 httpGet.releaseConnection();
@@ -131,6 +139,6 @@ public class Organization {
     }
 
     public static void main(String[] args) throws Exception {
-        Organization.validateInViaf("Doherty Earth Observatory");
+        Organization.validateInViaf("Doherty Earth Observatory", false);
     }
 }

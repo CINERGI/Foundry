@@ -54,7 +54,7 @@ public class Inflector {
     }
 
     public String toSingular(String phrase) {
-        if (phrase.length() < 4) {
+        if (phrase.length() < 4 || Utils.isAllCapital(phrase)) {
             return phrase;
         }
         String[] toks = phrase.split("\\s+");

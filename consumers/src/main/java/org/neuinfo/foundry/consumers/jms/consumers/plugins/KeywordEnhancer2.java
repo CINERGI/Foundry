@@ -97,7 +97,11 @@ public class KeywordEnhancer2 implements IPlugin {
                     }
                 }
                 String s = sb.toString().trim() + " .";
-                docAbstract += s;
+                if (docAbstract != null) {
+                    docAbstract += s;
+                } else {
+                    docAbstract = s;
+                }
             }
 
             Document doc = new Document();
