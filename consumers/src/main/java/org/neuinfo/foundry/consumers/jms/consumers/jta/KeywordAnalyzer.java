@@ -473,15 +473,17 @@ public class KeywordAnalyzer {
 
         Map<IRI, String> fullPathMap = prepFullPathMap(rootNode, manager, df, facetIRI);
         for (IRI firi : facetIRI) {
-            //facetLabels.add(OWLFunctions.getLabel(df.getOWLClass(iri), manager, df));
-            //System.out.println(t.getToken());
             String facetCSV = facetPath(df.getOWLClass(firi));
-            facetLabels.add(facet2Path(facetCSV));
+            String facetPath = facet2Path(facetCSV);
+            if (facetPath == null) {
+                System.err.println("More than two level facet: " + facetCSV);
+                 return false;
+            }
+            facetLabels.add(facetPath);
             IRIstr.add(firi.toString());
 
             String fullPath = fullPathMap.get(firi);
 
-            //String fullHierarchy = prefixFullHierarchy(sb.toString(), facetCSV);
             String fullHierarchy = prefixFullHierarchy(fullPath, facetCSV);
 
             System.out.println(fullHierarchy);
@@ -550,6 +552,9 @@ public class KeywordAnalyzer {
         if (tokens.length == 2) {
             sb.append(tokens[1]).append(" > ").append(tokens[0]);
         } else {
+            if (tokens.length > 2) {
+                return null;
+            }
             sb.append(facetStr);
         }
 
