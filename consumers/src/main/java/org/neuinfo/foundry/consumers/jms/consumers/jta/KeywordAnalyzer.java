@@ -287,8 +287,12 @@ public class KeywordAnalyzer {
                 boolean found = false;
                 for (int i = parts.length - 1; i >= 2; i--) {
                     StringBuilder sb = new StringBuilder();
+                    int count = 0;
                     for (int j = 0; j < i; j++) {
-                        sb.append(parts[j].token).append(' ');
+                        if (isEligibleTerm(parts[j])) {
+                            sb.append(parts[j].token).append(' ');
+                            count++;
+                        }
                     }
                     Tokens tempToken = new Tokens(tok);
                     tempToken.setToken(sb.toString().trim());
@@ -303,8 +307,12 @@ public class KeywordAnalyzer {
 
                 for (int i = 1; i <= parts.length - 2; i++) {
                     StringBuilder sb = new StringBuilder();
+                    int count = 0;
                     for (int j = i; j < parts.length; j++) {
-                        sb.append(parts[j].token).append(' ');
+                        if (isEligibleTerm(parts[j])) {
+                            sb.append(parts[j].token).append(' ');
+                            count++;
+                        }
                     }
                     Tokens tempToken = new Tokens(tok);
                     tempToken.setToken(sb.toString().trim());
@@ -345,6 +353,11 @@ public class KeywordAnalyzer {
 
         }
         return keywords;
+    }
+
+    public static boolean isEligibleTerm(POS p) {
+        return (p.pos.equals("NN") || p.pos.equals("NNP") ||
+                p.pos.equals("NNPS") || p.pos.equals("NNS") || p.pos.equals("JJ"));
     }
 
     private ArrayList<Keyword> process(String testInput, HashSet<String> visited) throws Exception {

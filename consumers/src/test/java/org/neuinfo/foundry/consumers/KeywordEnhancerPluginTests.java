@@ -121,9 +121,9 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
     public void testKeywordEnhancer2() throws Exception {
         String thePrimaryKey = "org.marine-geo:metadata:10000";
- //       thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr"; // cinergi-0022
-        thePrimaryKey = "http://www.czo.psu.edu/downloads/sdsc/hydroped/2008_SSHCZO_60_253MP.hdr";
-        thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/MetStation/met1_daily/data_daily_met1_metadata.hdr";
+        thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr"; // cinergi-0022
+       // thePrimaryKey = "http://www.czo.psu.edu/downloads/sdsc/hydroped/2008_SSHCZO_60_253MP.hdr";
+       // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/MetStation/met1_daily/data_daily_met1_metadata.hdr";
         //thePrimaryKey = "5053eb2de4b097cd4fcf67af";
 
         boolean filter = true;
