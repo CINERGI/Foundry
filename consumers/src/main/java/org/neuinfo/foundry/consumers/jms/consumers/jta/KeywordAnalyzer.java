@@ -282,6 +282,41 @@ public class KeywordAnalyzer {
                 continue;
             }
             POS[] parts = np.getPosArr();
+            if (parts.length > 2) {
+                // try shorter phrases (IBO)
+                boolean found = false;
+                for (int i = parts.length - 1; i >= 2; i--) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = 0; j < i; j++) {
+                        sb.append(parts[j].token).append(' ');
+                    }
+                    Tokens tempToken = new Tokens(tok);
+                    tempToken.setToken(sb.toString().trim());
+                    if (processChunk(tempToken, keywords, visited) == true) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    continue;
+                }
+
+                for (int i = 1; i <= parts.length - 2; i++) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int j = i; j < parts.length; j++) {
+                        sb.append(parts[j].token).append(' ');
+                    }
+                    Tokens tempToken = new Tokens(tok);
+                    tempToken.setToken(sb.toString().trim());
+                    if (processChunk(tempToken, keywords, visited) == true) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    continue;
+                }
+            }
             for (POS p : parts) {
                 if (p.pos.equals("NN") || p.pos.equals("NNP") ||
                         p.pos.equals("NNPS") || p.pos.equals("NNS") || p.pos.equals("JJ")) {
@@ -477,7 +512,7 @@ public class KeywordAnalyzer {
             String facetPath = facet2Path(facetCSV);
             if (facetPath == null) {
                 System.err.println("More than two level facet: " + facetCSV);
-                 return false;
+                return false;
             }
             facetLabels.add(facetPath);
             IRIstr.add(firi.toString());

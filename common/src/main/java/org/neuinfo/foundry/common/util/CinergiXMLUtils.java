@@ -219,11 +219,11 @@ public class CinergiXMLUtils {
 
                             Element anchorEl = kwEl.getChild("Anchor", gmx);
                             if (anchorEl != null) {
-                                existingKeywordSet.add(anchorEl.getTextTrim().toUpperCase());
+                                existingKeywordSet.add(anchorEl.getTextTrim());
                             } else {
                                 Element csEl = kwEl.getChild("CharacterString", gco);
                                 if (csEl != null) {
-                                    existingKeywordSet.add(csEl.getTextTrim().toUpperCase());
+                                    existingKeywordSet.add(csEl.getTextTrim());
                                 }
                             }
                         }
