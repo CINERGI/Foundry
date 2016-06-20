@@ -459,7 +459,6 @@ public class KeywordAnalyzer {
             return false;
         }
 
-        Concept toUse = vocab.concepts.get(0); // TODO find the concept that matched the token
         if (vocab.concepts.size() > 1) { // change this later to make use of exceptionMap TODO
             for (int i = 0; i < vocab.concepts.size(); i++) {
                 if (nullIRIs.contains(vocab.concepts.get(i).uri)) {
@@ -467,13 +466,24 @@ public class KeywordAnalyzer {
                     i--;
                 }
             }
-            if (vocab.concepts.isEmpty()) {
-                return false;
+        }
+        if (vocab.concepts.isEmpty()) {
+            return false;
+        }
+        Concept toUse = vocab.concepts.get(0);
+        String closestLabel = toUse.labels.get(0);
+        int minDistance = 100;
+        for (Concept conc : vocab.concepts) {
+            for (String label : conc.labels) {
+                int tempDist = Levenshtein.distance(label, t.getToken());
+                if (tempDist < minDistance) {
+                    toUse = conc; // update the concept
+                    closestLabel = label; // update the label
+                }
             }
-            toUse = vocab.concepts.get(0);
         }
         if (!t.getToken().equals(t.getToken().toUpperCase())
-                && toUse.labels.get(0).equals(toUse.labels.get(0).toUpperCase())) {
+                && closestLabel.equals(closestLabel.toUpperCase())) {
             // check if the input token is all caps and if the response term is also all caps
             return false;
         }
@@ -499,20 +509,6 @@ public class KeywordAnalyzer {
             //System.err.println("no facet for: " + toUse.uri);
             return false;
         }
-        // if equipement
-        if (facetIRI.toString().contentEquals("http://sweet.jpl.nasa.gov/2.3/matrEquipment.owl#Equipment")) {
-            boolean foundMatch = false;
-            for (String lbl : toUse.labels) {
-                if (lbl.contentEquals(t.getToken())) {
-                    foundMatch = true;
-                }
-            }
-            if (!foundMatch) return false;
-        }
-
-        if (facetIRI.toString().contentEquals("http://hydro10.sdsc.edu/cinergi_ontology/observation#Observation")) {
-            return false;
-        }
 
 
         ArrayList<String> facetLabels = new ArrayList<String>(5);
@@ -524,7 +520,7 @@ public class KeywordAnalyzer {
             String facetCSV = facetPath(df.getOWLClass(firi));
             String facetPath = facet2Path(facetCSV);
             if (facetPath == null) {
-                System.err.println("More than two level facet: " + facetCSV);
+                System.err.println("More than two level facet: " + facetCSV + " token:" + t.getToken());
                 return false;
             }
             facetLabels.add(facetPath);
@@ -537,7 +533,8 @@ public class KeywordAnalyzer {
             System.out.println(fullHierarchy);
             fullHierarchies.add(fullHierarchy);
         }
-        String term = t.getToken();
+        //String term = t.getToken();
+        String term = closestLabel;
         term = normalizeTerm(term);
         Keyword keyword = new Keyword(term, new String[]{t.getStart(), t.getEnd()},
                 IRIstr.toArray(new String[IRIstr.size()]),
