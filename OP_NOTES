@@ -1,0 +1,94 @@
+Foundry
+=======
+*) To build code
+mvn -Pprod clean install
+
+check if any dispatcher and/or consumer processes are already running. If so kill them.
+
+Also check if the activemq is running via
+
+ps -ef | grep activemq
+
+otherwise start it with 
+
+sudo activemq start
+
+
+Start dispatcher
+----------------
+bin/dispatcher.sh
+
+The script displays the location of its log file and runs the dispatcher in the background via nohup.
+
+The dispatcher configuration file is at
+
+Foundry/dispatcher/src/main/resources/prod/cinergi-dispatcher-cfg-pipe-stage.xml
+
+Start consumer head process 
+---------------------------
+bin/consumer_head.sh
+
+The script displays the location of its log file and runs the comsumer head in the background via nohup.
+
+The consumer head config file is at
+
+Foundry/consumers/src/main/resources/prod/cinergi-consumers-cfg-pipe-stage.xml
+
+In this file each enhancer in the pipeline is configured. The configuration parameters specific to each enhancer and of interests are under <params> tag of each
+enhancer.
+
+
+*) to manage processing
+--------------------
+bin/manager.sh
+
+type help on the prompt to see available commands
+
+Available commands
+	help - shows this message.
+	ingest <src-nif-id>
+	h - show all command history
+	delete <url> - [e.g. http://localhost:9200/nif]
+	dd <sourceID>  - delete docs for a sourceID
+	trigger <sourceID> <status-2-match> <queue-2-send> [<new-status>] (e.g. trigger nif-0000-00135 new.1 foundry.uuid.1)
+	status [<sourceID>] - show processing status of data source(s)
+	list - lists all of the existing sources.
+	exit - exits the management client.
+
+to start ingesting, first list all the registered sources via
+
+list
+
+Then select an id from the registered source list e.g.
+
+ingest cinergi-0001
+
+to check the processing status use status command. If no source id is given it list the processing status of each source.
+
+
+Processing Results
+------------------
+All processed ISO documents are stored at /data/waf directory. 
+
+To serve the processed WAF files you need to copy the contents of the /data/waf directory after processing to 
+
+centos@132.249.238.151:/data/apache-tomcat-7.0.68/webapps/cinergi/waf 
+remote directory.
+
+Cinergi Annotator
+=================
+
+Cinergi Annotator is on centos@132.249.238.151 under /home/centos/cinergi-annotator
+
+Building the code 
+-----------------
+grails clean; grails war
+
+Deploy to Tomcat
+----------------
+./stop.sh
+./deploy.sh
+./start.sh
+
+
+
