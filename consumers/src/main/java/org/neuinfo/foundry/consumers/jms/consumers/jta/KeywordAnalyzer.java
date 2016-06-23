@@ -475,6 +475,7 @@ public class KeywordAnalyzer {
                 if (tempDist < minDistance) {
                     toUse = conc; // update the concept
                     closestLabel = label; // update the label
+                    minDistance = tempDist;
                 }
             }
         }
