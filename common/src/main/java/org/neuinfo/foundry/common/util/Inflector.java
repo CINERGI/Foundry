@@ -53,6 +53,20 @@ public class Inflector {
         addIrregular("goose", "geese");
         addIrregular("alumna", "alumnae");
         addIrregular("process", "processes");
+        addIrregular("analysis", "analyses");
+        addIrregular("fungus", "fungi");
+        addIrregular("genus", "genera");
+        addIrregular("larva", "larvae");
+        addIrregular("bacterium", "bacteria");
+        addIrregular("cactus","cacti");
+        addIrregular("amoeba","amoebae");
+        addIrregular("alumnus","alumni");
+        addIrregular("antenna", "antennae");
+        addIrregular("stimulus", "stimuli");
+        addIrregular("alga","algae");
+        addIrregular("datum","data");
+        addIrregular("vertebra","vertebra");
+
         Collections.reverse(singulars);
     }
 
