@@ -75,6 +75,7 @@ public class ProvenanceUploader {
                 BasicDBList events = (BasicDBList) prov.get("events");
                 JSONObject combined = ProvUtils.prepare4Viewer(events);
 
+                System.out.println("==================================");
                 System.out.println(combined.toString(2));
                 break;
             }

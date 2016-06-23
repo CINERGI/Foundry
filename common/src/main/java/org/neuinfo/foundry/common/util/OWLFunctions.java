@@ -12,12 +12,12 @@ import java.util.Set;
 public class OWLFunctions {
 
     // returns true if the OWLClass is a cinergifacet
+
     public static boolean hasCinergiFacet(OWLClass c, OWLOntology o, OWLDataFactory df) {
-        for (OWLAnnotation a : c.getAnnotations(o)) {
-            if (isCinergiFacet(a)) {
-                if (cinergiFacetTrue(a, df)) {
-                    return true;
-                }
+        for (OWLAnnotation a : c.getAnnotations(o, df.getOWLAnnotationProperty
+                (IRI.create("http://hydro10.sdsc.edu/cinergi_ontology/cinergiExtensions.owl#cinergiFacet")))) {
+            if (a.getValue().equals(df.getOWLLiteral(true))) {
+                return true;
             }
         }
         return false;

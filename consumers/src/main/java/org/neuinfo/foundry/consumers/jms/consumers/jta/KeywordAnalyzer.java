@@ -209,37 +209,39 @@ public class KeywordAnalyzer {
         if (OWLFunctions.hasCinergiFacet(cls, extensions, df)) {
             return Arrays.asList(cls.getIRI());
         }
-        if (OWLFunctions.hasParentAnnotation(cls, extensions, df)) {
-            List<IRI> parentIRIs = new ArrayList<IRI>(10);
-            for (OWLClass c : OWLFunctions.getParentAnnotationClass(cls, extensions, df)) {
-                Node<IRI> child = node.addChild(c.getIRI());
-                parentIRIs.addAll(getFacetIRI(c, visited, child));
-            }
-            return parentIRIs;
-        }
         if (!cls.getEquivalentClasses(manager.getOntologies()).isEmpty()) {
             for (OWLClassExpression oce : cls.getEquivalentClasses(manager.getOntologies())) // equivalencies
             {
                 if (oce.getClassExpressionType().toString().equals("Class")) {
-                    OWLClass owlClass = oce.getClassesInSignature().iterator().next();
-                    Node<IRI> child = node.addChild(owlClass.getIRI());
-                    List<IRI> retVal = getFacetIRI(owlClass, visited, child);
-                    if (retVal == null) {
-                        continue;
+                    OWLClass equivalentClass = oce.getClassesInSignature().iterator().next();
+                    if (OWLFunctions.hasCinergiFacet(equivalentClass, extensions, df)) {
+                        node.addChild(equivalentClass.getIRI());
+                        return Arrays.asList(equivalentClass.getIRI());
                     }
-                    return retVal;
                 }
             }
         }
+        if (OWLFunctions.hasParentAnnotation(cls, extensions, df)) {
+            List<IRI> parentIRIs = new ArrayList<IRI>(10);
+            for (OWLClass c : OWLFunctions.getParentAnnotationClass(cls, extensions, df)) {
+                Node<IRI> child = node.addChild(c.getIRI());
+                List<IRI> parentFacet = getFacetIRI(c, visited, child);
+                if (parentFacet == null) {
+                    return null;
+                }
+                parentIRIs.addAll(parentFacet);
+            }
+            return parentIRIs;
+        }
+
 
         if (!cls.getSuperClasses(manager.getOntologies()).isEmpty()) {
             for (OWLClassExpression oce : cls.getSuperClasses(manager.getOntologies())) // subClassOf
             {
                 if (oce.getClassExpressionType().toString().equals("Class")) {
                     OWLClass cl = oce.getClassesInSignature().iterator().next();
-                    {
-                        if (OWLFunctions.getLabel(cl, manager, df).equals(OWLFunctions.getLabel(cls, manager, df)))
-                            continue; // skip if child of the same class
+                    if (OWLFunctions.getLabel(cl, manager, df).equals(OWLFunctions.getLabel(cls, manager, df))) {
+                        continue; // skip if child of the same class
                     }
                     OWLClass owlClass = oce.getClassesInSignature().iterator().next();
                     Node<IRI> child = node.addChild(owlClass.getIRI());
@@ -444,12 +446,6 @@ public class KeywordAnalyzer {
 
     // takes a token (phrase and span), a reference of keywords to add to, and a
     private boolean processChunk(Tokens t, ArrayList<Keyword> keywords, HashSet<String> visited) throws Exception {
-        /*
-        if (visited.contains(t.getToken())) // this token has already been used
-        {
-            return false;
-        }
-        */
         Vocab vocab = vocabTerm(t.getToken());
         if (vocab == null) {
             return false;
@@ -459,7 +455,6 @@ public class KeywordAnalyzer {
             return false;
         }
 
-        Concept toUse = vocab.concepts.get(0); // TODO find the concept that matched the token
         if (vocab.concepts.size() > 1) { // change this later to make use of exceptionMap TODO
             for (int i = 0; i < vocab.concepts.size(); i++) {
                 if (nullIRIs.contains(vocab.concepts.get(i).uri)) {
@@ -467,13 +462,24 @@ public class KeywordAnalyzer {
                     i--;
                 }
             }
-            if (vocab.concepts.isEmpty()) {
-                return false;
+        }
+        if (vocab.concepts.isEmpty()) {
+            return false;
+        }
+        Concept toUse = vocab.concepts.get(0);
+        String closestLabel = toUse.labels.get(0);
+        int minDistance = 100;
+        for (Concept conc : vocab.concepts) {
+            for (String label : conc.labels) {
+                int tempDist = Levenshtein.distance(label, t.getToken());
+                if (tempDist < minDistance) {
+                    toUse = conc; // update the concept
+                    closestLabel = label; // update the label
+                }
             }
-            toUse = vocab.concepts.get(0);
         }
         if (!t.getToken().equals(t.getToken().toUpperCase())
-                && toUse.labels.get(0).equals(toUse.labels.get(0).toUpperCase())) {
+                && closestLabel.equals(closestLabel.toUpperCase())) {
             // check if the input token is all caps and if the response term is also all caps
             return false;
         }
@@ -499,20 +505,6 @@ public class KeywordAnalyzer {
             //System.err.println("no facet for: " + toUse.uri);
             return false;
         }
-        // if equipement
-        if (facetIRI.toString().contentEquals("http://sweet.jpl.nasa.gov/2.3/matrEquipment.owl#Equipment")) {
-            boolean foundMatch = false;
-            for (String lbl : toUse.labels) {
-                if (lbl.contentEquals(t.getToken())) {
-                    foundMatch = true;
-                }
-            }
-            if (!foundMatch) return false;
-        }
-
-        if (facetIRI.toString().contentEquals("http://hydro10.sdsc.edu/cinergi_ontology/observation#Observation")) {
-            return false;
-        }
 
 
         ArrayList<String> facetLabels = new ArrayList<String>(5);
@@ -524,7 +516,7 @@ public class KeywordAnalyzer {
             String facetCSV = facetPath(df.getOWLClass(firi));
             String facetPath = facet2Path(facetCSV);
             if (facetPath == null) {
-                System.err.println("More than two level facet: " + facetCSV);
+                System.err.println("More than two level facet: " + facetCSV + " token:" + t.getToken());
                 return false;
             }
             facetLabels.add(facetPath);
@@ -537,7 +529,8 @@ public class KeywordAnalyzer {
             System.out.println(fullHierarchy);
             fullHierarchies.add(fullHierarchy);
         }
-        String term = t.getToken();
+        //String term = t.getToken();
+        String term = closestLabel;
         term = normalizeTerm(term);
         Keyword keyword = new Keyword(term, new String[]{t.getStart(), t.getEnd()},
                 IRIstr.toArray(new String[IRIstr.size()]),

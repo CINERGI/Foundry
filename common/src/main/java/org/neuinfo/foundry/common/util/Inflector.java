@@ -13,11 +13,13 @@ public class Inflector {
     List<Rule> singulars = new ArrayList<Rule>();
     List<Rule> plurals = new ArrayList<Rule>();
     Set<String> uncountables = new HashSet<String>();
+    Set<String> irregularSingularSet = new HashSet<String>();
 
 
     public Inflector() {
         uncountables.addAll(Arrays.asList("equipment", "information", "rice", "money",
                 "species", "series", "fish", "sheep", "deer", "aircraft"));
+
         addSingular("s$", "");
         addSingular("(n)ews$", "$1ews");
         addSingular("([ti])a$", "$1um");
@@ -50,10 +52,12 @@ public class Inflector {
         addIrregular("move", "moves");
         addIrregular("goose", "geese");
         addIrregular("alumna", "alumnae");
+        addIrregular("process", "processes");
         Collections.reverse(singulars);
     }
 
     public String toSingular(String phrase) {
+
         if (phrase.length() < 4 || Utils.isAllCapital(phrase)) {
             return phrase;
         }
@@ -84,6 +88,9 @@ public class Inflector {
     }
 
     private String applyRules(List<Rule> rules, String term) {
+        if (uncountables.contains(term) || irregularSingularSet.contains(term)) {
+            return term;
+        }
         String result = term;
         for (Rule rule : rules) {
             if ((result = rule.apply(term)) != null) {
@@ -103,6 +110,7 @@ public class Inflector {
 
     void addIrregular(String singular, String plural) {
         addSingular("(" + plural.charAt(0) + ")" + plural.substring(1) + "$", "$1" + singular.substring(1));
+        irregularSingularSet.add(singular);
     }
 
     public static class Rule {
@@ -128,5 +136,7 @@ public class Inflector {
 
         System.out.println(inflector.toSingular("Thermal Maturities"));
         System.out.println(Inflector.toCamelCase("thermal maturities"));
+
+        System.out.println(inflector.toSingular("Hydrologic process"));
     }
 }
