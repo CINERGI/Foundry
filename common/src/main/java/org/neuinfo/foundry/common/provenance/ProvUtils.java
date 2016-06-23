@@ -7,7 +7,9 @@ import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.common.util.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,9 +49,32 @@ public class ProvUtils {
                 continue;
             }
             JSONObject o1 = eventJson.getJSONObject(key);
-
+            List<String> subKeys =  new ArrayList<String>(o1.keySet());
+            for(String subKey : subKeys) {
+                TagIndex tagIndex = tiMap.get(subKey);
+                if (tagIndex != null) {
+                    Object o = o1.remove(subKey);
+                    o1.put(tagIndex.globalIdx, o);
+                    updateIdValues((JSONObject) o, tiMap);
+                }
+            }
         }
+    }
 
+   static void updateIdValues(JSONObject json, Map<String,TagIndex> tiMap) {
+        List<String> keys = new ArrayList<String>(json.keySet());
+        for(String key : keys) {
+            Object o = json.get(key);
+            if (o instanceof JSONObject) {
+                updateIdValues( (JSONObject) o, tiMap);
+            } else {
+                String value = json.getString(key);
+                TagIndex tagIndex = tiMap.get(value);
+                if (tagIndex != null) {
+                    json.put(key, tagIndex.globalIdx);
+                }
+            }
+        }
     }
 
     static class TagIndex {
