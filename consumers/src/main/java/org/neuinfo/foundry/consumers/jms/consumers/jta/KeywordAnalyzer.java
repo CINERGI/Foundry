@@ -209,37 +209,39 @@ public class KeywordAnalyzer {
         if (OWLFunctions.hasCinergiFacet(cls, extensions, df)) {
             return Arrays.asList(cls.getIRI());
         }
-        if (OWLFunctions.hasParentAnnotation(cls, extensions, df)) {
-            List<IRI> parentIRIs = new ArrayList<IRI>(10);
-            for (OWLClass c : OWLFunctions.getParentAnnotationClass(cls, extensions, df)) {
-                Node<IRI> child = node.addChild(c.getIRI());
-                parentIRIs.addAll(getFacetIRI(c, visited, child));
-            }
-            return parentIRIs;
-        }
         if (!cls.getEquivalentClasses(manager.getOntologies()).isEmpty()) {
             for (OWLClassExpression oce : cls.getEquivalentClasses(manager.getOntologies())) // equivalencies
             {
                 if (oce.getClassExpressionType().toString().equals("Class")) {
-                    OWLClass owlClass = oce.getClassesInSignature().iterator().next();
-                    Node<IRI> child = node.addChild(owlClass.getIRI());
-                    List<IRI> retVal = getFacetIRI(owlClass, visited, child);
-                    if (retVal == null) {
-                        continue;
+                    OWLClass equivalentClass = oce.getClassesInSignature().iterator().next();
+                    if (OWLFunctions.hasCinergiFacet(equivalentClass, extensions, df)) {
+                        node.addChild(equivalentClass.getIRI());
+                        return Arrays.asList(equivalentClass.getIRI());
                     }
-                    return retVal;
                 }
             }
         }
+        if (OWLFunctions.hasParentAnnotation(cls, extensions, df)) {
+            List<IRI> parentIRIs = new ArrayList<IRI>(10);
+            for (OWLClass c : OWLFunctions.getParentAnnotationClass(cls, extensions, df)) {
+                Node<IRI> child = node.addChild(c.getIRI());
+                List<IRI> parentFacet = getFacetIRI(c, visited, child);
+                if (parentFacet == null) {
+                    return null;
+                }
+                parentIRIs.addAll(parentFacet);
+            }
+            return parentIRIs;
+        }
+
 
         if (!cls.getSuperClasses(manager.getOntologies()).isEmpty()) {
             for (OWLClassExpression oce : cls.getSuperClasses(manager.getOntologies())) // subClassOf
             {
                 if (oce.getClassExpressionType().toString().equals("Class")) {
                     OWLClass cl = oce.getClassesInSignature().iterator().next();
-                    {
-                        if (OWLFunctions.getLabel(cl, manager, df).equals(OWLFunctions.getLabel(cls, manager, df)))
-                            continue; // skip if child of the same class
+                    if (OWLFunctions.getLabel(cl, manager, df).equals(OWLFunctions.getLabel(cls, manager, df))) {
+                        continue; // skip if child of the same class
                     }
                     OWLClass owlClass = oce.getClassesInSignature().iterator().next();
                     Node<IRI> child = node.addChild(owlClass.getIRI());
@@ -444,12 +446,6 @@ public class KeywordAnalyzer {
 
     // takes a token (phrase and span), a reference of keywords to add to, and a
     private boolean processChunk(Tokens t, ArrayList<Keyword> keywords, HashSet<String> visited) throws Exception {
-        /*
-        if (visited.contains(t.getToken())) // this token has already been used
-        {
-            return false;
-        }
-        */
         Vocab vocab = vocabTerm(t.getToken());
         if (vocab == null) {
             return false;
