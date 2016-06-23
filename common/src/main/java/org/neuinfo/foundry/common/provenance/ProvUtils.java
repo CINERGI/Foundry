@@ -22,7 +22,6 @@ public class ProvUtils {
         Map<String, TagIndex> tiMap = new HashMap<String, TagIndex>();
         int entityOffset = countMap.get("entity");
         int activityOffset = countMap.get("activity");
-        JSONObject json = new JSONObject();
         for (String key : eventJson.keySet()) {
             if (key.equals("activity") || key.equals("entity")) {
                 JSONObject o1 = eventJson.getJSONObject(key);
@@ -38,7 +37,7 @@ public class ProvUtils {
                     tiMap.put(subKey, ti);
                 }
                 if (key.equals("entity")) {
-                    countMap.put("entity", entityOffset + o1.keySet().size());
+                    countMap.put("entity", entityOffset + 1);
                 } else {
                     countMap.put("activity", activityOffset + o1.keySet().size());
                 }
@@ -56,6 +55,9 @@ public class ProvUtils {
                     Object o = o1.remove(subKey);
                     o1.put(tagIndex.globalIdx, o);
                     updateIdValues((JSONObject) o, tiMap);
+                } else {
+                    JSONObject o = o1.getJSONObject(subKey);
+                    updateIdValues(o, tiMap);
                 }
             }
         }
@@ -109,7 +111,7 @@ public class ProvUtils {
             JSONObject json = JSONUtils.toJSON(provData, true);
             System.out.println(json.toString(2));
 
-
+            adjustIds(json, countMap);
             for (String key : json.keySet()) {
                 if (key.equals("prefix")) {
                     continue;
