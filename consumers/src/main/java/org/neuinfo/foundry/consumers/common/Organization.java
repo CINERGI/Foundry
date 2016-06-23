@@ -64,8 +64,8 @@ public class Organization {
         HttpClient client = new DefaultHttpClient();
         String encodedOrgName = orgName.replaceAll("\\s", "%2B");
         StringBuilder sb = new StringBuilder(200);
-        // sb.append("http://viaf.org/viaf/search?query=");
-        sb.append("http://rdap02pxdu.dev.oclc.org:8080/viaf/search?query=");
+        sb.append("http://viaf.org/viaf/search?query=");
+        //sb.append("http://rdap02pxdu.dev.oclc.org:8080/viaf/search?query=");
         String query = "local.corporateNames+all+" + encodedOrgName;
         sb.append(query).append("&");
         sb.append("recordSchema=BriefVIAF&sortKeys=holdingscount");
