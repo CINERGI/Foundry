@@ -102,7 +102,7 @@ public class Inflector {
     }
 
     private String applyRules(List<Rule> rules, String term) {
-        if (uncountables.contains(term) || irregularSingularSet.contains(term)) {
+        if (uncountables.contains(term.toLowerCase()) || irregularSingularSet.contains(term.toLowerCase())) {
             return term;
         }
         String result = term;
@@ -152,5 +152,7 @@ public class Inflector {
         System.out.println(Inflector.toCamelCase("thermal maturities"));
 
         System.out.println(inflector.toSingular("Hydrologic process"));
+
+        System.out.println(inflector.toSingular("Analysis"));
     }
 }
