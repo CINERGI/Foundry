@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.io.SystemOutDocumentTarget;
 import org.semanticweb.owlapi.model.*;
 
 import java.io.BufferedReader;
@@ -79,7 +80,14 @@ public class Driver {
 
         title = "Meteorological Data from the Jemez CZO MidElevation PLZ-ZOB Site.";
         text = "Standard meteorological data are being collected at the PLZ-ZOB site using a suite of Campbell Scientific Instruments. The data is downloaded semi-regularly on-site. The variable being continuously monitored are air pressure, air temperature, relative humidity, wind speed and direction, and precipiration and recorded to the datalogger every 30 minutes.";
+
+
+        text = "The Real-Time Hydrology Network provides integrated observation from bedrock to boundarylayer of the Shale Hills Susquehanna Critical Zone Observatory watershed.  \"Off-the-shelf? Internet Protocol(IP) compliant climate stations, eddy covariance flux stations, " +
+                "stream gauging, soil moisture profilers, andpressure transducers for monitoring groundwater levels comprise a series of real-time " +
+                "Internet-accessiblesensor arrays that support research and educational efforts investigating interactions between the atmosphere,surface and subsurface terrestrial processes, and the riverine hydrologic system. CITATION:";
+        title = "Shale Hills Susquehanna Critical Zone Observatory Real-Time Hydrology Network.";
         testIt(text, title, manager, df, cinergi_ont, extensions, stoplist, nullIRIs);
+        System.exit(1);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonInput));

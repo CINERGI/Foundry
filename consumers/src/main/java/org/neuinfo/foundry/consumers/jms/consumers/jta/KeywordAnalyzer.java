@@ -467,17 +467,28 @@ public class KeywordAnalyzer {
             return false;
         }
         Concept toUse = vocab.concepts.get(0);
+        List<Concept> consideringToUse = new ArrayList<Concept>();
         String closestLabel = toUse.labels.get(0);
         int minDistance = 100;
         for (Concept conc : vocab.concepts) {
             for (String label : conc.labels) {
                 int tempDist = Levenshtein.distance(label, t.getToken());
+                if (tempDist < 2) {// within 2 changes away, add it to a consideration list
+                    if (conc.uri.contains("obo/ENVO") || conc.uri.contains("cinergi_ontology/cinergi.owl")) {
+                        consideringToUse.add(0, conc); // if its ENVO or cinergi at to beginning
+                    } else {
+                        consideringToUse.add(conc);
+                    }
+                }
                 if (tempDist < minDistance) {
-                    toUse = conc; // update the concept
-                    closestLabel = label; // update the label
                     minDistance = tempDist;
+                    toUse = conc; // update the concept
+					closestLabel = label; // update the label
                 }
             }
+        }
+        if (consideringToUse.size() > 0) {
+            toUse = consideringToUse.get(0);
         }
         if (!t.getToken().equals(t.getToken().toUpperCase())
                 && closestLabel.equals(closestLabel.toUpperCase())) {
