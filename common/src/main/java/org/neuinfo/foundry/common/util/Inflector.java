@@ -58,24 +58,27 @@ public class Inflector {
         addIrregular("genus", "genera");
         addIrregular("larva", "larvae");
         addIrregular("bacterium", "bacteria");
-        addIrregular("cactus","cacti");
-        addIrregular("amoeba","amoebae");
-        addIrregular("alumnus","alumni");
+        addIrregular("cactus", "cacti");
+        addIrregular("amoeba", "amoebae");
+        addIrregular("alumnus", "alumni");
         addIrregular("antenna", "antennae");
         addIrregular("stimulus", "stimuli");
-        addIrregular("alga","algae");
-        addIrregular("datum","data");
-        addIrregular("vertebra","vertebra");
+        addIrregular("alga", "algae");
+        addIrregular("datum", "data");
+        addIrregular("vertebra", "vertebra");
+
 
         Collections.reverse(singulars);
     }
 
     public String toSingular(String phrase) {
-
         if (phrase.length() < 4 || Utils.isAllCapital(phrase)) {
             return phrase;
         }
         String[] toks = phrase.split("\\s+");
+        if (toks[toks.length - 1].length() < 4) {
+            return phrase;
+        }
 
         String lastTerm = applyRules(singulars, toks[toks.length - 1]);
         toks[toks.length - 1] = lastTerm;
@@ -102,6 +105,9 @@ public class Inflector {
     }
 
     private String applyRules(List<Rule> rules, String term) {
+        if (term.toLowerCase().endsWith("physics")) {
+            return term;
+        }
         if (uncountables.contains(term.toLowerCase()) || irregularSingularSet.contains(term.toLowerCase())) {
             return term;
         }
@@ -154,5 +160,6 @@ public class Inflector {
         System.out.println(inflector.toSingular("Hydrologic process"));
 
         System.out.println(inflector.toSingular("Analysis"));
+        System.out.println(inflector.toSingular("Geophysics"));
     }
 }
