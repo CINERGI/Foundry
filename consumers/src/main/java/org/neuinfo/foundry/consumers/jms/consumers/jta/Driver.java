@@ -86,8 +86,14 @@ public class Driver {
                 "stream gauging, soil moisture profilers, andpressure transducers for monitoring groundwater levels comprise a series of real-time " +
                 "Internet-accessiblesensor arrays that support research and educational efforts investigating interactions between the atmosphere,surface and subsurface terrestrial processes, and the riverine hydrologic system. CITATION:";
         title = "Shale Hills Susquehanna Critical Zone Observatory Real-Time Hydrology Network.";
+
+        text = "The overall goal of this effort is to monitor the surface climate of the upper Luquillo " +
+                "Mountains.  This station provides basic hourly and daily climate data that is comparable to the Bisley and El Verde stations at lower elevations.  It also provides the long-term reference data that supplements shorter-term, high frequency measurements.; PUBLICATIONS: Weaver, P.L., E. Medina, D. Pool, K. Dugget, J. Gonzales-Liboy, E. Cuvas, 1986. Ecological Observations in the Cloud Forests of the Luquillo Mountains in Puerto Rico. Biotropica 18(1):69-82";
+        title = "East Peak Climate ; IITF East Peak Daily Climate 2000 to 2011";
+
+        text += " . Hydrology .";
         testIt(text, title, manager, df, cinergi_ont, extensions, stoplist, nullIRIs);
-        System.exit(1);
+         System.exit(1);
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         BufferedReader bufferedReader = new BufferedReader(new FileReader(jsonInput));

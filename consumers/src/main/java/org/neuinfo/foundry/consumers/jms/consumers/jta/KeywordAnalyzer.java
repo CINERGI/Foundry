@@ -7,6 +7,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.Node;
 import org.neuinfo.foundry.common.util.LRUCache;
 import org.neuinfo.foundry.common.util.OWLFunctions;
@@ -26,7 +28,7 @@ public class KeywordAnalyzer {
     private OWLDataFactory df;
     private OWLOntology cinergi, extensions;
     private LRUCache<String, Vocab> vocabCache = new LRUCache<String, Vocab>(5000);
-    private Vocab nilVocab = new Vocab();
+    private Vocab nilVocab = new Vocab(null);
     private List<Output> output;
     private List<String> stoplist;
     private List<String> nullIRIs;
@@ -34,7 +36,8 @@ public class KeywordAnalyzer {
     private LinkedHashMap<String, IRI> exceptionMap;
     private int counter;
     private NLPHelper nlpHelper;
-    private String SERVER_URL = "http://tikki.neuinfo.org:9000";
+    // private String SERVER_URL = "http://tikki.neuinfo.org:9000";
+    private String SERVER_URL = "http://ec-scigraph.sdsc.edu:9000";
 
     public KeywordAnalyzer(OWLOntologyManager manager, OWLDataFactory df, OWLOntology ont,
                            OWLOntology extensions, Gson gson, List<String> stoplist,
@@ -173,7 +176,8 @@ public class KeywordAnalyzer {
         if (stoplist.contains(input.toLowerCase())) {
             return null;
         }
-        //System.out.println(prefix+urlInput+suffix);
+
+        System.out.println(prefix + urlInput + suffix);
         try {
             urlOut = readURL(prefix + urlInput + suffix);
             if (urlOut == null) {
@@ -184,7 +188,10 @@ public class KeywordAnalyzer {
             vocabCache.put(input, nilVocab);
             return null;
         }
-        vocab = gson.fromJson(urlOut, Vocab.class);
+        System.out.println(urlOut);
+        Concept[] concepts = gson.fromJson(urlOut, Concept[].class);
+        ArrayList<Concept> conceptList = new ArrayList<Concept>(Arrays.asList(concepts));
+ 		vocab = new Vocab(conceptList);
 
         // preliminary check
         if (stoplist.contains(vocab.concepts.get(0).labels.get(0).toLowerCase())) {
@@ -483,7 +490,7 @@ public class KeywordAnalyzer {
                 if (tempDist < minDistance) {
                     minDistance = tempDist;
                     toUse = conc; // update the concept
-					closestLabel = label; // update the label
+                    closestLabel = label; // update the label
                 }
             }
         }

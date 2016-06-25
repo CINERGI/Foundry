@@ -90,6 +90,7 @@ public class KeywordEnhancer2 implements IPlugin {
 
             if (!existingKeywords.isEmpty()) {
                 StringBuilder sb = new StringBuilder(existingKeywords.size() * 30);
+                sb.append(" . ");
                 for (Iterator<String> it = existingKeywords.iterator(); it.hasNext(); ) {
                     sb.append(it.next());
                     if (it.hasNext()) {
