@@ -94,11 +94,13 @@ public class Inflector {
         String[] toks = phrase.split("\\s+");
         StringBuilder sb = new StringBuilder(phrase.length());
         for (String tok : toks) {
-            sb.append(Character.toUpperCase(tok.charAt(0)));
-            if (tok.length() > 1) {
-                sb.append(tok.substring(1));
+            if (tok.length() >= 1) {
+                sb.append(Character.toUpperCase(tok.charAt(0)));
+                if (tok.length() > 1) {
+                    sb.append(tok.substring(1));
+                }
+                sb.append(' ');
             }
-            sb.append(' ');
         }
 
         return sb.toString().trim();
@@ -181,8 +183,8 @@ public class Inflector {
                 "Hydrodynamics"
         };
         System.out.println("========================");
-        for(String k : keywords) {
-            System.out.println( inflector.toSingular(k));
+        for (String k : keywords) {
+            System.out.println(inflector.toSingular(k));
         }
 
     }
