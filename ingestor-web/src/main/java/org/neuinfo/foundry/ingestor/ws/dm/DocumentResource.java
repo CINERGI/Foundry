@@ -143,7 +143,10 @@ public class DocumentResource {
                 for(Object o : enhancedKeywords) {
                     JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);
                     String term = keywordJson.getString("term");
-                    String hierarchy = keywordJson.getString("hierarchyPath");
+                    String hierarchy = "Unassigned";
+                    if (  keywordJson.has("hierarchyPath") ){
+                         hierarchy = keywordJson.getString("hierarchyPath");
+                    }
                     JSONObject khJson = new JSONObject();
                     khJson.put("keyword", term);
                     khJson.put("hierarchy", hierarchy);
