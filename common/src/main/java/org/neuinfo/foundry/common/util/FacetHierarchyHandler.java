@@ -10,12 +10,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWEdge;
+import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWNode;
 
 import java.net.URI;
 import java.util.*;
-
-import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWEdge;
-import org.neuinfo.foundry.common.util.KeywordHierarchyHandler.KWNode;
 
 /**
  * Created by bozyurt on 7/16/15.
@@ -133,7 +132,9 @@ public class FacetHierarchyHandler implements IHierarchyHandler {
             // prepMapping(n);
         }
         for (KWNode n : nodeMap.values()) {
-            label2NodeMap.put(n.label.toLowerCase(), n);
+            if (n.label != null ) {
+                label2NodeMap.put(n.label.toLowerCase(), n);
+            }
         }
         fixExceptions();
         topLevelNodeMap.clear();
