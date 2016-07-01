@@ -74,7 +74,7 @@ public class CinergiXMLUtils {
         String anchorURL = kwi.getId();
 
         // errors of undefined URI's in 'enchanced' KW
-        if (!anchorURL.isEmpty()) {
+        if (anchorURL != null && !anchorURL.isEmpty()) {
             anchorEl.setAttribute("href", anchorURL, xlink);
         } else {
             anchorEl.setAttribute("href", "http://ec-scigraph.sdsc.edu:9000/scigraph/vocabulary/term/thing", xlink);
