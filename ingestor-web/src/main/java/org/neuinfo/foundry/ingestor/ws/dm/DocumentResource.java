@@ -92,7 +92,7 @@ public class DocumentResource {
                         .entity("No document with id:" + docId + " is found in the source " + resourceId).build();
             }
 
-            ISOXMLGenerator generator = new ISOXMLGenerator();
+            ISOXMLGenerator2 generator = new ISOXMLGenerator2();
 
             Element docEl = generator.generate(docWrapper);
             XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
