@@ -7,6 +7,7 @@ import org.jdom2.Element;
 import org.jdom2.Namespace;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.model.Keyword;
 
 import java.util.*;
@@ -75,7 +76,12 @@ public class ISOXMLGenerator2 {
                 }
             }
         }
+
+
         if (data.containsField("keywords")) {
+            // need to fix bad IDs in the database:
+            FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
+
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
             for (int i = 0; i < jsArr.length(); i++) {
@@ -83,7 +89,12 @@ public class ISOXMLGenerator2 {
                 Keyword keyword = Keyword.fromJSON(kwJson);
                 String category = keyword.getFacetHierarchy();
 
-                KeywordInfo kwi = new KeywordInfo(keyword.getOntId(), keyword.getTerm(), category, keyword.getFullHierarchy());
+                //KeywordInfo kwi = new KeywordInfo(keyword.getOntId(), keyword.getTerm(), category, keyword.getFullHierarchy());
+                String ontId = fhh.getOntologyId(category);
+                if ( ontId == null || ontId.isEmpty() ) {
+                    ontId = keyword.getOntId();
+                }
+                KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                 if (kwiList == null) {
                     kwiList = new ArrayList<KeywordInfo>(10);
