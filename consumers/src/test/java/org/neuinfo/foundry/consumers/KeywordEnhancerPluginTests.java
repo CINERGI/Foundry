@@ -143,7 +143,7 @@ public class KeywordEnhancerPluginTests extends TestCase {
             List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
             IPlugin plugin = new KeywordEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
-            optionMap.put("serviceURL", "http://tikki.neuinfo.org:9000");
+            optionMap.put("serviceURL", "http://ec-scigraph.sdsc.edu:9000/");
             plugin.initialize(optionMap);
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
