@@ -76,8 +76,8 @@ public class CinergiXMLUtils {
         // errors of undefined URI's in 'enchanced' KW
         if (anchorURL != null && !anchorURL.isEmpty()) {
             anchorEl.setAttribute("href", anchorURL, xlink);
-        } else {
-            anchorEl.setAttribute("href", "http://ec-scigraph.sdsc.edu:9000/scigraph/vocabulary/term/thing", xlink);
+//        } else {
+//          anchorEl.setAttribute("href", "http://ec-scigraph.sdsc.edu:9000/scigraph/vocabulary/term/thing", xlink);
         }
         // anchorEl.setAttribute("actuate", "onRequest", xlink);
         anchorEl.setText(keyword);
