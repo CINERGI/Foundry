@@ -79,6 +79,7 @@ public class KeywordInfo {
         KeywordInfo that = (KeywordInfo) o;
 
         if (!id.equals(that.id)) return false;
+        if (that.term == null ) return false;
         return term.equals(that.term);
 
     }
