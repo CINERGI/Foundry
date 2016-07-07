@@ -93,7 +93,11 @@ private final static Logger logger = Logger.getLogger("ISOXML2");
 
                 //KeywordInfo kwi = new KeywordInfo(keyword.getOntId(), keyword.getTerm(), category, keyword.getFullHierarchy());
                 
-                String ontId =  getOntIdFromScigraph(keyword.getTerm());
+//                String ontId = keyword.getOntId();
+//                if (ontId == null || ontId.isEmpty()) {
+//                  ontId = getOntIdFromScigraph(keyword.getTerm());
+//                }
+String ontId = getOntIdFromScigraph(keyword.getTerm());
                 KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
                 List<KeywordInfo> kwiList = category2KWIListMap.get(category);
                 if (kwiList == null) {
