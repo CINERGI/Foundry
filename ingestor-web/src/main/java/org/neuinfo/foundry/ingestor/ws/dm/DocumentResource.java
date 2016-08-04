@@ -35,6 +35,7 @@ public class DocumentResource {
     private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
     static FacetHierarchyHandler fhh;
     private final static Logger logger = Logger.getLogger("DocumentResourceWs");
+
     static {
         try {
             fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
@@ -72,6 +73,8 @@ public class DocumentResource {
         }
     }
 
+    // Dave made changes to this
+
     @Path("/{resourceId}/{docId}")
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -86,14 +89,14 @@ public class DocumentResource {
         MongoService mongoService = null;
         try {
             mongoService = new MongoService();
-docId = java.net.URLDecoder.decode(docId, "UTF-8");
+            docId = java.net.URLDecoder.decode(docId, "UTF-8");
             BasicDBObject docWrapper = mongoService.findTheDocument(resourceId, docId);
             if (docWrapper == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with id:" + docId + " is found in the source " + resourceId).build();
             }
 
-logger.info(docWrapper);
+            // logger.info(docWrapper);
             ISOXMLGenerator2 generator = new ISOXMLGenerator2();
 
             Element docEl = generator.generate(docWrapper);
@@ -114,7 +117,8 @@ logger.info(docWrapper);
         }
         return Response.ok(xmlStr).build();
     }
- @Path("/id/{docId}")
+
+    @Path("/id/{docId}")
     @GET
     @Produces(MediaType.APPLICATION_XML)
     @ApiResponses(value = {@ApiResponse(code = 500, message = "An internal error occurred during the document retrieval"),
@@ -123,16 +127,16 @@ logger.info(docWrapper);
             notes = "",
             response = String.class)
     public Response getDocumentById(
-                                @ApiParam(value = "The document ID for the metadata document", required = true) @PathParam("docId")  String docId) {
+            @ApiParam(value = "The document ID for the metadata document", required = true) @PathParam("docId") String docId) {
         String xmlStr = null;
         MongoService mongoService = null;
         try {
             mongoService = new MongoService();
-docId = java.net.URLDecoder.decode(docId, "UTF-8");
+            docId = java.net.URLDecoder.decode(docId, "UTF-8");
             BasicDBObject docWrapper = mongoService.findTheDocument(docId);
             if (docWrapper == null) {
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity("No document with id:" + docId + " is found in the database " ).build();
+                        .entity("No document with id:" + docId + " is found in the database ").build();
             }
             logger.debug(docWrapper);
             ISOXMLGenerator2 generator = new ISOXMLGenerator2();
@@ -183,12 +187,12 @@ docId = java.net.URLDecoder.decode(docId, "UTF-8");
             JSONArray keywordsArr = new JSONArray();
             result.put("keywords", keywordsArr);
             if (enhancedKeywords != null) {
-                for(Object o : enhancedKeywords) {
+                for (Object o : enhancedKeywords) {
                     JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);
                     String term = keywordJson.getString("term");
                     String hierarchy = "Unassigned";
-                    if (  keywordJson.has("hierarchyPath") ){
-                         hierarchy = keywordJson.getString("hierarchyPath");
+                    if (keywordJson.has("hierarchyPath")) {
+                        hierarchy = keywordJson.getString("hierarchyPath");
                     }
                     JSONObject khJson = new JSONObject();
                     khJson.put("keyword", term);

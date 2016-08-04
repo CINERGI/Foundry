@@ -7,6 +7,9 @@ import org.neuinfo.foundry.common.model.Source;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by bozyurt on 5/27/14.
  */
@@ -35,6 +38,22 @@ public class SourceIngestionService extends BaseIngestionService {
         DBCollection sources = db.getCollection("sources");
         BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", source.getResourceID());
         sources.remove(query);
+    }
+
+    public List<Source> getAllSources() {
+        DB db = mongoClient.getDB(dbName);
+        DBCollection sources = db.getCollection("sources");
+        DBCursor cursor = sources.find();
+        List<Source> sourceList = new ArrayList<Source>();
+        try {
+            while (cursor.hasNext()) {
+                BasicDBObject dbo = (BasicDBObject) cursor.next();
+                sourceList.add(Source.fromDBObject(dbo));
+            }
+            return sourceList;
+        } finally {
+            cursor.close();
+        }
     }
 
     public Source findOrAssignIDandSaveSource(Source source) {

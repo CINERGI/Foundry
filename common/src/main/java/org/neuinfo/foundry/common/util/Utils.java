@@ -10,10 +10,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by bozyurt on 4/4/14.
@@ -183,6 +180,22 @@ public class Utils {
             close(bout);
         }
 
+    }
+
+    public static List<String> loadList(String listTextFile) throws IOException {
+        List<String> list = new LinkedList<String>();
+        BufferedReader in = null;
+        try {
+            in = newUTF8CharSetReader(listTextFile);
+
+            String line;
+            while ((line = in.readLine()) != null) {
+                list.add(line);
+            }
+        } finally {
+            close(in);
+        }
+        return list;
     }
 
     public static String loadAsString(String textFile) throws IOException {
