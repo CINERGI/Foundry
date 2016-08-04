@@ -32,7 +32,7 @@ import java.util.*;
  */
 public class EntityAnnotationJMSConsumer extends JMSConsumerSupport implements MessageListener {
     private final static Logger logger = Logger.getLogger(EntityAnnotationJMSConsumer.class);
-    private final static String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+    private final static String serviceURL = "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities";
     private List<String> jsonPaths;
 
     public EntityAnnotationJMSConsumer(String queueName, Properties props) {

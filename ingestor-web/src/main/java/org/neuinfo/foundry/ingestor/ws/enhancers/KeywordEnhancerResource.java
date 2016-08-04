@@ -16,8 +16,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.Constants;
 import org.neuinfo.foundry.common.util.*;
-import org.neuinfo.foundry.common.util.KeywordInfo;
-import scala.collection.immutable.Stream;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -33,7 +31,7 @@ import java.util.*;
 public class KeywordEnhancerResource {
     private final static Logger logger = Logger.getLogger(KeywordEnhancerResource.class);
     static FacetHierarchyHandler fhh = null;
-    String serviceURL = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+    String serviceURL = "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities";
     static {
         try {
             fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);

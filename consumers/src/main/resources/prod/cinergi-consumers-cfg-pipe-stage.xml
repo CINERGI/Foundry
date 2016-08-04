@@ -48,7 +48,7 @@
                       inStatus="spatially_enhanced.1" outStatus="keyword_enhanced.1" collection="records">
             <pluginClass>org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer</pluginClass>
             <params>
-                <param name="serviceURL" value="http://tikki.neuinfo.org:9000/scigraph/annotations/entities"/>
+                <param name="serviceURL" value="http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities"/>
             </params>
         </consumer-cfg>
 

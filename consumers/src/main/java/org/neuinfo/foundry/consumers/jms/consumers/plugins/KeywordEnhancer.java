@@ -15,7 +15,6 @@ import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.EntityInfo;
 import org.neuinfo.foundry.common.model.Keyword;
 import org.neuinfo.foundry.common.util.*;
-import org.neuinfo.foundry.common.util.KeywordInfo;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper.ProvData;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
@@ -23,7 +22,6 @@ import org.neuinfo.foundry.consumers.plugin.Result;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -230,7 +228,7 @@ public class KeywordEnhancer implements IPlugin {
                                             String relationType, List<Keyword> keywords)
             throws URISyntaxException, IOException {
         HttpClient client = new DefaultHttpClient();
-        URIBuilder builder = new URIBuilder("http://tikki.neuinfo.org:9000/scigraph/graph/neighbors");
+        URIBuilder builder = new URIBuilder("http://ec-scigraph.sdsc.edu:9000/scigraph/graph/neighbors");
         builder.setParameter("id", ontologyId);
         builder.setParameter("depth", "2");
         builder.setParameter("blankNodes", "true");

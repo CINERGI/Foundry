@@ -32,6 +32,15 @@ public class KeywordInfo {
         this.hierarchyPath = hierarchyPath;
         this.type = type;
         this.id = id;
+
+      if (this.type== CinergiXMLUtils.KeywordType.Organization && term.contains("http://viaf.org/") ){
+            int split = term.indexOf("http://viaf.org/");
+            String name = term.substring(0,split);
+            String viaf = term.substring(split);
+            this.id = viaf;
+            this.term = name;
+
+        }
     }
 
     public CinergiXMLUtils.KeywordType getType() {
@@ -70,6 +79,7 @@ public class KeywordInfo {
         KeywordInfo that = (KeywordInfo) o;
 
         if (!id.equals(that.id)) return false;
+        if (that.term == null ) return false;
         return term.equals(that.term);
 
     }

@@ -41,6 +41,13 @@ public class Keyword {
     }
 
     public String getOntId() {
+        if (this.ontId == null || this.ontId.isEmpty()){
+            Set<String> ids =  this.getIds();
+            if (ids.iterator().hasNext() ){
+                return ids.iterator().next();
+                
+            }
+        } 
         return ontId;
     }
 
