@@ -1,7 +1,7 @@
 <dispatcher-cfg>
-    <mongo-config db="discotest" collection="records">
+    <mongo-config db="cinergiStage" collection="records">
         <servers>
-            <server host="burak.crbs.ucsd.edu" port="27017"/>
+            <server host="localhost" port="27017"/>
         </servers>
     </mongo-config>
     <activemq-config>
@@ -28,14 +28,6 @@
                     </condition>
                     <to>foundry.uuid.1</to>
                 </route>
-                <!--
-                     <route>
-                         <condition>
-                             <predicate name="processing.status" op="eq" value="id_assigned.1"/>
-                         </condition>
-                         <to>foundry.xml2cinergi.1</to>
-                     </route>
-                     -->
                 <route>
                     <condition>
                         <predicate name="processing.status" op="eq" value="id_assigned.1"/>

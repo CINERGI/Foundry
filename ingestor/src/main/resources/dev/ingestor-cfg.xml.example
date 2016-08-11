@@ -1,8 +1,7 @@
 <ingestor-cfg>
-    <mongo-config db="discotest">
+    <mongo-config db="cinergiStage">
        <servers>
-         <server host="burak.crbs.ucsd.edu" port="27017"/>
-         <server host="burak.crbs.ucsd.edu" port="27018"/>
+         <server host="localhost" port="27017"/>
          </servers>
     </mongo-config>
     <source nifId="nlx_152590">
