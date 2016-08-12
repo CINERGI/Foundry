@@ -14,6 +14,7 @@ import org.neuinfo.foundry.consumers.common.ServiceFactory;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper;
 
 import javax.jms.*;
+import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,16 +31,23 @@ public class ConsumerCoordinator implements MessageListener {
     private boolean consumerMode = false;
     private int maxDocs = -1;
     private boolean runInTestMode = false;
+    /**
+     * file holding a list of urls for the data to be ingested disregarding the rest
+     */
+    private String includeFile;
     private final ExecutorService executorService = Executors
             .newFixedThreadPool(10);
     List<ConsumerWorker> consumerWorkers = new ArrayList<ConsumerWorker>();
 
     private final static Logger logger = Logger.getLogger("ConsumerCoordinator");
 
-    public ConsumerCoordinator(Configuration config, String configFile, boolean consumerMode) throws Exception {
+    public ConsumerCoordinator(Configuration config, String configFile,
+                               boolean consumerMode,
+                               String includeFile) throws Exception {
         this.config = config;
         this.configFile = configFile;
         this.consumerMode = consumerMode;
+        this.includeFile = includeFile;
         ServiceFactory.getInstance(configFile);
     }
 
@@ -172,6 +180,9 @@ public class ConsumerCoordinator implements MessageListener {
             String ingestMethod = ingestConfigJS.getString("ingestMethod");
             optionMap.put("ingestURL", ingestConfigJS.getString("ingestURL"));
             optionMap.put("allowDuplicates", ingestConfigJS.getString("allowDuplicates"));
+            if (includeFile != null) {
+                optionMap.put("includeFile", includeFile);
+            }
             if (this.maxDocs > 0) {
                 optionMap.put("maxDocs", String.valueOf(maxDocs));
             }
@@ -205,14 +216,16 @@ public class ConsumerCoordinator implements MessageListener {
 
     public static void main(String[] args) throws Exception {
         Option help = new Option("h", "print this message");
-        Option configFileOption = OptionBuilder.withArgName("config-file")
-                .hasArg().withDescription("config-file e.g. cinergi-consumers-cfg.xml").create('c');
-        Option fullOption = OptionBuilder.withDescription("full data set default is 100 documents").create('f');
-        Option provOption = OptionBuilder.withDescription("send provenance data to prov server").create('p');
-        Option numOption = OptionBuilder.withDescription("Max number of documents to ingest").hasArg()
-                .withArgName("max number of docs").create("n");
-        Option testOption = OptionBuilder.withDescription("run ingestors in test mode").create('t');
-        Option consumerModeOption = OptionBuilder.withDescription("run in consumer mode (no ingestors)").create("cm");
+        Option configFileOption = Option.builder("c").argName("config-file")
+                .hasArg().desc("config-file e.g. cinergi-consumers-cfg.xml").build();
+        Option fullOption = Option.builder("f").desc("full data set default is 100 documents").build();
+        Option provOption = Option.builder("p").desc("send provenance data to prov server").build();
+        Option numOption = Option.builder("n").desc("Max number of documents to ingest").hasArg()
+                .argName("max number of docs").build();
+        Option testOption = Option.builder("t").desc("run ingestors in test mode").build();
+        Option consumerModeOption = Option.builder("cm").desc("run in consumer mode (no ingestors)").build();
+        Option includeFileOption = Option.builder("i").hasArg().argName("include-file")
+                .desc("a list of urls to be processed rejecting the rest").build();
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
@@ -221,7 +234,8 @@ public class ConsumerCoordinator implements MessageListener {
         options.addOption(numOption);
         options.addOption(testOption);
         options.addOption(consumerModeOption);
-        CommandLineParser cli = new GnuParser();
+        options.addOption(includeFileOption);
+        CommandLineParser cli = new DefaultParser();
         CommandLine line = null;
         try {
             line = cli.parse(options, args);
@@ -234,7 +248,6 @@ public class ConsumerCoordinator implements MessageListener {
             usage(options);
         }
         String configFile = "consumers-cfg.xml";
-        configFile = "cinergi-consumers-cfg.xml";
         int numDocs = 100;
         boolean processInFull = false;
         if (line.hasOption('c')) {
@@ -261,9 +274,18 @@ public class ConsumerCoordinator implements MessageListener {
             runInTestMode = true;
         }
         boolean consumerMode = line.hasOption("cm");
+        String includeFile = null;
+        if (line.hasOption('i')) {
+            includeFile = line.getOptionValue('i');
+            if (!new File(includeFile).isFile()) {
+                System.err.println("Not a valid includeFile: " + includeFile);
+                usage(options);
+            }
+        }
 
         Configuration config = ConfigLoader.load(configFile);
-        ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile, consumerMode);
+        ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile,
+                consumerMode, includeFile);
         cc.setRunInTestMode(runInTestMode);
         if (!processInFull) {
             cc.setMaxDocs(numDocs);
