@@ -31,13 +31,13 @@ public class ConfigLoader {
             Element docRoot = doc.getRootElement();
             Element mcEl = docRoot.getChild("mongo-config");
             conf.setMongoListenerSettings(extractMongoSettings(mcEl));
-            conf.setMongoDBName( mcEl.getAttributeValue("db"));
-            conf.setCollectionName( mcEl.getAttributeValue("collection"));
+            conf.setMongoDBName(mcEl.getAttributeValue("db"));
+            conf.setCollectionName(mcEl.getAttributeValue("collection"));
             List<ServerInfo> siList = new ArrayList<ServerInfo>(3);
             List<Element> children = mcEl.getChild("servers").getChildren("server");
-            for(Element c : children) {
+            for (Element c : children) {
                 String host = c.getAttributeValue("host");
-                int port = Utils.getIntValue( c.getAttributeValue("port"), -1);
+                int port = Utils.getIntValue(c.getAttributeValue("port"), -1);
                 ServerInfo si = new ServerInfo(host, port);
                 siList.add(si);
             }
@@ -61,22 +61,15 @@ public class ConfigLoader {
 
             if (docRoot.getChild("wf-mappings") != null) {
                 List<Element> wmEls = docRoot.getChild("wf-mappings").getChildren("wf-mapping");
-                for(Element wmEl : wmEls) {
+                for (Element wmEl : wmEls) {
                     WorkflowMapping wm = WorkflowMapping.fromXml(wmEl);
                     conf.getWorkflowMappings().add(wm);
                 }
             }
-            /*
-            if (docRoot.getChild("routes") != null) {
-                List<Element> routeEls = docRoot.getChild("routes").getChildren("route");
-                for (Element routeEl : routeEls) {
-                    Route route = Route.fromXml(routeEl, qiMap);
-                    conf.getRoutes().add(route);
-                }
-            }
-            */
             final Element cpEl = docRoot.getChild("checkpoint-file");
-            conf.setCheckpointXmlFile(new File(cpEl.getTextTrim()));
+            if (cpEl != null) {
+                conf.setCheckpointXmlFile(new File(cpEl.getTextTrim()));
+            }
             final Element amqEl = docRoot.getChild("activemq-config");
             String brokerURL = amqEl.getChildTextTrim("brokerURL");
             conf.setBrokerURL(brokerURL);
