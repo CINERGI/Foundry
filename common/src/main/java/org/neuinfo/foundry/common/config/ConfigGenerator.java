@@ -301,18 +301,18 @@ public class ConfigGenerator {
 
     public static void main(String[] args) throws Exception {
         Option help = new Option("h", "print this message");
-        Option configFileOption = OptionBuilder.withArgName("cfg-spec-file").hasArg()
-                .withDescription("Full path to the Foundry config spec YAML file").create('c');
-        Option foundryRootOption = OptionBuilder.withArgName("foundry-root-dir").hasArg().create('f');
-        Option profileOption = OptionBuilder.withArgName("profile")
-                .withDescription("Maven profile ([dev]|prod)").hasArg().create('p');
+        Option configFileOption = Option.builder("c").argName("cfg-spec-file").hasArg()
+                .desc("Full path to the Foundry config spec YAML file").build();
+        Option foundryRootOption = Option.builder("f").argName("foundry-root-dir").hasArg().build();
+        Option profileOption = Option.builder("p").argName("profile")
+                .desc("Maven profile ([dev]|prod)").hasArg().build();
         configFileOption.setRequired(true);
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
         options.addOption(foundryRootOption);
         options.addOption(profileOption);
-        CommandLineParser cli = new GnuParser();
+        CommandLineParser cli = new DefaultParser();
         CommandLine line = null;
         try {
             line = cli.parse(options, args);

@@ -42,6 +42,7 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
         String srcNifId = ingestor.getOption("srcNifId");
         String dataSource = ingestor.getOption("dataSource");
         String batchId = ingestor.getOption("batchId");
+        String includeFile = ingestor.getOption("includeFile");
 
 
         DocumentIngestionService dis = new DocumentIngestionService();
@@ -76,12 +77,11 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
 
                             if (JSONUtils.isEqual(origDocJS, payload)) {
                                 String status = (String) pi.get("status");
-                                if (status != null && status.equals("error")) {
-                                    // the previous doc processing ended with error, so start over
+                                if (includeFile != null || (status != null && status.equals("error"))) {
+                                    // the previous doc processing ended with error
+                                    // or doc needs to be reprocessed, so start over
                                     DocWrapper dw = dis.prepareDocWrapper(result.getPayload(), batchId, source,
                                             getOutStatus());
-                                    // DocWrapper dw = dis.saveDocument(result.getPayload(), batchId,
-                                    //         source, getOutStatus(), getCollectionName());
                                     // save provenance
                                     ProvData provData = new ProvData(dw.getPrimaryKey(),
                                             ProvenanceHelper.ModificationType.Ingested);
