@@ -100,14 +100,17 @@ public class ISOXMLGenerator2 {
 //                }
                 // Dave
                 String ontId = getOntIdFromScigraph(keyword.getTerm());
-                KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
-                List<KeywordInfo> kwiList = category2KWIListMap.get(category);
-                if (kwiList == null) {
-                    kwiList = new ArrayList<KeywordInfo>(10);
-                    category2KWIListMap.put(category, kwiList);
-                }
-                if (!kwiList.contains(kwi)) {
-                    kwiList.add(kwi);
+                // IBO
+                if (ontId != null) {
+                    KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
+                    List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+                    if (kwiList == null) {
+                        kwiList = new ArrayList<KeywordInfo>(10);
+                        category2KWIListMap.put(category, kwiList);
+                    }
+                    if (!kwiList.contains(kwi)) {
+                        kwiList.add(kwi);
+                    }
                 }
             }
         }
@@ -119,8 +122,13 @@ public class ISOXMLGenerator2 {
         return docEl;
     }
 
+    private static LRUCache<String,String> keyword2OntIdCache = new LRUCache<String, String>(5000);
+    // FIXME Assumption: only a single ontology id per keyword (Not valid IBO)
     // Dave
     private String getOntIdFromScigraph(String keyword) {
+        if (keyword2OntIdCache.containsKey(keyword)) {
+            return  keyword2OntIdCache.get(keyword);
+        }
         Map<String, Keyword> keywordMap = new HashMap<String, Keyword>(7);
         try {
             ScigraphUtils.annotateEntities("", keyword, keywordMap);
@@ -136,10 +144,12 @@ public class ISOXMLGenerator2 {
                     if (id != null && !id.isEmpty()) {
                         // System.out.println("isoxml validid:" + id);
                         logger.info("validid:" + id);
+                        keyword2OntIdCache.put(keyword, id);
                         return id;
                     }
                 }
             }
+            keyword2OntIdCache.put(keyword, null);
             return null;
         } catch (Exception ex) {
             return null;

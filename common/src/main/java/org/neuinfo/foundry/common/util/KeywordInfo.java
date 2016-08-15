@@ -33,9 +33,9 @@ public class KeywordInfo {
         this.type = type;
         this.id = id;
 
-      if (this.type== CinergiXMLUtils.KeywordType.Organization && term.contains("http://viaf.org/") ){
+        if (this.type == CinergiXMLUtils.KeywordType.Organization && term.contains("http://viaf.org/")) {
             int split = term.indexOf("http://viaf.org/");
-            String name = term.substring(0,split);
+            String name = term.substring(0, split);
             String viaf = term.substring(split);
             this.id = viaf;
             this.term = name;
@@ -77,9 +77,8 @@ public class KeywordInfo {
         if (o == null || getClass() != o.getClass()) return false;
 
         KeywordInfo that = (KeywordInfo) o;
-
         if (!id.equals(that.id)) return false;
-        if (that.term == null ) return false;
+        if (that.term == null) return false;
         return term.equals(that.term);
 
     }
