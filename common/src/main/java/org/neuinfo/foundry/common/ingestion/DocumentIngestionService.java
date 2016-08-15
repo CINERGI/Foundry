@@ -96,7 +96,7 @@ public class DocumentIngestionService extends BaseIngestionService {
 
     public void removeDocument(DBObject document, String collectionName) {
         BasicDBObject query = new BasicDBObject();
-        query.put("_id", new ObjectId((String) document.get("_id")));
+        query.put("_id", document.get("_id"));
         DB db = mongoClient.getDB(dbName);
         DBCollection records = db.getCollection(collectionName);
         records.remove(query);

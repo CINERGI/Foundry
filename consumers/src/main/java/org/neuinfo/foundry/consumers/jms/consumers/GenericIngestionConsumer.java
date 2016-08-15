@@ -70,7 +70,7 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                             Assertion.assertNotNull(updateOutStatus);
                             // find difference and update OriginalDoc
                             BasicDBObject origDocDBO = (BasicDBObject) document.get("OriginalDoc");
-                            JSONObject origDocJS = JSONUtils.toJSON(origDocDBO, true);
+                            JSONObject origDocJS = JSONUtils.toJSON(origDocDBO, false);
                             JSONObject payload = result.getPayload();
 
                             DBObject pi = (DBObject) document.get("Processing");
