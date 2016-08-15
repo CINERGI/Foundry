@@ -109,7 +109,8 @@ public class Inflector {
     private String applyRules(List<Rule> rules, String term) {
         String termLC = term.toLowerCase();
         if (termLC.endsWith("physics") || termLC.endsWith("tectonics") ||
-                termLC.endsWith("dynamics") || termLC.endsWith("badlands")) {
+                termLC.endsWith("dynamics") || termLC.endsWith("badlands")
+                || termLC.endsWith("ous") || termLC.endsWith("sis")) {
             return term;
         }
         if (uncountables.contains(term.toLowerCase()) || irregularSingularSet.contains(term.toLowerCase())) {
@@ -180,7 +181,9 @@ public class Inflector {
                 "Tectonophysics",
                 "Thrust tectonics",
                 "Strike - Slip Tectonics",
-                "Hydrodynamics"
+                "Hydrodynamics",
+                "Cretaceous",
+                "diagenesis"
         };
         System.out.println("========================");
         for (String k : keywords) {

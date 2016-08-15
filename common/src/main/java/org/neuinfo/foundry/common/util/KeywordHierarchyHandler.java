@@ -252,7 +252,8 @@ public class KeywordHierarchyHandler {
 
     public void annotateEntities(String contentLocation, String text, Map<String, Keyword> keywordMap) throws Exception {
         HttpClient client = new DefaultHttpClient();
-        String url = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
+        String url = "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities";
+        //String url = "http://tikki.neuinfo.org:9000/scigraph/annotations/entities";
         URIBuilder builder = new URIBuilder(url);
         builder.setParameter("content", text);
         // minLength=4&longestOnly=true&includeAbbrev=false&includeAcronym=false&includeNumbers=false&callback=fn
@@ -443,7 +444,9 @@ public class KeywordHierarchyHandler {
     }
 
     public static void main(String[] args) throws Exception {
-        KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance("http://tikki.neuinfo.org:9000/");
+
+        //KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance("http://tikki.neuinfo.org:9000/");
+        KeywordHierarchyHandler handler = KeywordHierarchyHandler.getInstance("http://ec-scigraph.sdsc.edu:9000/");
 
 //        handler.getKeywordHierarchy("Manometer", "Manometer");
         // handler.getKeywordHierarchy("mercury","b0e515cf-ed97-4870-bdde-6c00b0c998ee");

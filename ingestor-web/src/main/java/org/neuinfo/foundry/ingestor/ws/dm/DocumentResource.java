@@ -3,6 +3,7 @@ package org.neuinfo.foundry.ingestor.ws.dm;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.wordnik.swagger.annotations.*;
+import org.apache.log4j.Logger;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.Namespace;
@@ -33,6 +34,7 @@ import java.util.*;
 public class DocumentResource {
     private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
     static FacetHierarchyHandler fhh;
+    private final static Logger logger = Logger.getLogger("DocumentResourceWs");
 
     static {
         try {
@@ -71,6 +73,8 @@ public class DocumentResource {
         }
     }
 
+    // Dave made changes to this
+
     @Path("/{resourceId}/{docId}")
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -85,14 +89,57 @@ public class DocumentResource {
         MongoService mongoService = null;
         try {
             mongoService = new MongoService();
-
+            docId = java.net.URLDecoder.decode(docId, "UTF-8");
             BasicDBObject docWrapper = mongoService.findTheDocument(resourceId, docId);
             if (docWrapper == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with id:" + docId + " is found in the source " + resourceId).build();
             }
 
-            ISOXMLGenerator generator = new ISOXMLGenerator();
+            // logger.info(docWrapper);
+            ISOXMLGenerator2 generator = new ISOXMLGenerator2();
+
+            Element docEl = generator.generate(docWrapper);
+            XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+
+            Document doc = new Document();
+            doc.setRootElement(docEl);
+            StringWriter sw = new StringWriter(16000);
+            xmlOutputter.output(doc, sw);
+
+            xmlStr = sw.toString();
+        } catch (Exception x) {
+            x.printStackTrace();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
+        }
+        return Response.ok(xmlStr).build();
+    }
+
+    @Path("/id/{docId}")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    @ApiResponses(value = {@ApiResponse(code = 500, message = "An internal error occurred during the document retrieval"),
+            @ApiResponse(code = 404, message = "No metadata document is found with the given resource ID and document ID")})
+    @ApiOperation(value = "Retrieve the original document as XML",
+            notes = "",
+            response = String.class)
+    public Response getDocumentById(
+            @ApiParam(value = "The document ID for the metadata document", required = true) @PathParam("docId") String docId) {
+        String xmlStr = null;
+        MongoService mongoService = null;
+        try {
+            mongoService = new MongoService();
+            docId = java.net.URLDecoder.decode(docId, "UTF-8");
+            BasicDBObject docWrapper = mongoService.findTheDocument(docId);
+            if (docWrapper == null) {
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("No document with id:" + docId + " is found in the database ").build();
+            }
+            logger.debug(docWrapper);
+            ISOXMLGenerator2 generator = new ISOXMLGenerator2();
 
             Element docEl = generator.generate(docWrapper);
             XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
@@ -140,10 +187,13 @@ public class DocumentResource {
             JSONArray keywordsArr = new JSONArray();
             result.put("keywords", keywordsArr);
             if (enhancedKeywords != null) {
-                for(Object o : enhancedKeywords) {
+                for (Object o : enhancedKeywords) {
                     JSONObject keywordJson = JSONUtils.toJSON((BasicDBObject) o, true);
                     String term = keywordJson.getString("term");
-                    String hierarchy = keywordJson.getString("hierarchyPath");
+                    String hierarchy = "Unassigned";
+                    if (keywordJson.has("hierarchyPath")) {
+                        hierarchy = keywordJson.getString("hierarchyPath");
+                    }
                     JSONObject khJson = new JSONObject();
                     khJson.put("keyword", term);
                     khJson.put("hierarchy", hierarchy);

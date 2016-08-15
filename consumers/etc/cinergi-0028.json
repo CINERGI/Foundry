@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0028",
+        "name": "NOAA Models",
+        "dataSource": "NOAA Models"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/noaa_models/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

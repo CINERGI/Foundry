@@ -17,7 +17,7 @@ import java.util.List;
  */
 public class BaseIngestionService {
     protected String dbName;
-    MongoClient mongoClient;
+    protected MongoClient mongoClient;
 
     public void start(IMongoConfig conf) throws UnknownHostException {
         this.dbName = conf.getMongoDBName();

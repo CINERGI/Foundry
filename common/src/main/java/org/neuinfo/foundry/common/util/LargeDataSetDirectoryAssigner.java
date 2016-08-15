@@ -8,7 +8,7 @@ import java.util.Map;
  * Created by bozyurt on 12/1/15.
  */
 public class LargeDataSetDirectoryAssigner {
-    private int maxNumOfFilesPerDir = 10000;
+    private int maxNumOfFilesPerDir = 2000;
     private int fileCountInterval = 100; // every 100 internal counts count the number of files in the last dir;
     private int totalFileCount = 0;
     private int lastDirNo = 1;
@@ -17,7 +17,7 @@ public class LargeDataSetDirectoryAssigner {
     private static Map<String, LargeDataSetDirectoryAssigner> instanceMap = new HashMap<String, LargeDataSetDirectoryAssigner>();
 
     public synchronized static LargeDataSetDirectoryAssigner getInstance(String rootDir) {
-        return getInstance(rootDir, 10000);
+        return getInstance(rootDir, 2000);
     }
 
     public synchronized static LargeDataSetDirectoryAssigner getInstance(String rootDir, int maxNumOfFilesPerDir) {
@@ -34,7 +34,7 @@ public class LargeDataSetDirectoryAssigner {
         this.rootDir = new File(rootDir);
         this.maxNumOfFilesPerDir = maxNumOfFilesPerDir;
         Assertion.assertTrue(this.rootDir.isDirectory());
-        File firstDir = new File(rootDir, String.format("%03d", lastDirNo));
+        File firstDir = new File(rootDir, String.format("%04d", lastDirNo));
         firstDir.mkdir();
         Assertion.assertTrue(firstDir.isDirectory(), "Cannot create dir:" + firstDir);
     }
@@ -50,11 +50,15 @@ public class LargeDataSetDirectoryAssigner {
         if (dirFileCount > maxNumOfFilesPerDir) {
             ++lastDirNo;
             dirFileCount = 1;
-            File currentDir = new File(rootDir, String.format("%03d", lastDirNo));
+            File currentDir = new File(rootDir, String.format("%04d", lastDirNo));
+            while(currentDir.isDirectory()) {
+                ++lastDirNo;
+                currentDir = new File(rootDir, String.format("%04d", lastDirNo));
+            }
             currentDir.mkdir();
             Assertion.assertTrue(currentDir.isDirectory(),"Cannot create dir:" + currentDir);
         }
-        return new File(rootDir, String.format("%03d", lastDirNo));
+        return new File(rootDir, String.format("%04d", lastDirNo));
     }
 
 

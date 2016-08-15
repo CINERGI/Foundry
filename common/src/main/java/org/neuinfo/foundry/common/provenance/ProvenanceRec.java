@@ -99,9 +99,8 @@ public class ProvenanceRec {
             }
             String name = toks[0];
             String value = toks[1];
-            QualifiedName elemName = pFactory.newQualifiedName(this.nsUrl, name, this.nsPrefix);
-            QualifiedName type = pFactory.newQualifiedName("http://www.w3.org/2001/XMLSchema", "string", "xsd");
-            Attribute attr = pFactory.newAttribute(elemName, value, type);
+
+            Attribute attr = null;
             if (name.indexOf(':') != -1) {
                 String[] parts = name.split(":");
                 String ns = parts[0];
@@ -111,6 +110,10 @@ public class ProvenanceRec {
                             pFactory.newQualifiedName("http://www.w3.org/2001/XMLSchema", "string", "xsd"));
 
                 }
+            } else {
+                QualifiedName elemName = pFactory.newQualifiedName(this.nsUrl, name, this.nsPrefix);
+                QualifiedName type = pFactory.newQualifiedName("http://www.w3.org/2001/XMLSchema", "string", "xsd");
+                attr = pFactory.newAttribute(elemName, value, type);
             }
             return attr;
         }

@@ -73,8 +73,12 @@ public class CinergiXMLUtils {
         Element anchorEl = new Element("Anchor", gmx);
         String anchorURL = kwi.getId();
 
-
-        anchorEl.setAttribute("href", anchorURL, xlink);
+        // errors of undefined URI's in 'enchanced' KW
+        if (anchorURL != null && !anchorURL.isEmpty()) {
+            anchorEl.setAttribute("href", anchorURL, xlink);
+//        } else {
+//          anchorEl.setAttribute("href", "http://ec-scigraph.sdsc.edu:9000/scigraph/vocabulary/term/thing", xlink);
+        }
         // anchorEl.setAttribute("actuate", "onRequest", xlink);
         anchorEl.setText(keyword);
         kwdEl.addContent(anchorEl);

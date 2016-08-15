@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0029",
+        "name": "DataTurbine Streaming",
+        "dataSource": "DataTurbine Streaming"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

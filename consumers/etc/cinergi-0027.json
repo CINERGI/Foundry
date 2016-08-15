@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0027",
+        "name": "IEDA Earthchem Library",
+        "dataSource": "IEDA Earthchem Library"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/datacite_iso/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

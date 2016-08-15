@@ -14,6 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.neuinfo.foundry.common.util.Utils;
+import org.neuinfo.foundry.common.util.WAFUtils;
 import org.neuinfo.foundry.common.util.XML2JSONConverter;
 import org.neuinfo.foundry.consumers.plugin.Ingestor;
 import org.neuinfo.foundry.consumers.plugin.Result;
@@ -29,6 +30,8 @@ import java.util.*;
 public class WAFIngestor implements Ingestor {
     String ingestURL;
     boolean allowDuplicates = false;
+    /** if provided select what to be ingested from this file */
+    String includeFile = null;
     Map<String, String> optionMap;
     Iterator<String> docLinkIterator;
     int maxNumDocs2Ingest = -1;
@@ -43,24 +46,34 @@ public class WAFIngestor implements Ingestor {
         if (options.containsKey("maxDocs")) {
             this.maxNumDocs2Ingest = Utils.getIntValue(options.get("maxDocs"), -1);
         }
+        includeFile = options.get("includeFile");
     }
 
     @Override
     public void startup() throws Exception {
         List<String> links = new LinkedList<String>();
 
-        Document doc = Jsoup.connect(this.ingestURL).timeout(15000).maxBodySize(0).get();
-        final Elements anchorEls = doc.select("a");
-        final Iterator<Element> it = anchorEls.iterator();
+        final Iterator<Element> it = WAFUtils.extractAnchors(this.ingestURL);
         while (it.hasNext()) {
             Element ae = it.next();
             final String href = ae.attr("abs:href");
             if (href != null && href.endsWith(".xml")) {
                 links.add(href);
             } else if (href.length() > this.ingestURL.length()){
-                collectLinks(href, links);
+                WAFUtils.collectLinks(href, links);
                 if (maxNumDocs2Ingest > 0 && links.size() >= maxNumDocs2Ingest) {
                     break;
+                }
+            }
+        }
+        if (includeFile != null) {
+            List<String> includeList = Utils.loadList(includeFile);
+            Set<String> includeSet = new HashSet<String>(includeList);
+            includeList = null;
+            for(Iterator<String> iter = links.iterator(); iter.hasNext();) {
+                String link = iter.next();
+                if (!includeSet.contains(link)) {
+                    iter.remove();
                 }
             }
         }
@@ -68,24 +81,7 @@ public class WAFIngestor implements Ingestor {
         this.docLinkIterator = links.iterator();
     }
 
-    void collectLinks(String subDirHref, List<String> links) {
-        try {
-            int startSize = links.size();
-            Document doc = Jsoup.connect(subDirHref).timeout(15000).get();
-            Elements anchorEls = doc.select("a");
-            Iterator<Element> it = anchorEls.iterator();
-            while (it.hasNext()) {
-                String href = it.next().attr("abs:href");
-                if (href != null && href.endsWith(".xml")) {
-                    links.add(href);
-                }
-            }
-            int numAdded = links.size() - startSize;
-            System.out.println("Added " + numAdded + " documents from " + subDirHref);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Override
     public Result prepPayload() {
@@ -93,7 +89,7 @@ public class WAFIngestor implements Ingestor {
             String docURL = this.docLinkIterator.next();
             this.count++;
             SAXBuilder builder = new SAXBuilder();
-            String xmlContent = getXMLContent(docURL);
+            String xmlContent = WAFUtils.getXMLContent(docURL);
             org.jdom2.Document doc = builder.build(new StringReader(xmlContent));
             org.jdom2.Element rootEl = doc.getRootElement();
             XML2JSONConverter converter = new XML2JSONConverter();
@@ -133,24 +129,5 @@ public class WAFIngestor implements Ingestor {
         return this.docLinkIterator.hasNext();
     }
 
-    public static String getXMLContent(String docURL) throws Exception {
-        HttpClient client = new DefaultHttpClient();
-        URIBuilder builder = new URIBuilder(docURL);
-        URI uri = builder.build();
-        HttpGet httpGet = new HttpGet(uri);
-        try {
-            HttpResponse response = client.execute(httpGet);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                String xmlStr = EntityUtils.toString(entity);
-                return xmlStr;
-            }
 
-        } finally {
-            if (httpGet != null) {
-                httpGet.releaseConnection();
-            }
-        }
-        return null;
-    }
 }

@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0030",
+        "name": "IDEA MGDS",
+        "dataSource": "IDEA MGDS"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://get.iedadata.org/metadata/iso/series/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",
@@ -31,7 +31,7 @@
     },
     "originalRecordIdentifierSpec": {
         "fields": [
-            "$.'gmd:MD_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
+            "$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
         ],
         "delimiter": [
             ":"

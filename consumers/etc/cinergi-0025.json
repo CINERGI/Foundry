@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0025",
+        "name": "re3data.org repositories",
+        "dataSource": "re3data.org repositories"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/re3iso/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0024",
-        "name": "epa_models",
-        "dataSource": "epa_models"
+        "resourceID": "cinergi-0026",
+        "name": "TESS models",
+        "dataSource": "TESS models"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/epa_models/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/tess_models/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",
