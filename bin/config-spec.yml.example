@@ -23,9 +23,9 @@ consumers:
          status: spatially_enhanced
          serverURL: "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer"
     - keyword:
-         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer
+         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer2
          status: keyword_enhanced
-         serviceURL: "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities"
+         serviceURL: "http://ec-scigraph.sdsc.edu:9000"
          stopwordsUrl: "file:///var/data/cinergi/stopwords.txt"
          useNER: false
     - org:
