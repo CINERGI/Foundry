@@ -10,6 +10,7 @@ import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.common.util.CinergiXMLUtils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer;
+import org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer2;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 import org.neuinfo.foundry.consumers.util.Helper;
@@ -83,18 +84,20 @@ public class SpatialEnhancerTest extends TestCase {
 
     public void testSpatialEnhancer() throws Exception {
         String thePrimaryKey = "043dbb8c-66de-6897-e054-00144fdd4fa6";
+        thePrimaryKey = null;
         Helper helper = new Helper("");
         try {
-            helper.startup("cinergi-consumers-cfg.xml");
+            helper.startup("consumers-cfg.xml");
 
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0010");
-            IPlugin plugin = new SpatialEnhancer();
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0002");
+            IPlugin plugin = new SpatialEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
-            optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
+          //  optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
+            optionMap.put("serverURL","http://132.249.238.169:8080/cinergi/SpatialEnhancer");
             plugin.initialize(optionMap);
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
-                if (primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                if (thePrimaryKey == null || primaryKey.equalsIgnoreCase(thePrimaryKey)) {
                     Result result = plugin.handle(docWrapper);
                     if (result.getStatus() == Result.Status.OK_WITH_CHANGE) {
                         DBObject dw = result.getDocWrapper();

@@ -121,12 +121,14 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
     public void testKeywordEnhancer2() throws Exception {
         String thePrimaryKey = "org.marine-geo:metadata:10000";
-       // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr"; // cinergi-0022
+        // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/Towers/Vcp/Tower_Vcp_metadata_2009.hdr"; // cinergi-0022
         thePrimaryKey = "http://www.czo.psu.edu/downloads/sdsc/hydroped/2008_SSHCZO_60_253MP.hdr";
-       // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/MetStation/met1_daily/data_daily_met1_metadata.hdr";
+        // thePrimaryKey = "http://www.czo.arizona.edu/data/pub/valle/MetStation/met1_daily/data_daily_met1_metadata.hdr";
         //thePrimaryKey = "5053eb2de4b097cd4fcf67af";
 
-        boolean filter = true;
+        thePrimaryKey = "https://www.sas.upenn.edu/lczodata/sites/www.sas.upenn.edu.lczodata/files/Throufall-Bisley_0.hdr";
+
+        boolean filter = false;
         // runKeywordEnhancer2("cinergi-0023", thePrimaryKey, filter, new File("/tmp/IEDA"));
         runKeywordEnhancer2("cinergi-0022", thePrimaryKey, filter, new File("/tmp/CZO"));
         // runKeywordEnhancer2("cinergi-0001", thePrimaryKey, filter, new File("/tmp/ScienceBase"));
@@ -138,9 +140,9 @@ public class KeywordEnhancerPluginTests extends TestCase {
             ScigraphMappingsHandler smHandler = ScigraphMappingsHandler.getInstance();
             ScigraphUtils.setHandler(smHandler);
 
-            helper.startup("cinergi-consumers-cfg.xml");
+            helper.startup("consumers-cfg.xml");
 
-            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
+            List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID, 10);
             IPlugin plugin = new KeywordEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
             optionMap.put("serviceURL", "http://ec-scigraph.sdsc.edu:9000/");

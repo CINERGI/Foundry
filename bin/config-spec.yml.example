@@ -19,9 +19,8 @@ consumers:
          class: org.neuinfo.foundry.consumers.jms.consumers.plugins.DocIDAssigner
          status: id_assigned
     - spatial:
-         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer
+         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer2
          status: spatially_enhanced
-         serverURL: "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer"
     - keyword:
          class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer
          status: keyword_enhanced

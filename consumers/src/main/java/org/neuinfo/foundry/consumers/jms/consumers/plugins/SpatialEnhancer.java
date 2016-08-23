@@ -77,7 +77,7 @@ public class SpatialEnhancer implements IPlugin {
         }
     }
 
-    void prepBoundingBoxProv(JSONObject spatial, ProvData provData) {
+   public static  void prepBoundingBoxProv(JSONObject spatial, ProvData provData) {
         boolean hasBBFromPlaces = false;
         if (spatial == null ||
                 (!spatial.has("bounding_boxes") &&
@@ -152,6 +152,7 @@ public class SpatialEnhancer implements IPlugin {
                 }
             } else {
                 logger.info(response.getStatusLine());
+                logger.info(response.toString());
             }
 
         } finally {

@@ -43,14 +43,26 @@ public class Helper extends ConsumerSupport {
     }
 
     public List<BasicDBObject> getDocWrappers(String sourceID) {
+        return getDocWrappers(sourceID, -1);
+    }
+
+    public List<BasicDBObject> getDocWrappers(String sourceID, int limit) {
         DB db = mongoClient.getDB(super.mongoDbName);
         DBCollection collection = db.getCollection("records");
         DBCursor dbCursor = null;
         if (sourceID != null) {
             BasicDBObject query = new BasicDBObject("SourceInfo.SourceID", sourceID);
-            dbCursor = collection.find(query);
+            if (limit <= 0) {
+                dbCursor = collection.find(query);
+            } else {
+                dbCursor = collection.find(query).limit(limit);
+            }
         } else {
-            dbCursor = collection.find();
+            if (limit <= 0) {
+                dbCursor = collection.find();
+            } else {
+                dbCursor = collection.find().limit(limit);
+            }
         }
         List<BasicDBObject> docWrappers = new ArrayList<BasicDBObject>(100);
         try {
