@@ -1,0 +1,14 @@
+To sync oplog time with checkpoint after database rebuild
+---------------------------------------------------------
+in mongo
+rs.printReplicationInfo()
+
+to get the last event time in the oplog
+
+Groovy code to convert last event time to seconds
+-------------------------------------------------
+import java.text.*
+SimpleDateFormat sdf = new SimpleDateFormat('EEE MMM dd yyyy hh:mm:ssZ')
+
+Date d = sdf.parse('Wed Oct 14 2015 19:25:35 GMT+0000')
+println d.time / 1000

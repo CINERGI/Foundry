@@ -22,9 +22,9 @@ consumers:
          class: org.neuinfo.foundry.consumers.jms.consumers.plugins.SpatialEnhancer2
          status: spatially_enhanced
     - keyword:
-         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer
+         class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer2
          status: keyword_enhanced
-         serviceURL: "http://ec-scigraph.sdsc.edu:9000/scigraph/annotations/entities"
+         serviceURL: "http://ec-scigraph.sdsc.edu:9000"
          stopwordsUrl: "file:///var/data/cinergi/stopwords.txt"
          useNER: false
     - org:
