@@ -104,9 +104,10 @@ public class SpatialEnhancerTest extends TestCase {
                         DBObject data = (DBObject) dw.get("Data");
                         JSONObject json = JSONUtils.toJSON((BasicDBObject) data, false);
                         System.out.println(json.toString(2));
+                        System.out.println(">>----------------------------------------");
 
                     }
-                    break;
+                   //  break;
                 }
             }
         } finally {

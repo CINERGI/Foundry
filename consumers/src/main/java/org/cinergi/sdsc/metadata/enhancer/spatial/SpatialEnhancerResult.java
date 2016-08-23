@@ -178,7 +178,7 @@ public class SpatialEnhancerResult {
         if (bounds.isEmpty()) {
             if (places.isEmpty()) {
                 // using text (abstract or introduction) to find place keywords and bounding boxes
-                log.info("Using text to find bounding boxes...");
+                log.info("Using text to find bounding boxes (NER) ...");
 
                 this.extractedPlaces.addAll(this.stanfordNEDLocationFinder.getLocationsFromText(this.text));
                 //this.extractedPlaces.addAll(SpatialTextLocationFinder.getLocationsFromText(this.text));
