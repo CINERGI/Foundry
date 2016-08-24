@@ -54,6 +54,7 @@ public class SpatialEnhancer2 implements IPlugin {
             SpatialEnhancerResult ser = new SpatialEnhancerResult(file, finder);
             String resultStr = new ObjectMapper().writeValueAsString(ser);
             JSONObject spatialJson = new JSONObject(resultStr);
+            file.delete();
 
             ProvenanceHelper.ProvData provData = new ProvenanceHelper.ProvData(primaryKey, ProvenanceHelper.ModificationType.Added);
             provData.setSourceName(sourceName).setSrcId(srcId);
