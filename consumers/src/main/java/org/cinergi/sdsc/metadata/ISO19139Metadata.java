@@ -48,9 +48,13 @@ public class ISO19139Metadata {
                             MDIdentifierPropertyType mdipt1 = exgdt.getGeographicIdentifier();
                             JAXBElement mditObject = mdipt1.getMDIdentifier();
                             MDIdentifierType mdit1 = (MDIdentifierType) mditObject.getValue();
-                            String title = (String) mdit1.getAuthority().getCICitation().getTitle().getCharacterString().getValue();
-                            String code = (String) mdit1.getCode().getCharacterString().getValue();
-                            System.out.println("title=" + title + ", code=" + code);
+                            if (mdit1 != null && mdit1.getAuthority() != null && mdit1.getAuthority().getCICitation() != null
+                                    && mdit1.getAuthority().getCICitation().getTitle() != null &&
+                                    mdit1.getAuthority().getCICitation().getTitle().getCharacterString() != null) {
+                                String title = (String) mdit1.getAuthority().getCICitation().getTitle().getCharacterString().getValue();
+                                String code = (String) mdit1.getCode().getCharacterString().getValue();
+                                System.out.println("title=" + title + ", code=" + code);
+                            }
                         } else {
                             System.out.println("----> 300 " + aexget.getClass());
                             //EXGeographicBoundingBoxType boundingBox = aexget.getEXGeographicBoundingBox()
