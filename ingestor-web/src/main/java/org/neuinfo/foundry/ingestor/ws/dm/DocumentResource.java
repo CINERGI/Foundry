@@ -72,6 +72,35 @@ public class DocumentResource {
             }
         }
     }
+   @Path("/orig/{resourceId}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiResponses(value = {@ApiResponse(code = 500, message = "An internal error occurred during the document retrieval"),
+            @ApiResponse(code = 404, message = "No metadata document is found with the given resource ID and document ID")})
+    @ApiOperation(value = "Retrieve the original document as JSON",
+            notes = "",
+            response = String.class)
+    public Response getOrigDocument(@ApiParam(value = "The resource ID for the harvest source", required = true) @PathParam("resourceId") String resourceId,
+                                @ApiParam(value = "The document ID for the metadata document", required = true) @QueryParam("docId") String docId) {
+        MongoService mongoService = null;
+        try {
+            mongoService = new MongoService();
+            docId = java.net.URLDecoder.decode(docId, "UTF-8");
+            BasicDBObject docWrapper = mongoService.findTheDocument(resourceId, docId);
+
+            BasicDBObject origData = (BasicDBObject) docWrapper.get("OriginalDoc");
+            JSONObject json = JSONUtils.toJSON(origData, true);
+            String jsonStr = json.toString(2);
+            return Response.ok(jsonStr).build();
+        }catch (Exception x) {
+            x.printStackTrace();
+            return Response.serverError().build();
+        } finally {
+            if (mongoService != null) {
+                mongoService.shutdown();
+            }
+        }
+    }
 
     // Dave made changes to this
 

@@ -288,7 +288,7 @@ public class ConsumerCoordinator implements MessageListener {
             }
         }
         boolean onlyErrors = line.hasOption('e');
-        
+
         Configuration config = ConfigLoader.load(configFile);
         ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile,
                 consumerMode, includeFile, onlyErrors);
