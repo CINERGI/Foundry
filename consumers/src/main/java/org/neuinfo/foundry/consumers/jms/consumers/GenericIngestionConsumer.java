@@ -43,6 +43,7 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
         String dataSource = ingestor.getOption("dataSource");
         String batchId = ingestor.getOption("batchId");
         String includeFile = ingestor.getOption("includeFile");
+        boolean onlyErrors = ingestor.getOption("onlyErrors") != null ? Boolean.parseBoolean(ingestor.getOption("onlyErrors")) : false;
 
 
         DocumentIngestionService dis = new DocumentIngestionService();
@@ -75,9 +76,11 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
 
                             DBObject pi = (DBObject) document.get("Processing");
 
-                            if (JSONUtils.isEqual(origDocJS, payload)) {
+                            if (onlyErrors || (JSONUtils.isEqual(origDocJS, payload))) {
                                 String status = (String) pi.get("status");
-                                if (includeFile != null || (status != null && status.equals("error"))) {
+                                boolean needsReprocess = (onlyErrors && (status != null && status.equals("error"))) ||
+                                        includeFile != null || (status != null && status.equals("error"));
+                                if (needsReprocess) {
                                     // the previous doc processing ended with error
                                     // or doc needs to be reprocessed, so start over
                                     DocWrapper dw = dis.prepareDocWrapper(result.getPayload(), batchId, source,
@@ -96,9 +99,10 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                                     ObjectId oid = dis.saveDocument(dw, getCollectionName());
                                     messagePublisher.sendMessage(oid.toString(), getOutStatus());
                                 } else {
-                                    pi.put("status", "finished");
-                                    dis.updateDocument(document, getCollectionName(), batchId);
-
+                                    if (!onlyErrors) {
+                                        pi.put("status", "finished");
+                                        dis.updateDocument(document, getCollectionName(), batchId);
+                                    }
                                 }
                             } else {
                                 DBObject dbObject = JSONUtils.encode(payload, true);

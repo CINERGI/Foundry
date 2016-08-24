@@ -3,6 +3,7 @@ package org.cinergi.sdsc.metadata;
 
 import org.isotc211._2005.gco.CharacterStringPropertyType;
 import org.isotc211._2005.gmi.MIMetadataType;
+import org.isotc211._2005.gmx.AnchorType;
 import org.isotc211.iso19139.d_2007_04_17.gmd.*;
 
 import javax.xml.bind.JAXBContext;
@@ -117,7 +118,12 @@ public class ISO19139Metadata {
                     if (key.getType().getMDKeywordTypeCode().getValue().equals("place") &&
                             key.getType().getMDKeywordTypeCode().getCodeListValue().equals("place")) {
                         for (CharacterStringPropertyType cspt : key.getKeyword()) {
-                            places.add(cspt.getCharacterString().getValue().toString());
+                            if (cspt.getCharacterString().getValue() instanceof AnchorType) {
+                                AnchorType at = (AnchorType) cspt.getCharacterString().getValue();
+                                places.add(at.getValue());
+                            } else if (cspt.getCharacterString().getValue() instanceof String) {
+                                places.add(cspt.getCharacterString().getValue().toString());
+                            }
                         }
                     }
                 }

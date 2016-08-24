@@ -50,9 +50,11 @@ public class ConfigLoader {
         }
 
         if (loadSourceInfo) {
-            final Element sourceEl = docRoot.getChild("source");
-            final SourceConfig sc = SourceConfig.fromXML(sourceEl);
-            conf.setSourceConfig(sc);
+            Element sourceEl = docRoot.getChild("source");
+            if (sourceEl != null) {
+                SourceConfig sc = SourceConfig.fromXML(sourceEl);
+                conf.setSourceConfig(sc);
+            }
         }
         return conf;
     }

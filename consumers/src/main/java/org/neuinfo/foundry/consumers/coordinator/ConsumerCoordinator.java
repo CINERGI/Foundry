@@ -35,19 +35,20 @@ public class ConsumerCoordinator implements MessageListener {
      * file holding a list of urls for the data to be ingested disregarding the rest
      */
     private String includeFile;
-    private final ExecutorService executorService = Executors
-            .newFixedThreadPool(10);
+    private boolean onlyErrors = false;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
     List<ConsumerWorker> consumerWorkers = new ArrayList<ConsumerWorker>();
 
     private final static Logger logger = Logger.getLogger("ConsumerCoordinator");
 
     public ConsumerCoordinator(Configuration config, String configFile,
                                boolean consumerMode,
-                               String includeFile) throws Exception {
+                               String includeFile, boolean onlyErrors) throws Exception {
         this.config = config;
         this.configFile = configFile;
         this.consumerMode = consumerMode;
         this.includeFile = includeFile;
+        this.onlyErrors = onlyErrors;
         ServiceFactory.getInstance(configFile);
     }
 
@@ -183,6 +184,8 @@ public class ConsumerCoordinator implements MessageListener {
             if (includeFile != null) {
                 optionMap.put("includeFile", includeFile);
             }
+            optionMap.put("onlyErrors", String.valueOf(onlyErrors));
+
             if (this.maxDocs > 0) {
                 optionMap.put("maxDocs", String.valueOf(maxDocs));
             }
@@ -226,6 +229,7 @@ public class ConsumerCoordinator implements MessageListener {
         Option consumerModeOption = Option.builder("cm").desc("run in consumer mode (no ingestors)").build();
         Option includeFileOption = Option.builder("i").hasArg().argName("include-file")
                 .desc("a list of urls to be processed rejecting the rest").build();
+        Option onlyErrorsOpt = new Option("e", "process only records with errors");
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
@@ -235,6 +239,7 @@ public class ConsumerCoordinator implements MessageListener {
         options.addOption(testOption);
         options.addOption(consumerModeOption);
         options.addOption(includeFileOption);
+        options.addOption(onlyErrorsOpt);
         CommandLineParser cli = new DefaultParser();
         CommandLine line = null;
         try {
@@ -282,10 +287,11 @@ public class ConsumerCoordinator implements MessageListener {
                 usage(options);
             }
         }
-
+        boolean onlyErrors = line.hasOption('e');
+        
         Configuration config = ConfigLoader.load(configFile);
         ConsumerCoordinator cc = new ConsumerCoordinator(config, configFile,
-                consumerMode, includeFile);
+                consumerMode, includeFile, onlyErrors);
         cc.setRunInTestMode(runInTestMode);
         if (!processInFull) {
             cc.setMaxDocs(numDocs);
