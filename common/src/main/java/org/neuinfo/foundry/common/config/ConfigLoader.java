@@ -1,13 +1,10 @@
-package org.neuinfo.foundry.jms.common;
+package org.neuinfo.foundry.common.config;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
-import org.neuinfo.foundry.common.config.ServerInfo;
-import org.neuinfo.foundry.river.MongoDBRiverDefinition;
 import org.neuinfo.foundry.common.util.Utils;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +27,6 @@ public class ConfigLoader {
             Document doc = builder.build(in);
             Element docRoot = doc.getRootElement();
             Element mcEl = docRoot.getChild("mongo-config");
-            conf.setMongoListenerSettings(extractMongoSettings(mcEl));
             conf.setMongoDBName(mcEl.getAttributeValue("db"));
             conf.setCollectionName(mcEl.getAttributeValue("collection"));
             List<ServerInfo> siList = new ArrayList<ServerInfo>(3);
@@ -66,44 +62,15 @@ public class ConfigLoader {
                     conf.getWorkflowMappings().add(wm);
                 }
             }
-            final Element cpEl = docRoot.getChild("checkpoint-file");
-            if (cpEl != null) {
-                conf.setCheckpointXmlFile(new File(cpEl.getTextTrim()));
-            }
-            final Element amqEl = docRoot.getChild("activemq-config");
+
+            //final Element cpEl = docRoot.getChild("checkpoint-file");
+            //conf.setCheckpointXmlFile(new File(cpEl.getTextTrim()));
+            Element amqEl = docRoot.getChild("activemq-config");
             String brokerURL = amqEl.getChildTextTrim("brokerURL");
             conf.setBrokerURL(brokerURL);
             return conf;
         } finally {
             Utils.close(in);
         }
-    }
-
-
-    static Map<String, Object> extractMongoSettings(Element mcEl) {
-        Map<String, Object> settings = new HashMap<String, Object>(7);
-
-        Map<String, Object> typeMap = new HashMap<String, Object>(17);
-        settings.put(Constants.TYPE, typeMap);
-        String db = mcEl.getAttributeValue("db");
-        String collectionName = mcEl.getAttributeValue("collection");
-
-
-        List<Element> children = mcEl.getChild("servers").getChildren("server");
-        for (Element child : children) {
-            String hostName = child.getAttributeValue("host");
-            int port = Utils.getIntValue(child.getAttributeValue("port"), -1);
-            assert port != -1;
-            Map<String, Object> serverMap = new HashMap<String, Object>(7);
-            List<Map<String, Object>> servers = new ArrayList<Map<String, Object>>(2);
-            servers.add(serverMap);
-            typeMap.put(MongoDBRiverDefinition.SERVERS_FIELD, servers);
-            serverMap.put(MongoDBRiverDefinition.HOST_FIELD, hostName);
-            serverMap.put(MongoDBRiverDefinition.PORT_FIELD, port);
-        }
-
-        typeMap.put(MongoDBRiverDefinition.DB_FIELD, db);
-        typeMap.put(MongoDBRiverDefinition.COLLECTION_FIELD, collectionName);
-        return settings;
     }
 }

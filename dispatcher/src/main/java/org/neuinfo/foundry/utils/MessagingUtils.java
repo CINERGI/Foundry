@@ -3,7 +3,7 @@ package org.neuinfo.foundry.utils;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.model.Source;
 import org.neuinfo.foundry.common.util.Utils;
-import org.neuinfo.foundry.jms.common.WorkflowMapping;
+import org.neuinfo.foundry.common.config.WorkflowMapping;
 
 import java.util.Date;
 import java.util.List;

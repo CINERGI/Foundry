@@ -51,7 +51,7 @@ public class DocIngestorCLI {
                 System.out.println("=============================================");
             }
 
-            dis.endBatch(source, batchId, ingestedCount, submittedCount);
+            dis.endBatch(source, batchId, ingestedCount, submittedCount, 0);
 
         } finally {
             dis.shutdown();
@@ -66,8 +66,8 @@ public class DocIngestorCLI {
 
     public static void main(String[] args) throws Exception {
         Option help = new Option("h", "print this message");
-        Option batchIdOption = OptionBuilder.withArgName("batchId e.g. 20140528").hasArg()
-                .withDescription("batchId in YYYYMMDD format").create('b');
+        Option batchIdOption = Option.builder("b").argName("batchId e.g. 20140528").hasArg()
+                .desc("batchId in YYYYMMDD format").build();
         batchIdOption.setRequired(true);
 
         Options options = new Options();

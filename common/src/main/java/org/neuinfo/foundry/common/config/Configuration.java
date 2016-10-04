@@ -1,41 +1,25 @@
-package org.neuinfo.foundry.jms.common;
+package org.neuinfo.foundry.common.config;
 
-import org.neuinfo.foundry.common.config.IMongoConfig;
-import org.neuinfo.foundry.common.config.ServerInfo;
-
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by bozyurt on 4/24/14.
  */
 public class Configuration implements IMongoConfig {
-    Map<String, Object> mongoListenerSettings;
     List<Workflow> workflows = new ArrayList<Workflow>(5);
     List<WorkflowMapping> workflowMappings = new ArrayList<WorkflowMapping>(5);
-    File checkpointXmlFile;
+    //File checkpointXmlFile;
     String brokerURL;
-    List<ServerInfo>  mongoServers = new ArrayList<ServerInfo>(3);
+    List<ServerInfo> mongoServers = new ArrayList<ServerInfo>(3);
     String mongoDBName;
     String collectionName;
 
-    public Map<String, Object> getMongoListenerSettings() {
-        return mongoListenerSettings;
-    }
-
-    public void setMongoListenerSettings(Map<String, Object> mongoListenerSettings) {
-        this.mongoListenerSettings = mongoListenerSettings;
-    }
-
-    public File getCheckpointXmlFile() {
-        return checkpointXmlFile;
-    }
-
+    /*
     public void setCheckpointXmlFile(File checkpointXmlFile) {
         this.checkpointXmlFile = checkpointXmlFile;
     }
+    */
 
     public String getBrokerURL() {
         return brokerURL;
@@ -84,12 +68,12 @@ public class Configuration implements IMongoConfig {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Configuration{");
-        // sb.append("mongoListenerSettings=").append(mongoListenerSettings);
+        final StringBuilder sb = new StringBuilder("Configuration::[");
         sb.append("brokerURL=").append(brokerURL);
-        sb.append(",workflows=").append(workflows);
-        sb.append(", checkpointXmlFile=").append(checkpointXmlFile);
-        sb.append('}');
+        for(Workflow wf : workflows) {
+            sb.append("\n").append(wf);
+        }
+        sb.append("\n]");
         return sb.toString();
     }
 }

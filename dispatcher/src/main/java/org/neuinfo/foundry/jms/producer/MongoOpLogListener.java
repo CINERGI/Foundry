@@ -2,7 +2,7 @@ package org.neuinfo.foundry.jms.producer;
 
 import com.mongodb.*;
 import org.apache.log4j.Logger;
-import org.neuinfo.foundry.jms.common.Configuration;
+import org.neuinfo.foundry.common.config.Configuration;
 import org.neuinfo.foundry.river.*;
 import org.neuinfo.foundry.utils.ImmutableMap;
 
@@ -16,6 +16,7 @@ import java.util.concurrent.LinkedTransferQueue;
 /**
  * Created by bozyurt on 4/24/14.
  */
+@Deprecated
 public class MongoOpLogListener {
     public final static String TYPE = "mongodb";
     public final static String MONGODB_LOCAL_DATABASE = "local";
@@ -60,7 +61,7 @@ public class MongoOpLogListener {
         this.configuration = configuration;
         this.riverName = riverName;
         this.definition = MongoDBRiverDefinition.parseSettings(riverName, riverName,
-                configuration.getMongoListenerSettings());
+                null /* configuration.getMongoListenerSettings() */);
         BlockingQueue<QueueEntry> stream = definition.getThrottleSize() == -1 ? new LinkedTransferQueue<QueueEntry>()
                 : new ArrayBlockingQueue<QueueEntry>(definition.getThrottleSize());
 

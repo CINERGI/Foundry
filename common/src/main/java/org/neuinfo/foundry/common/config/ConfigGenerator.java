@@ -2,6 +2,7 @@ package org.neuinfo.foundry.common.config;
 
 import org.apache.commons.cli.*;
 import org.jdom2.Element;
+import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.Utils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -85,8 +86,13 @@ public class ConfigGenerator {
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
-            rootEL = createIngestorConfigXml(systemCfg);
-            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/ingestor-cfg.xml";
+            rootEL = createCommonConfigXml(systemCfg);
+            configFile = srcCodeRoot + "/common/src/main/resources/" + profile + "/common-cfg.xml";
+            Utils.saveXML(rootEL, configFile);
+            System.out.println("wrote " + configFile);
+
+            rootEL = createManUIConfigXml(wfCfg, systemCfg, ccList);
+            configFile = srcCodeRoot + "/man-ui/src/main/resources/" + profile + "/man-ui-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
@@ -95,9 +101,23 @@ public class ConfigGenerator {
         }
     }
 
-    static Element createIngestorConfigXml(SystemCfg cfg) {
-        Element rootEl = new Element("ingestor-cfg");
+    static Element createCommonConfigXml(SystemCfg cfg) {
+        Element rootEl = new Element("common-cfg");
         prepDB(cfg, rootEl);
+        return rootEl;
+    }
+
+
+    static Element createManUIConfigXml(WFCfg wfCfg, SystemCfg cfg, List<ConsumerCfg> ccList) {
+        Element rootEl = new Element("man-ui-cfg");
+        prepDBMQ(cfg, rootEl);
+
+        Map<String, ConsumerCfg> ccMap = new HashMap<String, ConsumerCfg>(11);
+        for (ConsumerCfg cc : ccList) {
+            ccMap.put(cc.name, cc);
+        }
+        String finishedStatus = getFinishedStatus(wfCfg, ccMap);
+        prepWorkflow(wfCfg, ccMap, finishedStatus, rootEl);
         return rootEl;
     }
 
@@ -107,15 +127,25 @@ public class ConfigGenerator {
         for (ConsumerCfg cc : ccList) {
             ccMap.put(cc.name, cc);
         }
+        // String finishedStatus = getFinishedStatus(wfCfg, ccMap);
+        String finishedStatus = "finished";
 
         Element rootEl = new Element("dispatcher-cfg");
         prepDBMQ(cfg, rootEl);
-        prepWorkflow(wfCfg, ccMap, rootEl);
+        prepWorkflow(wfCfg, ccMap, finishedStatus, rootEl);
 
         return rootEl;
     }
 
-    private static void prepWorkflow(WFCfg wfCfg, Map<String, ConsumerCfg> ccMap, Element rootEl) {
+    private static String getFinishedStatus(WFCfg wfCfg, Map<String, ConsumerCfg> ccMap) {
+        // get the last step status
+        String lastStep = wfCfg.steps.get(wfCfg.steps.size() - 1);
+        ConsumerCfg cc = ccMap.get(lastStep);
+        Assertion.assertNotNull(cc);
+        return cc.status;
+    }
+
+    private static void prepWorkflow(WFCfg wfCfg, Map<String, ConsumerCfg> ccMap, String finishedStatus, Element rootEl) {
         String updateOutStatus;
         ConsumerCfg firstCC = ccMap.get(wfCfg.steps.get(0));
         assertTrue(firstCC != null, "Cannot find a consumer named " + wfCfg.steps.get(0));
@@ -127,19 +157,19 @@ public class ConfigGenerator {
         wfmsEl.addContent(wfmEl);
         // FIXME: remove boilerplate steps from config not used
         wfmEl.addContent(new Element("step").setText("UUID Generation"));
-        wfmEl.addContent(new Element("step").setText("XML2Cinergi"));
         wfmEl.addContent(new Element("step").setText("Index"));
 
         Element wfsEl = new Element("workflows");
         rootEl.addContent(wfsEl);
-        Element wfEl = new Element("workflow").setAttribute("name", wfCfg.name);
+        Element wfEl = new Element("workflow").setAttribute("name", wfCfg.name)
+                .setAttribute("finishedStatus", finishedStatus);
+
         wfsEl.addContent(wfEl);
         Element routesEl = new Element("routes");
         wfEl.addContent(routesEl);
 
 
         String prevStatus = null;
-
         for (String step : wfCfg.steps) {
             ConsumerCfg cc = ccMap.get(step);
             assertTrue(cc != null, "Cannot find a consumer named " + step);
@@ -174,7 +204,8 @@ public class ConfigGenerator {
         rootEl.addContent(consumersEl);
         String inStatus = "new.1";
 
-        for (String step : wfCfg.steps) {
+        for (Iterator<String> iter =  wfCfg.steps.iterator(); iter.hasNext();) {
+            String step = iter.next();
             ConsumerCfg cc = ccMap.get(step);
             assertTrue(cc != null, "Cannot find a consumer named " + step);
             Element ccEl = new Element("consumer-cfg");
@@ -182,13 +213,12 @@ public class ConfigGenerator {
             ccEl.setAttribute("name", cc.name + ".1");
             ccEl.setAttribute("type", "generic");
             ccEl.setAttribute("listeningQueueName", "foundry." + cc.name + ".1");
-            ccEl.setAttribute("successMessageQueueName", "");
-            ccEl.setAttribute("failureMessageQueueName", "foundry.error");
             ccEl.setAttribute("inStatus", inStatus);
-            if (cc.status.equals("finished")) {
-                ccEl.setAttribute("outStatus", cc.status);
-            } else {
+            if (iter.hasNext()) {
                 ccEl.setAttribute("outStatus", cc.status + ".1");
+            } else {
+                // always make sure that the last step to have outStatus = finished
+                ccEl.setAttribute("outStatus", "finished");
             }
             ccEl.addContent(new Element("pluginClass").setText(cc.pluginClass));
             if (cc.params != null) {
@@ -302,8 +332,8 @@ public class ConfigGenerator {
     public static void main(String[] args) throws Exception {
         Option help = new Option("h", "print this message");
         Option configFileOption = Option.builder("c").argName("cfg-spec-file").hasArg()
-                .desc("Full path to the Foundry config spec YAML file").build();
-        Option foundryRootOption = Option.builder("f").argName("foundry-root-dir").hasArg().build();
+                .desc("Full path to the Foundry-ES config spec YAML file").build();
+        Option foundryRootOption = Option.builder("f").argName("foundry-es-root-dir").hasArg().build();
         Option profileOption = Option.builder("p").argName("profile")
                 .desc("Maven profile ([dev]|prod)").hasArg().build();
         configFileOption.setRequired(true);
@@ -324,14 +354,14 @@ public class ConfigGenerator {
             usage(options);
         }
         String configFile = line.getOptionValue('c');
-        String foundryRootDir = HOME + "/dev/java/Foundry";
+        String foundryRootDir = HOME + "/dev/java/Foundry-ES";
         if (line.hasOption('f')) {
             foundryRootDir = line.getOptionValue('f');
         }
         if (!new File(foundryRootDir).isDirectory()) {
             String fd = System.getenv("FOUNDRY_HOME");
             if (fd == null) {
-                System.err.println("Please provide the root dir for Foundry code via -f option or via FOUNDRY_HOME environment variable!");
+                System.err.println("Please provide the root dir for Foundry-ES code via -f option or via FOUNDRY_HOME environment variable!");
                 System.exit(1);
             }
             foundryRootDir = fd;
@@ -344,6 +374,12 @@ public class ConfigGenerator {
             }
 
         }
+        //ConfigGenerator.loadConfigSpec(HOME + "/dev/java/Foundry-ES/bin/config.yml", foundryRootDir);
         ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile);
     }
+
+
+
+
+
 }

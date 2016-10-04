@@ -1,8 +1,8 @@
 package org.neuinfo.foundry.jms.producer;
 
 import org.apache.commons.cli.*;
-import org.neuinfo.foundry.jms.common.ConfigLoader;
-import org.neuinfo.foundry.jms.common.Configuration;
+import org.neuinfo.foundry.common.config.ConfigLoader;
+import org.neuinfo.foundry.common.config.Configuration;
 
 /**
  * <p/>
@@ -11,6 +11,7 @@ import org.neuinfo.foundry.jms.common.Configuration;
  * <p/>
  * Created by bozyurt on 4/24/14.
  */
+@Deprecated
 public class OplogMessageDispatcher {
     private MongoOpLogListener opLogListener;
     private UserMessageService ums;
@@ -23,7 +24,8 @@ public class OplogMessageDispatcher {
             this.config = ConfigLoader.load("dispatcher-cfg.xml");
         }
         System.out.println(this.config);
-        TimeCheckPointManager.getInstance(this.config.getCheckpointXmlFile());
+        // TimeCheckPointManager.getInstance(this.config.getCheckpointXmlFile());
+        TimeCheckPointManager.getInstance(null);
 
         // start periodic checkpointing
         Thread checkpointer = new Thread(new TimeCheckPointScheduler());

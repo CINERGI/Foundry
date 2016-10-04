@@ -1,11 +1,10 @@
-package org.neuinfo.foundry.jms.common;
+package org.neuinfo.foundry.common.config;
 
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**

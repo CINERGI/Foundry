@@ -14,6 +14,7 @@ import org.neuinfo.foundry.common.model.*;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONPathProcessor;
 import org.neuinfo.foundry.common.util.JSONUtils;
+import org.neuinfo.foundry.common.util.MongoUtils;
 
 import java.io.IOException;
 import java.util.Date;
@@ -47,18 +48,23 @@ public class DocumentIngestionService extends BaseIngestionService {
         BatchInfo bi = new BatchInfo(batchId, Status.IN_PROCESS);
         bi.setIngestedCount(0);
         bi.setSubmittedCount(0);
-
+        bi.setUpdatedCount(0);
+        bi.setIngestionStatus(Status.IN_PROCESS);
+        bi.setIngestionStartDatetime(new Date());
         sis.addUpdateBatchInfo(source.getResourceID(), source.getDataSource(), bi);
     }
 
     public void endBatch(Source source, String batchId,
-                         int ingestedCount, int submittedCount) {
+                         int ingestedCount, int submittedCount, int updatedCount) {
         SourceIngestionService sis = new SourceIngestionService();
         sis.setMongoClient(this.mongoClient);
         sis.setMongoDBName(this.dbName);
         BatchInfo bi = new BatchInfo(batchId, Status.FINISHED);
         bi.setSubmittedCount(submittedCount);
         bi.setIngestedCount(ingestedCount);
+        bi.setUpdatedCount(updatedCount);
+        bi.setIngestionStatus(Status.FINISHED);
+        bi.setIngestionEndDatetime(new Date());
         sis.addUpdateBatchInfo(source.getResourceID(), source.getDataSource(), bi);
     }
 
@@ -67,18 +73,8 @@ public class DocumentIngestionService extends BaseIngestionService {
                 .append("sourceInformation.dataSource", dataSource);
         DB db = mongoClient.getDB(dbName);
         DBCollection sources = db.getCollection("sources");
-        final DBCursor cursor = sources.find(query);
+        return MongoUtils.getSource(query, sources);
 
-        Source source = null;
-        try {
-            if (cursor.hasNext()) {
-                final DBObject dbObject = cursor.next();
-                source = Source.fromDBObject(dbObject);
-            }
-        } finally {
-            cursor.close();
-        }
-        return source;
     }
 
     public void deleteDocuments4Resource(String collectionName, String resourceId, String dataSource) {

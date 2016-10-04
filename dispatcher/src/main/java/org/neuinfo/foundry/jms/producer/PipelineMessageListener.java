@@ -2,7 +2,7 @@ package org.neuinfo.foundry.jms.producer;
 
 import org.apache.log4j.Logger;
 import org.neuinfo.foundry.common.Constants;
-import org.neuinfo.foundry.jms.common.Configuration;
+import org.neuinfo.foundry.common.config.Configuration;
 
 /**
  * Created by bozyurt on 7/9/15.
@@ -32,9 +32,9 @@ class PipelineMessageListener {
     }
 
     public void shutdown() {
-         logger.info("shutting down PipelineMessageConsumer");
+        logger.info("shutting down PipelineMessageConsumer");
         try {
-           this.consumer.setFinished(true);
+            this.consumer.setFinished(true);
 
         } catch (Throwable t) {
             logger.error("Fail to close PipelineMessageConsumer:" + t.getMessage());

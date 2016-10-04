@@ -84,7 +84,7 @@ public class SimpleIngestionConsumer extends JMSConsumerSupport implements Messa
 
             }
 
-            dis.endBatch(source, batchId, ingestedCount, submittedCount);
+            dis.endBatch(source, batchId, ingestedCount, submittedCount, 0);
         } finally {
             dis.shutdown();
         }

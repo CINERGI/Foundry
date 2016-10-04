@@ -1,4 +1,4 @@
-package org.neuinfo.foundry.jms.common;
+package org.neuinfo.foundry.common.config;
 
 import org.jdom2.Element;
 import org.json.JSONArray;
@@ -66,6 +66,13 @@ public class Condition {
         return cond;
     }
 
+
+    public String getFirstPredicateValue() {
+        LogicalGroup lg = groups.get(0);
+        Predicate predicate = lg.getPredicates().get(0);
+        return predicate.getValue();
+    }
+
     public JSONObject toJSON() throws Exception {
         JSONObject json = new JSONObject();
         if (this.groups.size() == 1 && !groups.get(0).isOrGroup()) {
@@ -112,10 +119,14 @@ public class Condition {
                     }
                 }
             }
+
             return ok;
+
         } else {
             // TODO
+
         }
+
         return false;
     }
 
@@ -165,7 +176,7 @@ public class Condition {
             JSONArray jsArr = new JSONArray();
             json.put("predicates", jsArr);
             for(Predicate pred : predicates) {
-                 jsArr.put( pred.toJSON() );
+                jsArr.put( pred.toJSON() );
             }
             return json;
         }
@@ -183,9 +194,9 @@ public class Condition {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Condition::[");
+        final StringBuilder sb = new StringBuilder("Condition{");
         sb.append("groups=").append(groups);
-        sb.append(']');
+        sb.append('}');
         return sb.toString();
     }
 }

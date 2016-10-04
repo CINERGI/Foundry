@@ -306,15 +306,20 @@ public class SpatialEnhancerResult {
 
         for (String location : locations) {
             log.info("Found a location: " + location);
-            Thread.sleep(100);
-            List<LatLngBounds> bounds = GoogleGeocoder.getBounds(location);
-            if (bounds.size() == 1) {
-                for (LatLngBounds bound : bounds) {
-                    log.info("     Bounding box: " + bound);
-                    extractedPlace2Bounds.put(location, bound);
+            // orig
+            // List<LatLngBounds> bounds = GoogleGeocoder.getBounds(location);
+            List<LatLngBounds> bounds = DataScienceToolkitGeocoder.getBounds(location);
+            if (bounds != null) {
+                if (bounds.size() == 1) {
+                    for (LatLngBounds bound : bounds) {
+                        log.info("     Bounding box: " + bound);
+                        extractedPlace2Bounds.put(location, bound);
+                    }
+                } else if (bounds.size() > 1) {
+                    log.info("     Found multiple bounding boxes. Ignore the location.");
                 }
-            } else if (bounds.size() > 1) {
-                log.info("     Found mulitiple bounding boxes. Ignore the location.");
+            } else {
+                log.info("Found no bounds for:" + location);
             }
         }
     }

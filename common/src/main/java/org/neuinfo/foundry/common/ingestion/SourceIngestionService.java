@@ -176,6 +176,14 @@ public class SourceIngestionService extends BaseIngestionService {
                         biDBO.put("status", bi.getStatus().getCode());
                         biDBO.put("submittedCount", bi.getSubmittedCount());
                         biDBO.put("ingestedCount", bi.getIngestedCount());
+                        biDBO.put("updatedCount", bi.getUpdatedCount());
+                        biDBO.put("ingestionStatus", bi.getIngestionStatus().getCode());
+                        if (bi.getIngestionStartDatetime() != null) {
+                            biDBO.put("ingestionStartDatetime", bi.getIngestionStartDatetime());
+                        }
+                        if (bi.getIngestionEndDatetime() != null) {
+                            biDBO.put("ingestionEndDatetime", bi.getIngestionEndDatetime());
+                        }
                         updated = true;
                         break;
                     }

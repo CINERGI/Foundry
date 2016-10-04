@@ -2,6 +2,7 @@ package org.neuinfo.foundry.consumers.jms.consumers;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.ingestion.DocumentIngestionService;
@@ -24,6 +25,7 @@ import java.util.Date;
  */
 public class GenericIngestionConsumer extends ConsumerSupport implements Ingestable {
     private Ingestor ingestor;
+    private final static Logger logger = Logger.getLogger(GenericIngestionConsumer.class);
 
     public GenericIngestionConsumer(String queueName) {
         super(queueName);
@@ -57,12 +59,14 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
             dis.setSource(source);
             int submittedCount = 0;
             int ingestedCount = 0;
+            int updatedCount = 0;
             dis.beginBatch(source, batchId);
 
             while (ingestor.hasNext()) {
                 try {
                     Date startDate = new Date();
                     Result result = ingestor.prepPayload();
+                    logger.info("ingesting record " + submittedCount);
                     if (result.getStatus() == Result.Status.OK_WITH_CHANGE) {
                         BasicDBObject document = dis.findDocument(result.getPayload(), getCollectionName());
 
@@ -75,11 +79,15 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                             JSONObject payload = result.getPayload();
 
                             DBObject pi = (DBObject) document.get("Processing");
+                            boolean contentSame = false;
+                            if (!onlyErrors) {
+                                contentSame = JSONUtils.isEqual(origDocJS, payload);
+                            }
+                            String status = (String) pi.get("status");
+                            boolean needsReprocess = (onlyErrors && (status != null && status.equals("error"))) ||
+                                    includeFile != null || (status != null && (status.equals("error") || !status.equals("finished")));
 
-                            if (onlyErrors || (JSONUtils.isEqual(origDocJS, payload))) {
-                                String status = (String) pi.get("status");
-                                boolean needsReprocess = (onlyErrors && (status != null && status.equals("error"))) ||
-                                        includeFile != null || (status != null && status.equals("error"));
+                            if (onlyErrors || contentSame) {
                                 if (needsReprocess) {
                                     // the previous doc processing ended with error
                                     // or doc needs to be reprocessed, so start over
@@ -98,11 +106,6 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                                     dis.removeDocument(document, getCollectionName());
                                     ObjectId oid = dis.saveDocument(dw, getCollectionName());
                                     messagePublisher.sendMessage(oid.toString(), getOutStatus());
-                                } else {
-                                    if (!onlyErrors) {
-                                        pi.put("status", "finished");
-                                        dis.updateDocument(document, getCollectionName(), batchId);
-                                    }
                                 }
                             } else {
                                 DBObject dbObject = JSONUtils.encode(payload, true);
@@ -113,13 +116,12 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                                 dis.updateDocument(document, getCollectionName(), batchId);
                                 String oidStr = document.get("_id").toString();
                                 messagePublisher.sendMessage(oidStr, updateOutStatus);
+                                updatedCount++;
                             }
 
                         } else {
                             DocWrapper dw = dis.prepareDocWrapper(result.getPayload(), batchId, source, getOutStatus());
 
-                            // DocWrapper dw = dis.saveDocument(result.getPayload(), batchId,
-                            //        source, getOutStatus(), getCollectionName());
                             // save provenance
                             ProvData provData = new ProvData(dw.getPrimaryKey(), ProvenanceHelper.ModificationType.Ingested);
                             provData.setSourceName(dw.getSourceName()).setSrcId(dw.getSourceId());
@@ -140,7 +142,7 @@ public class GenericIngestionConsumer extends ConsumerSupport implements Ingesta
                 }
             }
 
-            dis.endBatch(source, batchId, ingestedCount, submittedCount);
+            dis.endBatch(source, batchId, ingestedCount, submittedCount, updatedCount);
         } finally {
             dis.shutdown();
             ingestor.shutdown();

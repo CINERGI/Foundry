@@ -3,10 +3,10 @@ package org.neuinfo.foundry.jms.producer;
 import org.apache.log4j.Logger;
 import org.bson.BSONObject;
 import org.bson.types.BSONTimestamp;
-import org.neuinfo.foundry.jms.common.Configuration;
-import org.neuinfo.foundry.jms.common.QueueInfo;
-import org.neuinfo.foundry.jms.common.Route;
-import org.neuinfo.foundry.jms.common.Workflow;
+import org.neuinfo.foundry.common.config.Configuration;
+import org.neuinfo.foundry.common.config.QueueInfo;
+import org.neuinfo.foundry.common.config.Route;
+import org.neuinfo.foundry.common.config.Workflow;
 import org.neuinfo.foundry.river.Context;
 import org.neuinfo.foundry.river.QueueEntry;
 import org.neuinfo.foundry.river.Status;
@@ -23,6 +23,7 @@ import java.util.Map;
  * </p>
  * Created by bozyurt on 5/1/14.
  */
+@Deprecated
 public class OplogQueueEntryConsumer implements Runnable {
     Configuration configuration;
     private final Context context;

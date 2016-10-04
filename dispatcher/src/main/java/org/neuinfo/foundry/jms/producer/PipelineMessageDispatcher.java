@@ -2,8 +2,8 @@ package org.neuinfo.foundry.jms.producer;
 
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-import org.neuinfo.foundry.jms.common.ConfigLoader;
-import org.neuinfo.foundry.jms.common.Configuration;
+import org.neuinfo.foundry.common.config.ConfigLoader;
+import org.neuinfo.foundry.common.config.Configuration;
 
 /**
  * Created by bozyurt on 7/9/15.

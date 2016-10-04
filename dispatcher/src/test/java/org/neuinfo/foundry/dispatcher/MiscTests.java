@@ -1,7 +1,7 @@
 package org.neuinfo.foundry.dispatcher;
 
 import junit.framework.TestCase;
-import org.neuinfo.foundry.jms.common.*;
+import org.neuinfo.foundry.common.config.*;
 
 /**
  * Created by bozyurt on 5/28/14.

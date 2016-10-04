@@ -1,4 +1,4 @@
-package org.neuinfo.foundry.jms.common;
+package org.neuinfo.foundry.common.config;
 
 import org.jdom2.Element;
 import org.json.JSONArray;

@@ -6,7 +6,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.jms.common.Constants;
-import org.neuinfo.foundry.jms.common.QueueInfo;
+import org.neuinfo.foundry.common.config.QueueInfo;
 import org.neuinfo.foundry.river.Operation;
 import org.neuinfo.foundry.river.QueueEntry;
 

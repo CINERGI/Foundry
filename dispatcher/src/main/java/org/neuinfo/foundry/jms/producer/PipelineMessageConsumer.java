@@ -5,8 +5,8 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
-import org.neuinfo.foundry.common.config.ServerInfo;
-import org.neuinfo.foundry.jms.common.*;
+import org.neuinfo.foundry.common.config.*;
+import org.neuinfo.foundry.jms.common.Constants;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
