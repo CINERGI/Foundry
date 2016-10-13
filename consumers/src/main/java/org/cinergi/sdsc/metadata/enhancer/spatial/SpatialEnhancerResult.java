@@ -308,7 +308,8 @@ public class SpatialEnhancerResult {
             log.info("Found a location: " + location);
             // orig
             // List<LatLngBounds> bounds = GoogleGeocoder.getBounds(location);
-            List<LatLngBounds> bounds = DataScienceToolkitGeocoder.getBounds(location);
+            // List<LatLngBounds> bounds = DataScienceToolkitGeocoder.getBounds(location);
+            List<LatLngBounds> bounds = TwoFishesGeocoder.getBounds(location);
             if (bounds != null) {
                 if (bounds.size() == 1) {
                     for (LatLngBounds bound : bounds) {

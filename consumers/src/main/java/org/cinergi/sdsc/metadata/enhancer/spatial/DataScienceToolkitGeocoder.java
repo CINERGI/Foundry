@@ -17,7 +17,6 @@ import org.neuinfo.foundry.common.util.LRUCache;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ import java.util.List;
  * Created by bozyurt on 10/4/16.
  */
 public class DataScienceToolkitGeocoder {
-    private final static Logger log = Logger.getLogger("GoogleGeocoder");
+    private final static Logger log = Logger.getLogger("DataScienceToolkitGeocoder");
     static LRUCache<String, List<LatLngBounds>> locationCache = new LRUCache<String, List<LatLngBounds>>(5000);
 
     static public List<LatLngBounds> getBounds(String location) throws Exception {
@@ -71,7 +70,7 @@ public class DataScienceToolkitGeocoder {
                         }
                     }
                 }
-               return boundsList;
+                return boundsList;
             }
 
         } finally {

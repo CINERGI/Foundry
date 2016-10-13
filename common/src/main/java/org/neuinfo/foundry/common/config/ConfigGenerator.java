@@ -91,11 +91,6 @@ public class ConfigGenerator {
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
-            rootEL = createManUIConfigXml(wfCfg, systemCfg, ccList);
-            configFile = srcCodeRoot + "/man-ui/src/main/resources/" + profile + "/man-ui-cfg.xml";
-            Utils.saveXML(rootEL, configFile);
-            System.out.println("wrote " + configFile);
-
         } finally {
             Utils.close(in);
         }
@@ -108,18 +103,6 @@ public class ConfigGenerator {
     }
 
 
-    static Element createManUIConfigXml(WFCfg wfCfg, SystemCfg cfg, List<ConsumerCfg> ccList) {
-        Element rootEl = new Element("man-ui-cfg");
-        prepDBMQ(cfg, rootEl);
-
-        Map<String, ConsumerCfg> ccMap = new HashMap<String, ConsumerCfg>(11);
-        for (ConsumerCfg cc : ccList) {
-            ccMap.put(cc.name, cc);
-        }
-        String finishedStatus = getFinishedStatus(wfCfg, ccMap);
-        prepWorkflow(wfCfg, ccMap, finishedStatus, rootEl);
-        return rootEl;
-    }
 
 
     static Element createDispatcherConfig(WFCfg wfCfg, SystemCfg cfg, List<ConsumerCfg> ccList) {
