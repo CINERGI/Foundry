@@ -172,7 +172,7 @@ public class Utils {
         try {
             bout = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filePath, true),
                     Charset.forName("UTF-8")));
-            for(String rec : records) {
+            for (String rec : records) {
                 bout.write(rec);
                 bout.newLine();
             }
@@ -362,15 +362,100 @@ public class Utils {
     }
 
     public static boolean isAllCapital(String phrase) {
-        if (! Character.isUpperCase(phrase.charAt(0))) {
+        if (!Character.isUpperCase(phrase.charAt(0))) {
             return false;
         }
         char[] carr = phrase.toCharArray();
-        for(char c : carr) {
+        for (char c : carr) {
             if (!Character.isUpperCase(c)) {
                 return false;
             }
         }
         return true;
+    }
+
+    public static boolean fuzzyContains(String text, String containedCandidate) {
+        String textLC = text.toLowerCase();
+        char[] buf = textLC.toCharArray();
+        int len = buf.length;
+        char[] candidateBuf = containedCandidate.toLowerCase().toCharArray();
+        int clen = candidateBuf.length;
+        int cIdx = 0;
+        int idx = textLC.indexOf(candidateBuf[0]);
+        if (idx == -1) {
+            return false;
+        }
+        boolean inMatch = false;
+        while (idx < len && cIdx < containedCandidate.length()) {
+
+            if (candidateBuf[cIdx] == buf[idx]) {
+                cIdx++;
+                idx++;
+                inMatch = true;
+                if (cIdx >= clen) {
+                    return true;
+                }
+            } else {
+                if (inMatch && canBeIgnored(candidateBuf[cIdx])) {
+                    while (canBeIgnored(candidateBuf[cIdx]) && cIdx < len) {
+                        cIdx++;
+                    }
+                    int offset = 0;
+                    for (int i = idx + 1; i < len; i++) {
+                        if (!canBeIgnored(buf[i]) && buf[i] != candidateBuf[cIdx]) {
+                            cIdx = 0;
+                            idx = textLC.indexOf(candidateBuf[0], idx + 1);
+                            if (idx == -1) {
+                                return false;
+                            }
+                            inMatch = false;
+                            break;
+                        } else {
+                            offset++;
+                            if (buf[i] == candidateBuf[cIdx]) {
+                                cIdx++;
+                                offset++;
+                                break;
+                            }
+                        }
+                    }
+                    if (offset > 0) {
+                        idx += offset;
+                    }
+                } else if (inMatch && canBeIgnored(buf[idx])) {
+                    while (canBeIgnored(buf[idx]) && idx < len) {
+                        idx++;
+                    }
+                    if (buf[idx] == candidateBuf[cIdx]) {
+                        cIdx++;
+                        idx++;
+                    } else {
+                        idx = textLC.indexOf(candidateBuf[0], idx + 1);
+                        if (idx == -1) {
+                            return false;
+                        }
+                        inMatch = false;
+                    }
+
+                } else {
+                    cIdx = 0;
+                    idx = text.indexOf(candidateBuf[0], idx + 1);
+                    if (idx == -1) {
+                        return false;
+                    }
+                    inMatch = false;
+                }
+            }
+        }
+        return true;
+    }
+
+    static boolean canBeIgnored(char c) {
+        return Character.isWhitespace(c) || c == '.' || c == ',' || c == '-';
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(fuzzyContains("Washington, D. C.", "Washington - D.C."));
     }
 }

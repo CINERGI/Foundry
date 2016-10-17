@@ -12,6 +12,7 @@ import org.cinergi.sdsc.metadata.ISO19139Metadata;
 import org.isotc211._2005.gmi.MIMetadataType;
 import org.isotc211.iso19139.d_2007_04_17.gmd.EXGeographicBoundingBoxType;
 import org.isotc211.iso19139.d_2007_04_17.gmd.MDMetadataType;
+import org.neuinfo.foundry.common.util.Utils;
 import ucar.unidata.geoloc.LatLonPoint;
 import ucar.unidata.geoloc.LatLonPointImpl;
 import ucar.unidata.geoloc.LatLonRect;
@@ -185,7 +186,7 @@ public class SpatialEnhancerResult {
                 if (this.extractedPlaces.isEmpty()) {
                     log.info("Found no place from the text. ");
                 } else {
-                    getBounds(this.extractedPlaces, this.extractedPlace2Bounds);
+                    getBounds(this.extractedPlaces, this.extractedPlace2Bounds, this.text);
                 }
             } else {
                 // using place keywords to find bounding boxes
@@ -302,27 +303,59 @@ public class SpatialEnhancerResult {
     }
 
 
-    private static void getBounds(List<String> locations, Map<String, LatLngBounds> extractedPlace2Bounds) throws Exception {
+    private static void getBounds(List<String> locations, Map<String, LatLngBounds> extractedPlace2Bounds, String text) throws Exception {
 
         for (String location : locations) {
             log.info("Found a location: " + location);
             // orig
             // List<LatLngBounds> bounds = GoogleGeocoder.getBounds(location);
             // List<LatLngBounds> bounds = DataScienceToolkitGeocoder.getBounds(location);
-            List<LatLngBounds> bounds = TwoFishesGeocoder.getBounds(location);
-            if (bounds != null) {
-                if (bounds.size() == 1) {
-                    for (LatLngBounds bound : bounds) {
+            // List<LatLngBounds> bounds = TwoFishesGeocoder.getBounds(location);
+            Map<String, LatLngBounds> boundsMap = ArcGISGeocoder.getBounds(location);
+            if (boundsMap != null) {
+                if (boundsMap.size() == 1) {
+                    for (LatLngBounds bound : boundsMap.values()) {
                         log.info("     Bounding box: " + bound);
                         extractedPlace2Bounds.put(location, bound);
                     }
-                } else if (bounds.size() > 1) {
-                    log.info("     Found multiple bounding boxes. Ignore the location.");
+                } else if (boundsMap.size() > 1) {
+                    String mostLikelyCandidateLocation = findTheMostLikelyCandidate(location, boundsMap, text);
+                    if (mostLikelyCandidateLocation != null) {
+                        LatLngBounds bound = boundsMap.get(mostLikelyCandidateLocation);
+                        log.info("\t(Most Likely) Bounding Box: " + mostLikelyCandidateLocation + " - " + bound);
+                        extractedPlace2Bounds.put(mostLikelyCandidateLocation, bound);
+                    }
+                    // log.info("     Found multiple bounding boxes. Ignore the location.");
                 }
             } else {
                 log.info("Found no bounds for:" + location);
             }
         }
+    }
+
+
+    static String findTheMostLikelyCandidate(String location, Map<String, LatLngBounds> boundsMap, String text) {
+        int idx = text.indexOf(location);
+        if (idx != -1) {
+            int len = text.length();
+            int startOffset = Math.max(idx - 50, 0);
+            int endOffset = Math.min(idx + location.length() + 50, len);
+            String window = text.substring(startOffset, endOffset);
+            int maxLen = -1;
+            String longestMatch = null;
+            for (String address : boundsMap.keySet()) {
+                if (Utils.fuzzyContains(window, address)) {
+                    if (maxLen < address.length()) {
+                        longestMatch = address;
+                        maxLen = address.length();
+                    }
+                }
+            }
+            if (longestMatch != null) {
+                return longestMatch;
+            }
+        }
+        return null;
     }
 
 
@@ -356,8 +389,6 @@ public class SpatialEnhancerResult {
         LatLonRect rect = rect1.intersect(rect2);
         return rect != null;
     }
-
-
 
 
     public static void main(String[] args) throws Exception {

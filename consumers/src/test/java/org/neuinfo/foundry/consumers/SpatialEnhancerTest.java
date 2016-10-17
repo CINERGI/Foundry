@@ -89,11 +89,11 @@ public class SpatialEnhancerTest extends TestCase {
         try {
             helper.startup("consumers-cfg.xml");
 
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0002");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
             IPlugin plugin = new SpatialEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
           //  optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
-            optionMap.put("serverURL","http://132.249.238.169:8080/cinergi/SpatialEnhancer");
+           //  optionMap.put("serverURL","http://132.249.238.169:8080/cinergi/SpatialEnhancer");
             plugin.initialize(optionMap);
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
