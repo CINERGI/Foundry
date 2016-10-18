@@ -335,6 +335,9 @@ public class SpatialEnhancerResult {
 
 
     static String findTheMostLikelyCandidate(String location, Map<String, LatLngBounds> boundsMap, String text) {
+        if (location.length() < 4) {
+            return null;
+        }
         int idx = text.indexOf(location);
         if (idx != -1) {
             int len = text.length();
@@ -344,10 +347,11 @@ public class SpatialEnhancerResult {
             int maxLen = -1;
             String longestMatch = null;
             for (String address : boundsMap.keySet()) {
-                if (Utils.fuzzyContains(window, address)) {
-                    if (maxLen < address.length()) {
+                int matchLen = Utils.findLongestContiguousMatchLength(window, address);
+                if (matchLen > 0) {
+                    if (maxLen <  matchLen) {
                         longestMatch = address;
-                        maxLen = address.length();
+                        maxLen = matchLen;
                     }
                 }
             }

@@ -374,7 +374,100 @@ public class Utils {
         return true;
     }
 
-    public static boolean fuzzyContains(String text, String containedCandidate) {
+    public  static class Span {
+        int start;
+        int end;
+
+        public Span(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        public int getStart() {
+            return start;
+        }
+
+        public int getEnd() {
+            return end;
+        }
+
+        public boolean noMatch() {
+            return start == -1 || end == -1;
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("Span{");
+            sb.append("start=").append(start);
+            sb.append(", end=").append(end);
+            sb.append('}');
+            return sb.toString();
+        }
+    }
+
+    public static int findLongestContiguousMatchLength(String text, String containedCandidate) {
+        String normalizedText = normalizeText(text);
+        String ncc = normalizeText(containedCandidate);
+        String[] tokens = normalizedText.split("\\s+");
+        String[] nccTokens = ncc.split("\\s+");
+        int ncOffset = 0;
+        int maxLen = -1;
+        String longestMatch = null;
+        StringBuilder sb = new StringBuilder(80);
+        while( ncOffset < nccTokens.length) {
+            int i = 0;
+            int j = ncOffset;
+            int total = 0;
+
+            while ( i < tokens.length) {
+                if (nccTokens[j].equals(tokens[i])) {
+                    sb.setLength(0);
+                    total = nccTokens[j].length();
+                    sb.append(nccTokens[j]);
+                    int l = j + 1;
+                    if (l < nccTokens.length) {
+                        for (int k = i + 1; k < tokens.length; k++) {
+                            if (nccTokens[l].equals(tokens[k])) {
+                                total += nccTokens[l].length();
+                                sb.append(' ').append(nccTokens[l]);
+                                l++;
+                                if (l >= nccTokens.length) {
+                                    i = k;
+                                    break;
+                                }
+                            } else {
+                                i = k;
+                                break;
+                            }
+                        }
+                    } else {
+                        i++;
+                    }
+                    if (total > maxLen) {
+                        maxLen = total;
+                        longestMatch = sb.toString().trim();
+                    }
+
+                } else {
+                    i++;
+                }
+            }
+            ncOffset++;
+        }
+        // System.out.println("longestMatch:" + longestMatch);
+
+        return maxLen;
+    }
+
+    public static String normalizeText(String text) {
+        text = text.toLowerCase();
+        text = text.replace('.',' ');
+        text = text.replace(',',' ');
+        text = text.replace('-',' ');
+        return text;
+    }
+
+    public static Span fuzzyContains(String text, String containedCandidate) {
         String textLC = text.toLowerCase();
         char[] buf = textLC.toCharArray();
         int len = buf.length;
@@ -383,8 +476,9 @@ public class Utils {
         int cIdx = 0;
         int idx = textLC.indexOf(candidateBuf[0]);
         if (idx == -1) {
-            return false;
+            return new Span(-1,-1);
         }
+
         boolean inMatch = false;
         while (idx < len && cIdx < containedCandidate.length()) {
 
@@ -393,7 +487,7 @@ public class Utils {
                 idx++;
                 inMatch = true;
                 if (cIdx >= clen) {
-                    return true;
+                    return new Span(0, clen);
                 }
             } else {
                 if (inMatch && canBeIgnored(candidateBuf[cIdx])) {
@@ -403,10 +497,11 @@ public class Utils {
                     int offset = 0;
                     for (int i = idx + 1; i < len; i++) {
                         if (!canBeIgnored(buf[i]) && buf[i] != candidateBuf[cIdx]) {
+                            int end = cIdx + 1;
                             cIdx = 0;
                             idx = textLC.indexOf(candidateBuf[0], idx + 1);
-                            if (idx == -1) {
-                                return false;
+                            if (idx == -1 || end >= 5) {
+                                return new Span(0, end);
                             }
                             inMatch = false;
                             break;
@@ -431,23 +526,26 @@ public class Utils {
                         idx++;
                     } else {
                         idx = textLC.indexOf(candidateBuf[0], idx + 1);
-                        if (idx == -1) {
-                            return false;
+                        int len2 = cIdx + 1;
+                        cIdx = 0;
+                        if (idx == -1 || len2 > 5) {
+                            return new Span(0, len2);
                         }
                         inMatch = false;
                     }
 
                 } else {
+                    int end = cIdx + 1;
                     cIdx = 0;
-                    idx = text.indexOf(candidateBuf[0], idx + 1);
-                    if (idx == -1) {
-                        return false;
+                    idx = textLC.indexOf(candidateBuf[0], idx + 1);
+                    if (idx == -1 || end > 5) {
+                        return new Span(0, end);
                     }
                     inMatch = false;
                 }
             }
         }
-        return true;
+        return new Span(0, clen);
     }
 
     static boolean canBeIgnored(char c) {
@@ -456,6 +554,11 @@ public class Utils {
 
 
     public static void main(String[] args) {
-        System.out.println(fuzzyContains("Washington, D. C.", "Washington - D.C."));
+        // System.out.println(fuzzyContains("Washington, D. C.", "Washington - D.C."));
+        String text = "600 lines deep across the full width of band 5 of the Washington, D. C. Thematic Mapper scene. ";
+        String matchCandidate =  "Washington, D. C., District of Columbia, United States ";
+        System.out.println(fuzzyContains(text, matchCandidate) );
+
+        System.out.println(findLongestContiguousMatchLength(text, matchCandidate));
     }
 }
