@@ -148,7 +148,6 @@ public class SpatialEnhancerResult {
 
 
     private void enhance() throws Exception {
-
         // show bounding boxes
         log.info("-----------------------------------");
         if (bounds.isEmpty()) {
@@ -174,8 +173,6 @@ public class SpatialEnhancerResult {
         log.info("Found text: " + this.text);
 
         log.info("-----------------------------------");
-        //bounds.clear();
-        //places.clear();
         if (bounds.isEmpty()) {
             if (places.isEmpty()) {
                 // using text (abstract or introduction) to find place keywords and bounding boxes
@@ -214,8 +211,16 @@ public class SpatialEnhancerResult {
                     //Set<String> locations = SpatialTextLocationFinder.getLocationsFromText(place);
                     if (locations.size() == 1) {
                         String location = locations.iterator().next();
-                        Thread.sleep(200);
-                        List<LatLngBounds> boundsList = GoogleGeocoder.getBounds(location);
+                        // Thread.sleep(200);
+//                        List<LatLngBounds> boundsList = GoogleGeocoder.getBounds(location);
+                        Map<String, LatLngBounds> boundsMap = ArcGISGeocoder.getBounds(location);
+                        // IBO select the highest scored (first) from the list
+                        if (!boundsMap.isEmpty()) {
+                            LatLngBounds bound = boundsMap.values().iterator().next();
+                            this.place2Bounds.put(place, bound);
+                            log.info("     Bounding box: " + bound);
+                        }
+                        /*
                         if (boundsList.size() == 1) {
                             LatLngBounds bound = boundsList.get(0);
                             this.place2Bounds.put(place, bound);
@@ -223,6 +228,7 @@ public class SpatialEnhancerResult {
                         } else {
                             log.info("     Found multiple locations, can't decide its bounding box");
                         }
+                        */
                     } else {
                         log.info("     Found multiple locations, can't decide its bounding box " + locations);
                     }
@@ -233,9 +239,7 @@ public class SpatialEnhancerResult {
         } else {
             log.info("Validating the consistence of bounds and places...");
 
-
             for (String place : places) {
-
                 log.info("     --------------------------------");
                 log.info("     " + place);
 
@@ -243,8 +247,6 @@ public class SpatialEnhancerResult {
                 if (pos != -1) {
                     place = place.substring(pos + 3).trim();
                 }
-
-                //Set<String> locations = SpatialTextLocationFinder.getLocationsFromText(place);
 
                 Set<String> locations = new HashSet<String>();
                 locations.add(place);
@@ -272,9 +274,10 @@ public class SpatialEnhancerResult {
                         continue;
                     }
 
-                    Thread.sleep(200);
-                    List<LatLngBounds> boundsList = GoogleGeocoder.getBounds(location);
-                    for (LatLngBounds bound : boundsList) {
+                    //Thread.sleep(200);
+                    //List<LatLngBounds> boundsList = GoogleGeocoder.getBounds(location);
+                    Map<String, LatLngBounds> boundsMap = ArcGISGeocoder.getBounds(location);
+                    for (LatLngBounds bound : boundsMap.values()) {
                         checked = true;
 
                         // check if this bounding box is covered by the bounding boxes specified in the metadata
@@ -349,7 +352,7 @@ public class SpatialEnhancerResult {
             for (String address : boundsMap.keySet()) {
                 int matchLen = Utils.findLongestContiguousMatchLength(window, address);
                 if (matchLen > 0) {
-                    if (maxLen <  matchLen) {
+                    if (maxLen < matchLen) {
                         longestMatch = address;
                         maxLen = matchLen;
                     }
