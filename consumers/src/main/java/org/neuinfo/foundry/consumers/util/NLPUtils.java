@@ -2,6 +2,8 @@ package org.neuinfo.foundry.consumers.util;
 
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
+import opennlp.tools.namefind.NameFinderME;
+import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
@@ -17,6 +19,18 @@ import java.io.InputStream;
  * Created by bozyurt on 6/9/16.
  */
 public class NLPUtils {
+
+    public static NameFinderME initializeNameFinder() throws IOException {
+        TokenNameFinderModel model;
+        InputStream in = null;
+        try {
+            in = NLPUtils.class.getClassLoader().getResourceAsStream("models/en-ner-person.bin");
+            model = new TokenNameFinderModel(in);
+            return new NameFinderME(model);
+        } finally {
+            Utils.close(in);
+        }
+    }
     public static ChunkerME initializeChunker() throws IOException {
         ChunkerModel model;
         InputStream cin = null;

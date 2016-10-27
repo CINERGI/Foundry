@@ -130,8 +130,8 @@ public class KeywordEnhancerPluginTests extends TestCase {
 
         boolean filter = false;
         // runKeywordEnhancer2("cinergi-0023", thePrimaryKey, filter, new File("/tmp/IEDA"));
-        runKeywordEnhancer2("cinergi-0022", thePrimaryKey, filter, new File("/tmp/CZO"));
-        // runKeywordEnhancer2("cinergi-0001", thePrimaryKey, filter, new File("/tmp/ScienceBase"));
+        //runKeywordEnhancer2("cinergi-0022", thePrimaryKey, filter, new File("/tmp/CZO"));
+         runKeywordEnhancer2("cinergi-0001", thePrimaryKey, filter, new File("/tmp/ScienceBase"));
     }
 
     void runKeywordEnhancer2(String sourceID, String thePrimaryKey, boolean filter, File outDir) throws Exception {

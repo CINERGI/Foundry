@@ -2,10 +2,12 @@ package org.neuinfo.foundry.consumers.jms.consumers.jta;
 
 import net.didion.jwnl.data.Exc;
 import opennlp.tools.chunker.ChunkerME;
+import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.sentdetect.SentenceDetectorME;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.util.Span;
+import org.apache.commons.lang3.StringUtils;
 import org.neuinfo.foundry.consumers.util.NLPUtils;
 
 import java.io.IOException;
@@ -21,22 +23,46 @@ public class NLPHelper {
     private SentenceDetectorME sentenceDetector;
     private POSTaggerME postTagger;
     private ChunkerME chunker;
+    private NameFinderME nameFinder;
 
     public NLPHelper() throws IOException {
         this.sentenceDetector = NLPUtils.initializeSentenceDetector();
         this.postTagger = NLPUtils.initializePOSTagger();
         this.chunker = NLPUtils.initializeChunker();
         this.tokenizer = NLPUtils.initializeTokenizer();
+        this.nameFinder = NLPUtils.initializeNameFinder();
     }
 
 
     public List<NP> processText(String text) {
         List<NP> npList = new ArrayList<NP>();
         String[] sentences = sentenceDetector.sentDetect(text);
+        nameFinder.clearAdaptiveData();
         for (String sentence : sentences) {
-          //  System.out.println(sentence);
-          //  System.out.println("------------------------");
+
+            //  System.out.println(sentence);
+            //  System.out.println("------------------------");
             String[] toks = tokenizer.tokenize(sentence);
+            // remove any recognized names
+            Span[] nameSpans = nameFinder.find(toks);
+            if (nameSpans != null && nameSpans.length > 0) {
+                for (int i = 0; i < toks.length; i++) {
+                    boolean found = false;
+                    for (int j = 0; j < nameSpans.length; j++) {
+                        if (nameSpans[j].contains(i)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        toks[i] = "X";
+                    }
+                }
+                // replace sentence
+                sentence = StringUtils.join(toks, " ");
+
+            }
+
             Span[] tokSpans = tokenizer.tokenizePos(sentence);
             String[] posTags = postTagger.tag(toks);
             String[] chunkTags = chunker.chunk(toks, posTags);
@@ -141,7 +167,7 @@ public class NLPHelper {
                 "in the Luquillo Mountains.Long-term rainfall and discharge data from the Luquillo Experimental " +
                 "Forest (LEF) were analysed to develop relationships between rainfall, stream-runoff, and elevation.";
         List<NP> npList = helper.processText(text);
-        for(NP np : npList) {
+        for (NP np : npList) {
             System.out.println(np);
         }
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import opennlp.tools.namefind.NameFinderME;
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -14,6 +15,7 @@ import org.neuinfo.foundry.consumers.jms.consumers.jta.Keyword;
 import org.neuinfo.foundry.consumers.jms.consumers.jta.KeywordAnalyzer;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
+import org.neuinfo.foundry.consumers.util.NLPUtils;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -55,7 +57,11 @@ public class KeywordEnhancer2 implements IPlugin {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         this.keywordAnalyzer = new KeywordAnalyzer(manager, df, cinergi_ont, extensions, gson,
                 stoplist, exceptionMap, nullIRIs, serviceURL);
+
+
     }
+
+
 
     @Override
     public Result handle(DBObject docWrapper) {
