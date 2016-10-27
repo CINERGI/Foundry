@@ -28,7 +28,7 @@ public class ConsumerConfig {
         this.type = type;
     }
 
-    public static ConsumerConfig fromXml(Element elem) throws Exception {
+    public static ConsumerConfig fromXml(Element elem, String collectionName) throws Exception {
         String name = elem.getAttributeValue("name");
         String type = elem.getAttributeValue("type");
 
@@ -41,10 +41,12 @@ public class ConsumerConfig {
         String fmqn = elem.getAttributeValue("failureMessageQueueName");
         String inStatus = elem.getAttributeValue("inStatus");
         String outStatus = elem.getAttributeValue("outStatus");
+       /*
         String collectionName = "records"; // default collection
         if (elem.getAttribute("collection") != null) {
             collectionName = elem.getAttributeValue("collection");
         }
+        */
         cc.setCollectionName(collectionName);
 
         cc.setListeningQueueName(lqn);

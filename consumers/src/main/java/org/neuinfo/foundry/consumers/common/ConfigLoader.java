@@ -33,13 +33,13 @@ public class ConfigLoader {
             Element mcEl = docRoot.getChild("mongo-config");
             conf.setMongoListenerSettings(extractMongoSettings(mcEl));
 
-            conf.setPluginDir( docRoot.getChildTextTrim("pluginDir"));
-            conf.setLibDir( docRoot.getChildTextTrim("libDir"));
+            conf.setPluginDir(docRoot.getChildTextTrim("pluginDir"));
+            conf.setLibDir(docRoot.getChildTextTrim("libDir"));
 
-            conf.setMongoDBName( mcEl.getAttributeValue("db"));
-            conf.setCollectionName( mcEl.getAttributeValue("collection"));
+            conf.setMongoDBName(mcEl.getAttributeValue("db"));
+            conf.setCollectionName(mcEl.getAttributeValue("collection"));
             List<Element> sels = mcEl.getChild("servers").getChildren("server");
-            for(Element sel : sels) {
+            for (Element sel : sels) {
                 String host = sel.getAttributeValue("host");
                 int port = Utils.getIntValue(sel.getAttributeValue("port"), -1);
                 Assertion.assertTrue(port != -1);
@@ -54,7 +54,7 @@ public class ConfigLoader {
                 List<ConsumerConfig> cfList = new ArrayList<ConsumerConfig>();
                 List<Element> children = docRoot.getChild("consumers").getChildren("consumer-cfg");
                 for (Element e : children) {
-                    cfList.add(ConsumerConfig.fromXml(e));
+                    cfList.add(ConsumerConfig.fromXml(e, conf.getCollectionName()));
                 }
                 conf.setConsumerConfigs(cfList);
             }
