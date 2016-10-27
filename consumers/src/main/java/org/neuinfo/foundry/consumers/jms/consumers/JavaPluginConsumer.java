@@ -88,7 +88,7 @@ public class JavaPluginConsumer extends JMSConsumerSupport implements MessageLis
                 }
             }
         } else {
-            logger.warn("Cannot find object with id:" + objectId);
+            logger.warn("Cannot find object with id:" + objectId + "collection:" + getCollectionName());
         }
     }
 
