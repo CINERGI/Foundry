@@ -140,6 +140,7 @@ public class ConfigGenerator {
         wfmsEl.addContent(wfmEl);
         // FIXME: remove boilerplate steps from config not used
         wfmEl.addContent(new Element("step").setText("UUID Generation"));
+        wfmEl.addContent(new Element("step").setText("XML2Cinergi"));
         wfmEl.addContent(new Element("step").setText("Index"));
 
         Element wfsEl = new Element("workflows");
