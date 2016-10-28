@@ -429,7 +429,8 @@ public class Utils {
                         if (i + 1 >= tokens.length) {
                             i++;
                         } else {
-                            for (int k = i + 1; k < tokens.length; k++) {
+                            int k;
+                            for (k = i + 1; k < tokens.length; k++) {
                                 if (nccTokens[l].equals(tokens[k])) {
                                     total += nccTokens[l].length();
                                     sb.append(' ').append(nccTokens[l]);
@@ -443,7 +444,11 @@ public class Utils {
                                     break;
                                 }
                             }
+                            if (k >= tokens.length) {
+                                i = tokens.length;
+                            }
                         }
+
                     } else {
                         i++;
                     }
@@ -565,6 +570,9 @@ public class Utils {
 
         text = "50 ft at an elevation of 1633 ft in WOODS County, OKLAHOMA.";
         matchCandidate = "Oklahoma, United States";
+
+        text = "4684 ft to 5150 ft at an elevation of 1633 ft in WOODS County, OKLAHOMA.";
+        matchCandidate = "Woods County, Oklahoma, United States";
         System.out.println(findLongestContiguousMatchLength(text, matchCandidate));
     }
 }
