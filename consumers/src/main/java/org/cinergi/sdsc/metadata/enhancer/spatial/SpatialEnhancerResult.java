@@ -350,7 +350,7 @@ public class SpatialEnhancerResult {
             int maxLen = -1;
             String longestMatch = null;
             for (String address : boundsMap.keySet()) {
-                log.info("address:" + address);
+                log.info("address:" + address + " window:" + window);
                 int matchLen = Utils.findLongestContiguousMatchLength(window, address);
                 if (matchLen > 0) {
                     if (maxLen < matchLen) {
