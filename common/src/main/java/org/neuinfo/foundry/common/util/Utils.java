@@ -374,7 +374,7 @@ public class Utils {
         return true;
     }
 
-    public  static class Span {
+    public static class Span {
         int start;
         int end;
 
@@ -414,30 +414,34 @@ public class Utils {
         int maxLen = -1;
         String longestMatch = null;
         StringBuilder sb = new StringBuilder(80);
-        while( ncOffset < nccTokens.length) {
+        while (ncOffset < nccTokens.length) {
             int i = 0;
             int j = ncOffset;
             int total = 0;
 
-            while ( i < tokens.length) {
+            while (i < tokens.length) {
                 if (nccTokens[j].equals(tokens[i])) {
                     sb.setLength(0);
                     total = nccTokens[j].length();
                     sb.append(nccTokens[j]);
                     int l = j + 1;
                     if (l < nccTokens.length) {
-                        for (int k = i + 1; k < tokens.length; k++) {
-                            if (nccTokens[l].equals(tokens[k])) {
-                                total += nccTokens[l].length();
-                                sb.append(' ').append(nccTokens[l]);
-                                l++;
-                                if (l >= nccTokens.length) {
+                        if (i + 1 >= tokens.length) {
+                            i++;
+                        } else {
+                            for (int k = i + 1; k < tokens.length; k++) {
+                                if (nccTokens[l].equals(tokens[k])) {
+                                    total += nccTokens[l].length();
+                                    sb.append(' ').append(nccTokens[l]);
+                                    l++;
+                                    if (l >= nccTokens.length) {
+                                        i = k;
+                                        break;
+                                    }
+                                } else {
                                     i = k;
                                     break;
                                 }
-                            } else {
-                                i = k;
-                                break;
                             }
                         }
                     } else {
@@ -461,9 +465,9 @@ public class Utils {
 
     public static String normalizeText(String text) {
         text = text.toLowerCase();
-        text = text.replace('.',' ');
-        text = text.replace(',',' ');
-        text = text.replace('-',' ');
+        text = text.replace('.', ' ');
+        text = text.replace(',', ' ');
+        text = text.replace('-', ' ');
         return text;
     }
 
@@ -476,7 +480,7 @@ public class Utils {
         int cIdx = 0;
         int idx = textLC.indexOf(candidateBuf[0]);
         if (idx == -1) {
-            return new Span(-1,-1);
+            return new Span(-1, -1);
         }
 
         boolean inMatch = false;
@@ -556,9 +560,11 @@ public class Utils {
     public static void main(String[] args) {
         // System.out.println(fuzzyContains("Washington, D. C.", "Washington - D.C."));
         String text = "600 lines deep across the full width of band 5 of the Washington, D. C. Thematic Mapper scene. ";
-        String matchCandidate =  "Washington, D. C., District of Columbia, United States ";
-        System.out.println(fuzzyContains(text, matchCandidate) );
+        String matchCandidate = "Washington, D. C., District of Columbia, United States ";
+        System.out.println(fuzzyContains(text, matchCandidate));
 
+        text = "50 ft at an elevation of 1633 ft in WOODS County, OKLAHOMA.";
+        matchCandidate = "Oklahoma, United States";
         System.out.println(findLongestContiguousMatchLength(text, matchCandidate));
     }
 }
