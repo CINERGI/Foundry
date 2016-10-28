@@ -67,6 +67,7 @@ public class ArcGISGeocoder {
                     LatLngBounds bounds = new LatLngBounds(southWest, northEast);
                     boundMap.put(address, bounds);
                 }
+                log.info(boundMap);
                 return boundMap;
             }
         } finally {

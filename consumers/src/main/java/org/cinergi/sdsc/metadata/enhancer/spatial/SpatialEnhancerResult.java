@@ -350,6 +350,7 @@ public class SpatialEnhancerResult {
             int maxLen = -1;
             String longestMatch = null;
             for (String address : boundsMap.keySet()) {
+                log.info("address:" + address);
                 int matchLen = Utils.findLongestContiguousMatchLength(window, address);
                 if (matchLen > 0) {
                     if (maxLen < matchLen) {
@@ -359,6 +360,7 @@ public class SpatialEnhancerResult {
                 }
             }
             if (longestMatch != null) {
+                System.out.println("longestMatch:" + longestMatch);
                 return longestMatch;
             }
         }
