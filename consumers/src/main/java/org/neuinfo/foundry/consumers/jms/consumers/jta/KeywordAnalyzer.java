@@ -287,10 +287,12 @@ public class KeywordAnalyzer {
             Tokens tok = new Tokens(np.getText());
             tok.setStart(String.valueOf(np.getStart()));
             tok.setEnd(String.valueOf(np.getEnd()));
+            
+            int numKeywords = 0;            
             if (processChunk(tok, keywords, visited) == true) {
                 continue;
             }
-            POS[] parts = np.getPosArr();
+            POS[] parts = np.getPosArr();          
             if (parts.length > 2) {
                 // try shorter phrases (IBO)
                 boolean found = false;
@@ -334,9 +336,9 @@ public class KeywordAnalyzer {
                     continue;
                 }
             }
-            for (POS p : parts) {
-                if (p.pos.equals("NN") || p.pos.equals("NNP") ||
-                        p.pos.equals("NNPS") || p.pos.equals("NNS") || p.pos.equals("JJ")) {
+            
+            for (POS p : parts) { 
+		if (isEligibleTerm(p)) {
                     // if there is a hyphen
                     if (p.token.contains("-")) {
                         // if there is a hyphen in the array of POS, then
@@ -346,21 +348,47 @@ public class KeywordAnalyzer {
                         Tokens tempToken = new Tokens(substr[0] + " " + substr[1]);
                         if (processChunk(tempToken, keywords, visited) == true) // see if the phrase with a space replacing the hyphen exists
                         {
+                        	numKeywords++;
                             continue;
                         }
                     } else // doesnt contain a hyphen
                     {
-                        // call vocab Term search for each of these tokens
+                		
                         Tokens tempToken = new Tokens(tok);
                         tempToken.setToken(p.token);
-                        if (processChunk(tempToken, keywords, visited) == true) {
+                        if (processChunk(tempToken, keywords, visited) == true) 
+                        {
+                        	numKeywords++;
                             continue;
                         }
                     }
-                }
+                }            	
             }
-
-        }
+            
+            // remove smaller keywords from the same phrase that derive from the same facet
+            if (numKeywords > 1) {
+		for (int i = keywords.size()-numKeywords; i < keywords.size(); i++) {
+			for (int j = i + 1; j < keywords.size(); j++) {
+				Keyword temp_i = keywords.get(i);
+				Keyword temp_j = keywords.get(j);
+				if (temp_i.getFacet()[0].equals(temp_j.getFacet()[0])) {
+					if (temp_i.getTerm().length() >= temp_j.getTerm().length()) {						
+						keywords.remove(j);	    						
+						j--;
+						numKeywords--;
+					}
+					else {
+						System.out.println("removed " + temp_i.getTerm());
+						keywords.remove(i);	    						
+						i--;
+						numKeywords--;
+						break;
+					}
+				}
+			}
+		}
+            }       	
+        } 
         return keywords;
     }
 
