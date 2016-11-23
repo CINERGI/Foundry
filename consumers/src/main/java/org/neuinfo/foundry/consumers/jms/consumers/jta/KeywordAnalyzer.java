@@ -525,11 +525,10 @@ public class KeywordAnalyzer {
         if (consideringToUse.size() > 0) {
             toUse = consideringToUse.get(0);
         }
-        if (!t.getToken().equals(t.getToken().toUpperCase())
-                && closestLabel.equals(closestLabel.toUpperCase())) {
-            // check if the input token is all caps and if the response term is also all caps
-            return false;
-        }
+        //if input is all caps (abbreviation), check if the output is the exact same 
+	if (t.getToken().equals(t.getToken().toUpperCase()))
+	    if (closestLabel.equals(t.getToken()) == false)
+	        return false;
 
         OWLClass cls = df.getOWLClass(IRI.create(toUse.uri));
         // check for repeated terms
