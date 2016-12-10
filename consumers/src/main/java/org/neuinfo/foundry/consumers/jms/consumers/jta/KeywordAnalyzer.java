@@ -180,14 +180,23 @@ public class KeywordAnalyzer {
         System.out.println(prefix + urlInput + suffix);
         try {
             urlOut = readURL(prefix + urlInput + suffix);
-            if (urlOut == null) {
-                vocabCache.put(input, nilVocab);
-                return null;
-            }
         } catch (Exception e) {
             vocabCache.put(input, nilVocab);
-            return null;
         }
+		
+		if (urlOut == null) {
+			if (input.contains("-")) {
+				// if there is a hyphen then separate it
+				int i = input.indexOf("-");
+				String[] substr = {input.substring(0, i), input.substring(i + 1)};
+				return vocabTerm(substr[0] + " " + substr[1]);
+			}
+			else {
+				// no hyphen or result, put nilVocab in cache
+				vocabCache.put(input, nilVocab);
+			}
+		}
+		
         System.out.println(urlOut);
         Concept[] concepts = gson.fromJson(urlOut, Concept[].class);
         ArrayList<Concept> conceptList = new ArrayList<Concept>(Arrays.asList(concepts));
@@ -309,12 +318,16 @@ public class KeywordAnalyzer {
                     tempToken.setToken(sb.toString().trim());
                     if (processChunk(tempToken, keywords, visited) == true) {
                         found = true;
+						numKeywords++;
                         break;
                     }
                 }
+				
+				/* 
                 if (found) {
                     continue;
-                }
+                } 
+				*/
 
                 for (int i = 1; i <= parts.length - 2; i++) {
                     StringBuilder sb = new StringBuilder();
@@ -329,6 +342,7 @@ public class KeywordAnalyzer {
                     tempToken.setToken(sb.toString().trim());
                     if (processChunk(tempToken, keywords, visited) == true) {
                         found = true;
+						numKeywords++;
                         break;
                     }
                 }
@@ -338,30 +352,14 @@ public class KeywordAnalyzer {
             }
             
             for (POS p : parts) { 
-		if (isEligibleTerm(p)) {
-                    // if there is a hyphen
-                    if (p.token.contains("-")) {
-                        // if there is a hyphen in the array of POS, then
-                        // break it into separate parts and process them individually
-                        int i = p.token.indexOf("-");
-                        String[] substr = {p.token.substring(0, i), p.token.substring(i + 1)};
-                        Tokens tempToken = new Tokens(substr[0] + " " + substr[1]);
-                        if (processChunk(tempToken, keywords, visited) == true) // see if the phrase with a space replacing the hyphen exists
-                        {
-                        	numKeywords++;
-                            continue;
-                        }
-                    } else // doesnt contain a hyphen
-                    {
-                		
-                        Tokens tempToken = new Tokens(tok);
-                        tempToken.setToken(p.token);
-                        if (processChunk(tempToken, keywords, visited) == true) 
-                        {
-                        	numKeywords++;
-                            continue;
-                        }
-                    }
+				if (isEligibleTerm(p)) {					
+					Tokens tempToken = new Tokens(tok);
+					tempToken.setToken(p.token);
+					if (processChunk(tempToken, keywords, visited) == true) 
+					{
+						numKeywords++;
+						continue;
+					}
                 }            	
             }
             
@@ -509,6 +507,10 @@ public class KeywordAnalyzer {
             for (String label : conc.labels) {
                 int tempDist = Levenshtein.distance(label, t.getToken());
                 if (tempDist < 2) {// within 2 changes away, add it to a consideration list
+					if (df.getOWLClass(IRI.create(conc.uri)).getSuperClasses(manager.getOntologies()).isEmpty()) {
+						// not an OWLClass, can skip
+ +						continue;
+					}
                     if (conc.uri.contains("obo/ENVO") || conc.uri.contains("cinergi_ontology/cinergi.owl")) {
                         consideringToUse.add(0, conc); // if its ENVO or cinergi at to beginning
                     } else {
@@ -536,9 +538,12 @@ public class KeywordAnalyzer {
             return false;
         }
         visited.add(cls.getIRI().toString());
-        if (toUse.uri.contains("CHEBI") && t.getToken().length() <= 3) // filter chemical entities that cause errors
+        if (toUse.uri.contains("CHEBI"))			
         {
-            return false;
+			// filter chemical entities that cause errors
+			if (t.getToken().length() <= 3) {
+				return false;
+			}
         }
         if (t.getToken().length() <= 2) // any input less than 2
         {
