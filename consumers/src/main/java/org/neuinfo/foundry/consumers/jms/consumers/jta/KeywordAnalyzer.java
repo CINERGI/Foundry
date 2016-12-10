@@ -184,18 +184,18 @@ public class KeywordAnalyzer {
             vocabCache.put(input, nilVocab);
         }
 		
-		if (urlOut == null) {
-			if (input.contains("-")) {
-				// if there is a hyphen then separate it
-				int i = input.indexOf("-");
-				String[] substr = {input.substring(0, i), input.substring(i + 1)};
-				return vocabTerm(substr[0] + " " + substr[1]);
-			}
-			else {
-				// no hyphen or result, put nilVocab in cache
-				vocabCache.put(input, nilVocab);
-			}
-		}
+        if (urlOut == null) {
+            if (input.contains("-")) {
+                // if there is a hyphen then separate it
+                int i = input.indexOf("-");
+                String[] substr = {input.substring(0, i), input.substring(i + 1)};
+                return vocabTerm(substr[0] + " " + substr[1]);
+	    }
+            else {
+                // no hyphen or result, put nilVocab in cache
+                vocabCache.put(input, nilVocab);
+            }
+        }
 		
         System.out.println(urlOut);
         Concept[] concepts = gson.fromJson(urlOut, Concept[].class);
@@ -318,16 +318,16 @@ public class KeywordAnalyzer {
                     tempToken.setToken(sb.toString().trim());
                     if (processChunk(tempToken, keywords, visited) == true) {
                         found = true;
-						numKeywords++;
+                        numKeywords++;
                         break;
                     }
                 }
 				
-				/* 
+                /* 
                 if (found) {
                     continue;
                 } 
-				*/
+                */
 
                 for (int i = 1; i <= parts.length - 2; i++) {
                     StringBuilder sb = new StringBuilder();
@@ -342,7 +342,7 @@ public class KeywordAnalyzer {
                     tempToken.setToken(sb.toString().trim());
                     if (processChunk(tempToken, keywords, visited) == true) {
                         found = true;
-						numKeywords++;
+                        numKeywords++;
                         break;
                     }
                 }
@@ -352,39 +352,39 @@ public class KeywordAnalyzer {
             }
             
             for (POS p : parts) { 
-				if (isEligibleTerm(p)) {					
-					Tokens tempToken = new Tokens(tok);
-					tempToken.setToken(p.token);
-					if (processChunk(tempToken, keywords, visited) == true) 
-					{
-						numKeywords++;
-						continue;
-					}
+                if (isEligibleTerm(p)) {					
+                    Tokens tempToken = new Tokens(tok);
+                    tempToken.setToken(p.token);
+                    if (processChunk(tempToken, keywords, visited) == true) 
+                    {
+                        numKeywords++;
+                        continue;
+                    }
                 }            	
             }
             
             // remove smaller keywords from the same phrase that derive from the same facet
             if (numKeywords > 1) {
-		for (int i = keywords.size()-numKeywords; i < keywords.size(); i++) {
-			for (int j = i + 1; j < keywords.size(); j++) {
-				Keyword temp_i = keywords.get(i);
-				Keyword temp_j = keywords.get(j);
-				if (temp_i.getFacet()[0].equals(temp_j.getFacet()[0])) {
-					if (temp_i.getTerm().length() >= temp_j.getTerm().length()) {						
-						keywords.remove(j);	    						
-						j--;
-						numKeywords--;
-					}
-					else {
-						System.out.println("removed " + temp_i.getTerm());
-						keywords.remove(i);	    						
-						i--;
-						numKeywords--;
-						break;
-					}
-				}
-			}
-		}
+                for (int i = keywords.size()-numKeywords; i < keywords.size(); i++) {
+                    for (int j = i + 1; j < keywords.size(); j++) {
+                        Keyword temp_i = keywords.get(i);
+                        Keyword temp_j = keywords.get(j);
+                        if (temp_i.getFacet()[0].equals(temp_j.getFacet()[0])) {
+                            if (temp_i.getTerm().length() >= temp_j.getTerm().length()) {
+                                keywords.remove(j);
+                                j--;
+                                numKeywords--;
+                            }
+                            else {
+                                System.out.println("removed " + temp_i.getTerm());
+                                keywords.remove(i);
+                                i--;
+                                numKeywords--;
+                                break;
+                            }
+                        }
+                    }
+                }
             }       	
         } 
         return keywords;
@@ -507,10 +507,10 @@ public class KeywordAnalyzer {
             for (String label : conc.labels) {
                 int tempDist = Levenshtein.distance(label, t.getToken());
                 if (tempDist < 2) {// within 2 changes away, add it to a consideration list
-					if (df.getOWLClass(IRI.create(conc.uri)).getSuperClasses(manager.getOntologies()).isEmpty()) {
-						// not an OWLClass, can skip
- +						continue;
-					}
+                    if (df.getOWLClass(IRI.create(conc.uri)).getSuperClasses(manager.getOntologies()).isEmpty()) {
+                        // not an OWLClass, can skip
+                        continue;
+                    }
                     if (conc.uri.contains("obo/ENVO") || conc.uri.contains("cinergi_ontology/cinergi.owl")) {
                         consideringToUse.add(0, conc); // if its ENVO or cinergi at to beginning
                     } else {
@@ -538,12 +538,12 @@ public class KeywordAnalyzer {
             return false;
         }
         visited.add(cls.getIRI().toString());
-        if (toUse.uri.contains("CHEBI"))			
+        if (toUse.uri.contains("CHEBI"))
         {
-			// filter chemical entities that cause errors
-			if (t.getToken().length() <= 3) {
-				return false;
-			}
+            // filter chemical entities that cause errors
+            if (t.getToken().length() <= 3) {
+                return false;
+            }
         }
         if (t.getToken().length() <= 2) // any input less than 2
         {
