@@ -195,7 +195,7 @@ public class KeywordEnhancer2 implements IPlugin {
             List<Map<String,Object>> rules = (List<Map<String, Object>>) map.get("rules");
             Map<String, DefaultKeywords> defKeywordsMap = new HashMap<String, DefaultKeywords>();
             for(Map<String,Object> ruleMap : rules) {
-                String sourceID = (String) ruleMap.get("sourceID");
+                String sourceID = ruleMap.get("sourceID").toString().trim();
                 DefaultKeywords dk = new DefaultKeywords(sourceID);
                 defKeywordsMap.put(sourceID, dk);
                 List<String> keywords = (List<String>) ruleMap.get("keywords");
