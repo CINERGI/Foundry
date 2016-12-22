@@ -9,6 +9,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -47,8 +49,14 @@ public class ArcGISGeocoder {
         System.out.println("getBoundsForLocation uri:" + uri);
         HttpGet httpGet = new HttpGet(uri);
         httpGet.addHeader("Accept", "application/json");
+        HttpParams params = client.getParams();
+        int TIMEOUT = 20000; // 20 secs
+        HttpConnectionParams.setConnectionTimeout(params, TIMEOUT);
+        HttpConnectionParams.setSoTimeout(params, TIMEOUT);
+
         try {
             HttpResponse response = client.execute(httpGet);
+            log.info(response.getStatusLine());
             HttpEntity entity = response.getEntity();
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK && entity != null) {
                  String jsonContent = EntityUtils.toString(entity);

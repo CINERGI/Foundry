@@ -172,7 +172,7 @@ public class KeywordAnalyzer {
         String urlInput = URLEncoder.encode(input, StandardCharsets.UTF_8.name()).replace("+", "%20");
 
 
-        String urlOut;
+        String urlOut = null;
         if (stoplist.contains(input.toLowerCase())) {
             return null;
         }

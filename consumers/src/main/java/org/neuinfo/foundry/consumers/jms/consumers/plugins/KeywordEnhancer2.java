@@ -21,7 +21,12 @@ import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.yaml.snakeyaml.Yaml;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,9 +38,12 @@ import java.util.*;
 public class KeywordEnhancer2 implements IPlugin {
     String serviceURL;
     List<String> jsonPaths = new ArrayList<String>(5);
-    String stopListFile = "/var/data/cinergi/stoplist.txt";
-    String nullIRIsFile = "/var/data/cinergi/nulliris.txt";
+    static String stopListFile = "/var/data/cinergi/stoplist.txt";
+    static String nullIRIsFile = "/var/data/cinergi/nulliris.txt";
+    static String defaultKeywordRulesFile = "/var/data/cinergi/keyword_rules.yml";
     KeywordAnalyzer keywordAnalyzer;
+    Map<String, DefaultKeywords> defaultKeywordsMap;
+
 
     @Override
     public void initialize(Map<String, String> options) throws Exception {
@@ -58,7 +66,9 @@ public class KeywordEnhancer2 implements IPlugin {
         this.keywordAnalyzer = new KeywordAnalyzer(manager, df, cinergi_ont, extensions, gson,
                 stoplist, exceptionMap, nullIRIs, serviceURL);
 
-
+        if (new File(defaultKeywordRulesFile).isFile()) {
+            this.defaultKeywordsMap = loadDefaultKeywordRules(defaultKeywordRulesFile);
+        }
     }
 
 
@@ -110,6 +120,23 @@ public class KeywordEnhancer2 implements IPlugin {
                     docAbstract = s;
                 }
             }
+            // add default keywords if any
+            if (defaultKeywordsMap != null) {
+                DefaultKeywords defaultKeywords = defaultKeywordsMap.get(srcId);
+                if (defaultKeywords != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(' ');
+                    for(Iterator<String> it =  defaultKeywords.getKeywords().iterator(); it.hasNext();) {
+                        String kw = it.next();
+                        sb.append(kw);
+                        if (it.hasNext()) {
+                            sb.append(" , ");
+                        }
+                    }
+                    sb.append(" .");
+                    docAbstract += sb.toString();
+                }
+            }
 
             Document doc = new Document();
             if (docAbstract != null) {
@@ -156,5 +183,58 @@ public class KeywordEnhancer2 implements IPlugin {
     @Override
     public String getPluginName() {
         return "KeywordEnhancer2";
+    }
+
+
+    Map<String, DefaultKeywords> loadDefaultKeywordRules(String configFile) throws IOException {
+        Yaml yaml = new Yaml();
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(configFile);
+            Map<String, Object> map = (Map<String, Object>) yaml.load(in);
+            List<Map<String,Object>> rules = (List<Map<String, Object>>) map.get("rules");
+            Map<String, DefaultKeywords> defKeywordsMap = new HashMap<String, DefaultKeywords>();
+            for(Map<String,Object> ruleMap : rules) {
+                String sourceID = ruleMap.get("sourceID").toString().trim();
+                DefaultKeywords dk = new DefaultKeywords(sourceID);
+                defKeywordsMap.put(sourceID, dk);
+                List<String> keywords = (List<String>) ruleMap.get("keywords");
+                for(String keyword : keywords) {
+                    dk.addKeyword(keyword);
+                }
+            }
+
+
+            return defKeywordsMap;
+        } finally {
+            Utils.close(in);
+        }
+    }
+
+    public static class DefaultKeywords {
+        String sourceID;
+        List<String> keywords = new ArrayList<String>(10);
+
+        public DefaultKeywords(String sourceID) {
+            this.sourceID = sourceID;
+        }
+
+        public void addKeyword(String keyword) {
+            keywords.add(keyword);
+        }
+
+        public String getSourceID() {
+            return sourceID;
+        }
+
+        public List<String> getKeywords() {
+            return keywords;
+        }
+    }
+
+    public static void main(String[] args)  throws Exception {
+        KeywordEnhancer2 kw = new KeywordEnhancer2();
+
+        kw.loadDefaultKeywordRules("/var/data/cinergi/keyword_rules.yml");
     }
 }
