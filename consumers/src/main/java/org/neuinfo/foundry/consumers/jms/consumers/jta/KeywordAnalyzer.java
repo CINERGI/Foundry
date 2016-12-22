@@ -150,7 +150,7 @@ public class KeywordAnalyzer {
             }
             //System.out.println(jsonStr);
 
-        } finally 
+        } finally {
             httpGet.releaseConnection();
         }
         return jsonStr;
