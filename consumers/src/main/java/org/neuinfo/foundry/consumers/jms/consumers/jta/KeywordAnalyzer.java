@@ -150,7 +150,7 @@ public class KeywordAnalyzer {
             }
             //System.out.println(jsonStr);
 
-        } finally {
+        } finally 
             httpGet.releaseConnection();
         }
         return jsonStr;
@@ -190,10 +190,11 @@ public class KeywordAnalyzer {
                 int i = input.indexOf("-");
                 String[] substr = {input.substring(0, i), input.substring(i + 1)};
                 return vocabTerm(substr[0] + " " + substr[1]);
-	    }
+            }
             else {
                 // no hyphen or result, put nilVocab in cache
                 vocabCache.put(input, nilVocab);
+                return null;
             }
         }
 		
@@ -565,6 +566,10 @@ public class KeywordAnalyzer {
         Map<IRI, String> fullPathMap = prepFullPathMap(rootNode, manager, df, facetIRI);
         for (IRI firi : facetIRI) {
             String facetCSV = facetPath(df.getOWLClass(firi));
+            if (facetCSV.endsWith("Thing")) {
+                System.err.println("Term assigned to top level: " + facetCSV + " token:" + t.getToken());
+                return false;
+            }
             String facetPath = facet2Path(facetCSV);
             if (facetPath == null) {
                 System.err.println("More than two level facet: " + facetCSV + " token:" + t.getToken());
