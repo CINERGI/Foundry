@@ -7,6 +7,7 @@ import org.neuinfo.foundry.common.config.ServerInfo;
 import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.ingestor.common.ConfigLoader;
 import org.neuinfo.foundry.common.ingestion.Configuration;
+import org.neuinfo.foundry.consumers.jms.consumers.plugins.WAFExporter;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
@@ -90,4 +91,32 @@ public class IngestorSupport {
 
         return js;
     }
+
+    public int exportRecord(String src, WAFExporter exporter){
+
+        DB db = mongoClient.getDB(this.dbName);
+        DBCollection records = db.getCollection(this.collectionName);
+        BasicDBObject query = new BasicDBObject("SourceInfo.SourceID", src);
+
+        BasicDBObject keys = new BasicDBObject("primaryKey", 1);
+        DBCursor cursor = records.find(query, keys);
+
+        int count = 0;
+        try {
+            while (cursor.hasNext()) {
+                BasicDBObject dbObject = (BasicDBObject) cursor.next();
+                BasicDBObject docQUery = new BasicDBObject("primaryKey", dbObject.get("primaryKey")).append("SourceInfo.SourceID", src);
+                BasicDBObject dbObjectDoc = (BasicDBObject) records.findOne(docQUery);
+                exporter.handle(dbObjectDoc);
+                count++;
+            }
+        }  catch (Exception ex) {
+        System.out.println("exception" + ex.getStackTrace());
+    }
+    finally {
+            cursor.close();
+        }
+        return count;
+    }
+
 }

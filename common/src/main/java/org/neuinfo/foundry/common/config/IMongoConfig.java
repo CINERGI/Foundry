@@ -1,6 +1,6 @@
 package org.neuinfo.foundry.common.config;
 
-import org.neuinfo.foundry.common.config.ServerInfo;
+import com.mongodb.MongoCredential;
 
 import java.util.List;
 
@@ -10,5 +10,6 @@ import java.util.List;
 public interface IMongoConfig {
     public String getMongoDBName();
     public List<ServerInfo> getServers();
+    public List<MongoCredential> getCredentialsList();
 
 }

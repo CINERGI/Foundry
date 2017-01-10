@@ -24,7 +24,8 @@ public class MongoUtils {
         return source;
     }
 
-    public static MongoClient createMongoClient(List<ServerAddress> servers) {
+    public static MongoClient createMongoClient(List<ServerAddress> servers,
+                                                List<MongoCredential> credentialsList) {
         MongoClientOptions mco = new MongoClientOptions.Builder().socketKeepAlive(false).
                 maxConnectionIdleTime(60000).connectionsPerHost(10).build();
         MongoClient mongoClient = new MongoClient(servers, mco);

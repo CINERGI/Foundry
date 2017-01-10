@@ -29,6 +29,8 @@ public class ConfigLoader {
             Element mcEl = docRoot.getChild("mongo-config");
             conf.setMongoDBName(mcEl.getAttributeValue("db"));
             conf.setCollectionName(mcEl.getAttributeValue("collection"));
+            conf.setMongoUserName(mcEl.getAttributeValue("dbUserName"));
+            conf.setMongoUserPassword(mcEl.getAttributeValue("dbUserPassword"));
             List<ServerInfo> siList = new ArrayList<ServerInfo>(3);
             List<Element> children = mcEl.getChild("servers").getChildren("server");
             for (Element c : children) {

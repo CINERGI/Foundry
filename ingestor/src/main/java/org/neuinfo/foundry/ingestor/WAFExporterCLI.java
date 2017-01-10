@@ -1,6 +1,5 @@
 package org.neuinfo.foundry.ingestor;
 
-import com.mongodb.*;
 import org.apache.commons.cli.*;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.WAFExporter;
 
@@ -57,12 +56,12 @@ public  class WAFExporterCLI extends IngestorSupport {
         }
 
         String src = null;
-        if (line.hasOption("cinergiSource")) {
-            src = line.getOptionValue("cinergiSource");
+        if (line.hasOption("sourceid")) {
+            src = line.getOptionValue("sourceid");
         }
         String outDir =  null;
-        if (line.hasOption("outputDirectory")) {
-            outDir = line.getOptionValue("outDirectory");
+        if (line.hasOption("output")) {
+            outDir = line.getOptionValue("output");
         }
         WAFExporter exporter = new WAFExporter();
         Map<String, String> WafOptions = new HashMap<String, String>() ;
@@ -71,28 +70,42 @@ public  class WAFExporterCLI extends IngestorSupport {
 
         MongoUtilsCLI utils = new MongoUtilsCLI();
 
-        MongoClient mongoService = utils.mongoClient;
-        DB db = mongoService.getDB(utils.dbName);
-        DBCollection records = db.getCollection(utils.collectionName);
-        BasicDBObject query = new BasicDBObject("SourceInfo.SourceID", src);
+       // MongoClient mongoService = utils.mongoClient;
+       // DB db = mongoService.getDB(utils.dbName);
+       // DBCollection records = db.getCollection(utils.collectionName);
+       // BasicDBObject query = new BasicDBObject("SourceInfo.SourceID", src);
 //        if (statusSet != null && !statusSet.isEmpty()) {
 //            List<String> statusList = new ArrayList<String>(statusSet);
 //            query.append("Processing.status", new BasicDBObject("$in", statusList));
 //        }
-        BasicDBObject keys = new BasicDBObject("primaryKey", 1);
-        DBCursor cursor = records.find(query, keys);
+        //BasicDBObject keys = new BasicDBObject("primaryKey", 1);
+        //DBCursor cursor = records.find(query, keys);
 
-        try {
-            while (cursor.hasNext()) {
-                BasicDBObject dbObject = (BasicDBObject) cursor.next();
-                BasicDBObject docQUery = new BasicDBObject("primaryKey", dbObject).append("SourceInfo.SourceID", src);
-                BasicDBObject dbObjectDoc = (BasicDBObject) records.findOne(docQUery);
-                exporter.handle(dbObjectDoc);
+//        try {
+//            while (cursor.hasNext()) {
+//                BasicDBObject dbObject = (BasicDBObject) cursor.next();
+//                BasicDBObject docQUery = new BasicDBObject("primaryKey", dbObject).append("SourceInfo.SourceID", src);
+//                BasicDBObject dbObjectDoc = (BasicDBObject) records.findOne(docQUery);
+//                exporter.handle(dbObjectDoc);
+//            }
+//        } finally {
+//            cursor.close();
+//        }
+try {
+    utils.start();
+    int cursor = utils.exportRecord( src, exporter);
+    System.out.println ("records exported: " + cursor);
+} catch (Exception ex) {
+    System.out.println("exception" + ex.getStackTrace());
+}
+
+            finally {
+                utils.shutdown();
             }
-        } finally {
-            cursor.close();
         }
 
-
     }
-}
+
+
+
+

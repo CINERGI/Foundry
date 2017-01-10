@@ -1,6 +1,9 @@
 package org.neuinfo.foundry.common.config;
 
+import com.mongodb.MongoCredential;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,6 +17,8 @@ public class Configuration implements IMongoConfig {
     List<ServerInfo> mongoServers = new ArrayList<ServerInfo>(3);
     String mongoDBName;
     String collectionName;
+    String mongoUserName;
+    String mongoUserPassword;
 
     /*
     public void setCheckpointXmlFile(File checkpointXmlFile) {
@@ -44,7 +49,12 @@ public class Configuration implements IMongoConfig {
     public String getMongoDBName() {
         return mongoDBName;
     }
-
+    public String getMongoUserName() {
+        return mongoUserName;
+    }
+    public String getMongoUserPassword() {
+        return mongoUserPassword;
+    }
     @Override
     public List<ServerInfo> getServers() {
         return mongoServers;
@@ -66,6 +76,17 @@ public class Configuration implements IMongoConfig {
         this.collectionName = collectionName;
     }
 
+    public void setMongoUserName(String mongoUserName) {
+        this.mongoUserName =  mongoUserName;
+    }
+    public void setMongoUserPassword(String mongoUserPassword) {
+        this.mongoUserPassword =  mongoUserPassword;
+    }
+
+    public List<MongoCredential> getCredentialsList(){
+        MongoCredential credentials = MongoCredential.createCredential(mongoUserName, mongoDBName, mongoUserPassword.toCharArray());
+        return Arrays.asList(credentials);
+    }
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder("Configuration::[");

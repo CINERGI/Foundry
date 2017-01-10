@@ -3,10 +3,10 @@ package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
 import org.jdom2.Element;
-import org.jdom2.Namespace;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.neuinfo.foundry.common.util.*;
+import org.neuinfo.foundry.common.util.Assertion;
+import org.neuinfo.foundry.common.util.ISOXMLGenerator2;
+import org.neuinfo.foundry.common.util.LargeDataSetDirectoryAssigner;
+import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 
@@ -62,6 +62,7 @@ public class WAFExporter implements IPlugin {
         if (!sourceDir.isDirectory()) {
             sourceDir.mkdirs();
         }
+        sourceDir.setLastModified(System.currentTimeMillis()); // touch directory
         Assertion.assertTrue(sourceDir.isDirectory());
         if ((srcName.equals("Data.gov") || srcName.equals("ScienceBase WAF"))
                 && !status.equals("annotated.1")) {
