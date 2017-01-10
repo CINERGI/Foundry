@@ -84,8 +84,15 @@ public class Configuration implements IMongoConfig {
     }
 
     public List<MongoCredential> getCredentialsList(){
-        MongoCredential credentials = MongoCredential.createCredential(mongoUserName, mongoDBName, mongoUserPassword.toCharArray());
-        return Arrays.asList(credentials);
+
+        if (! getMongoUserName().isEmpty()&& !getMongoUserPassword().isEmpty())
+        { MongoCredential credentials = MongoCredential.createCredential(getMongoUserName(), getMongoDBName(), getMongoUserPassword().toCharArray());
+            return Arrays.asList(credentials);
+        } else {
+            return null;
+        }
+
+
     }
     @Override
     public String toString() {

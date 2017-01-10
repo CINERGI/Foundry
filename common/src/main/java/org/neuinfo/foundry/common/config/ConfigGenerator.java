@@ -239,6 +239,8 @@ public class ConfigGenerator {
         rootEl.addContent(mcEl);
         mcEl.setAttribute("db", cfg.db);
         mcEl.setAttribute("collection", cfg.collection);
+        mcEl.setAttribute("dbUserName", cfg.dbUserName);
+        mcEl.setAttribute("dbPassword", cfg.dbPassword);
         Element serversEl = new Element("servers");
         mcEl.addContent(serversEl);
         Element serverEl = new Element("server");
