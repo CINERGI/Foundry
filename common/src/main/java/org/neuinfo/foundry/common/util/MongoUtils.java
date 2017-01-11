@@ -28,7 +28,7 @@ public class MongoUtils {
                                                 List<MongoCredential> credentialsList) {
         MongoClientOptions mco = new MongoClientOptions.Builder().socketKeepAlive(false).
                 maxConnectionIdleTime(60000).connectionsPerHost(10).build();
-        MongoClient mongoClient = new MongoClient(servers, mco);
+        MongoClient mongoClient = new MongoClient(servers,credentialsList, mco);
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);
         return mongoClient;
