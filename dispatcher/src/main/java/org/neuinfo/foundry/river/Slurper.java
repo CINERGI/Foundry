@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import org.bson.BasicBSONObject;
 import org.bson.types.BSONTimestamp;
 import org.bson.types.ObjectId;
-import org.neuinfo.foundry.river.util.MongoDBHelper;
 import org.neuinfo.foundry.common.util.Utils;
+import org.neuinfo.foundry.river.util.MongoDBHelper;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -24,7 +24,7 @@ public class Slurper implements Runnable {
     private final BasicDBObject findKeys;
     private final String gridfsOplogNamespace;
     private final String cmdOplogNamespace;
-    private Mongo mongo;
+    private MongoClient mongo;
     private DB slurpedDb;
     private DB oplogDb;
     private DBCollection oplogCollection;
@@ -266,32 +266,48 @@ public class Slurper implements Runnable {
         DB adminDb = mongo.getDB(MongoDBRiver.MONGODB_ADMIN_DATABASE);
         oplogDb = mongo.getDB(MongoDBRiver.MONGODB_LOCAL_DATABASE);
 
-        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty()) {
-            logger.info(String.format("Authenticate %s with %s",
-                    MongoDBRiver.MONGODB_ADMIN_DATABASE, definition.getMongoAdminUser()));
 
-            CommandResult cmd = adminDb.authenticateCommand(definition.getMongoAdminUser(), definition.getMongoAdminPassword()
-                    .toCharArray());
-            if (!cmd.ok()) {
-                logger.error(String.format("Authenticatication failed for %s: %s",
-                        MongoDBRiver.MONGODB_ADMIN_DATABASE, cmd.getErrorMessage()));
-                // Can still try with mongoLocal credential if provided.
-                // return false;
-            }
-            oplogDb = adminDb.getMongo().getDB(MongoDBRiver.MONGODB_LOCAL_DATABASE);
+        if (!definition.getMongoAdminUser().isEmpty()
+                && !definition.getMongoAdminPassword().isEmpty()
+                ) {
+            MongoCredential credential = MongoCredential.createCredential(definition.getMongoAdminUser(),
+                    MongoDBRiver.MONGODB_ADMIN_DATABASE, definition.getMongoAdminPassword().toCharArray());
+            adminDb = new MongoClient(definition.getMongoServers(),
+                    Arrays.asList(credential),
+                    definition.getMongoClientOptions()).getDB(MongoDBRiver.MONGODB_ADMIN_DATABASE);
+            //adminDb = getMongoClient(credential).getDB(MongoDBRiver.MONGODB_ADMIN_DATABASE);
+            oplogDb =new MongoClient(definition.getMongoServers(),
+                    Arrays.asList(credential),
+                    definition.getMongoClientOptions()).getDB(MongoDBRiver.MONGODB_LOCAL_DATABASE);
         }
 
-        if (!definition.getMongoLocalUser().isEmpty() && !definition.getMongoLocalPassword().isEmpty() && !oplogDb.isAuthenticated()) {
-            logger.info(String.format("Authenticate %s with %s",
-                    MongoDBRiver.MONGODB_LOCAL_DATABASE, definition.getMongoLocalUser()));
-            CommandResult cmd = oplogDb.authenticateCommand(definition.getMongoLocalUser(), definition.getMongoLocalPassword()
-                    .toCharArray());
-            if (!cmd.ok()) {
-                logger.error(String.format("Authentication failed for %s: %s", MongoDBRiver.MONGODB_LOCAL_DATABASE, cmd.getErrorMessage()));
-                return false;
-            }
-        }
+//        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty()) {
+//            logger.info(String.format("Authenticate %s with %s",
+//                    MongoDBRiver.MONGODB_ADMIN_DATABASE, definition.getMongoAdminUser()));
+//
+//            CommandResult cmd = adminDb.authenticateCommand(definition.getMongoAdminUser(), definition.getMongoAdminPassword()
+//                    .toCharArray());
+//            if (!cmd.ok()) {
+//                logger.error(String.format("Authenticatication failed for %s: %s",
+//                        MongoDBRiver.MONGODB_ADMIN_DATABASE, cmd.getErrorMessage()));
+//                // Can still try with mongoLocal credential if provided.
+//                // return false;
+//            }
+//            oplogDb = adminDb.getMongo().getDB(MongoDBRiver.MONGODB_LOCAL_DATABASE);
+//        }
+//
+//        if (!definition.getMongoLocalUser().isEmpty() && !definition.getMongoLocalPassword().isEmpty() && !oplogDb.isAuthenticated()) {
+//            logger.info(String.format("Authenticate %s with %s",
+//                    MongoDBRiver.MONGODB_LOCAL_DATABASE, definition.getMongoLocalUser()));
+//            CommandResult cmd = oplogDb.authenticateCommand(definition.getMongoLocalUser(), definition.getMongoLocalPassword()
+//                    .toCharArray());
+//            if (!cmd.ok()) {
+//                logger.error(String.format("Authentication failed for %s: %s", MongoDBRiver.MONGODB_LOCAL_DATABASE, cmd.getErrorMessage()));
+//                return false;
+//            }
+//        }
 
+        //Set<String> collections = oplogDb.getCollectionNames();
         Set<String> collections = oplogDb.getCollectionNames();
         if (!collections.contains(MongoDBRiver.OPLOG_COLLECTION)) {
             logger.error("Cannot find " + MongoDBRiver.OPLOG_COLLECTION + " collection. Please check this link: http://goo.gl/2x5IW");
@@ -300,7 +316,7 @@ public class Slurper implements Runnable {
         oplogCollection = oplogDb.getCollection(MongoDBRiver.OPLOG_COLLECTION);
 
         slurpedDb = mongo.getDB(definition.getMongoDb());
-        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && adminDb.isAuthenticated()) {
+        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty()) {
             slurpedDb = adminDb.getMongo().getDB(definition.getMongoDb());
         }
 

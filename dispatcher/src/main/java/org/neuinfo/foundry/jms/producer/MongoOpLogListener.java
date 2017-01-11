@@ -8,6 +8,7 @@ import org.neuinfo.foundry.utils.ImmutableMap;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -153,28 +154,40 @@ public class MongoOpLogListener {
 
     private DB getAdminDb() throws Exception {
         if (adminDb == null) {
-            adminDb = getMongoClient().getDB(MONGODB_ADMIN_DATABASE);
-            if (logger.isTraceEnabled()) {
-                logger.trace(String.format("MongoAdminUser: % - authenticated: %", definition.getMongoAdminUser(), adminDb.isAuthenticated()));
-            }
-            if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && !adminDb.isAuthenticated()) {
-                logger.info(String.format("Authenticate %s with %s", MONGODB_ADMIN_DATABASE, definition.getMongoAdminUser()));
+            if (!definition.getMongoAdminUser().isEmpty()
+                    && !definition.getMongoAdminPassword().isEmpty()
+                    ) {
+                MongoCredential credential = MongoCredential.createCredential(definition.getMongoAdminUser(),
+                        MONGODB_ADMIN_DATABASE, definition.getMongoAdminPassword().toCharArray());
+                adminDb = getMongoClient(credential).getDB(MONGODB_ADMIN_DATABASE);
+            } else {
+                adminDb = new MongoClient(definition.getMongoServers(), definition.getMongoClientOptions()).getDB(MONGODB_ADMIN_DATABASE);
 
-                try {
-                    CommandResult cmd = adminDb.authenticateCommand(definition.getMongoAdminUser(), definition.getMongoAdminPassword()
-                            .toCharArray());
-                    if (!cmd.ok()) {
-                        logger.error(String.format("Authenticatication failed for %s: %s",
-                                MONGODB_ADMIN_DATABASE, cmd.getErrorMessage()));
-                    } else {
-                        logger.trace(String.format("authenticateCommand: %s - isAuthenticated: %s",
-                                cmd, adminDb.isAuthenticated()));
-                    }
-                } catch (MongoException mEx) {
-                    logger.warn("getAdminDb() failed", mEx);
-                }
             }
         }
+//        if (adminDb == null) {
+//            adminDb = getMongoClient().getDB(MONGODB_ADMIN_DATABASE);
+//            if (logger.isTraceEnabled()) {
+//                logger.trace(String.format("MongoAdminUser: % - authenticated: %", definition.getMongoAdminUser(), adminDb.isAuthenticated()));
+//            }
+//            if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && !adminDb.isAuthenticated()) {
+//                logger.info(String.format("Authenticate %s with %s", MONGODB_ADMIN_DATABASE, definition.getMongoAdminUser()));
+//
+//                try {
+//                    CommandResult cmd = adminDb.authenticateCommand(definition.getMongoAdminUser(), definition.getMongoAdminPassword()
+//                            .toCharArray());
+//                    if (!cmd.ok()) {
+//                        logger.error(String.format("Authenticatication failed for %s: %s",
+//                                MONGODB_ADMIN_DATABASE, cmd.getErrorMessage()));
+//                    } else {
+//                        logger.trace(String.format("authenticateCommand: %s - isAuthenticated: %s",
+//                                cmd, adminDb.isAuthenticated()));
+//                    }
+//                } catch (MongoException mEx) {
+//                    logger.warn("getAdminDb() failed", mEx);
+//                }
+//            }
+//        }
         if (adminDb == null) {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_ADMIN_DATABASE));
         }
@@ -182,10 +195,20 @@ public class MongoOpLogListener {
     }
 
     private DB getConfigDb() throws Exception {
-        DB configDb = getMongoClient().getDB(MONGODB_CONFIG_DATABASE);
-        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && getAdminDb().isAuthenticated()) {
-            configDb = getAdminDb().getMongo().getDB(MONGODB_CONFIG_DATABASE);
+        DB configDb = null;
+        if (!definition.getMongoAdminUser().isEmpty()
+                && !definition.getMongoAdminPassword().isEmpty()
+                ) {
+            MongoCredential credential = MongoCredential.createCredential(definition.getMongoAdminUser(),
+                    MONGODB_CONFIG_DATABASE, definition.getMongoAdminPassword().toCharArray());
+            configDb = getMongoClient(credential).getDB(MONGODB_CONFIG_DATABASE);
+        } else {
+            configDb = new MongoClient(definition.getMongoServers(), definition.getMongoClientOptions()).getDB(MONGODB_CONFIG_DATABASE);
         }
+//        DB configDb = getMongoClient().getDB(MONGODB_CONFIG_DATABASE);
+//        if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && getAdminDb().isAuthenticated()) {
+//            configDb = getAdminDb().getMongo().getDB(MONGODB_CONFIG_DATABASE);
+//        }
         if (configDb == null) {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_CONFIG_DATABASE));
         }
@@ -193,9 +216,11 @@ public class MongoOpLogListener {
     }
 
 
-    private Mongo getMongoClient() {
+    private Mongo getMongoClient(MongoCredential credential) {
         if (mongo == null) {
-            mongo = new MongoClient(definition.getMongoServers(), definition.getMongoClientOptions());
+            //mongo = new MongoClient(definition.getMongoServers(), definition.getMongoClientOptions());
+
+            mongo = new MongoClient(definition.getMongoServers(), Arrays.asList(credential), definition.getMongoClientOptions());
         }
         return mongo;
     }
@@ -223,7 +248,7 @@ public class MongoOpLogListener {
         for (String server : definition.split(",")) {
             try {
                 servers.add(new ServerAddress(server));
-            } catch (UnknownHostException uhEx) {
+            } catch (MongoTimeoutException uhEx) {
                 logger.warn("failed to execute bulk" + uhEx);
             }
         }
