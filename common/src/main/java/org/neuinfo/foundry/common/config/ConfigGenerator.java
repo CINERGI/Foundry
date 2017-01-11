@@ -45,10 +45,10 @@ public class ConfigGenerator {
                     systemCfg.collection = dbMap.get("collection");
                 }
                 if (dbMap.containsKey("dbUserName")) {
-                    systemCfg.collection = dbMap.get("dbUserName");
+                    systemCfg.dbUserName = dbMap.get("dbUserName");
                 }
                 if (dbMap.containsKey("dbUserPassword")) {
-                    systemCfg.collection = dbMap.get("dbUserPassword");
+                    systemCfg.dbUserPassword = dbMap.get("dbUserPassword");
                 }
             }
             Map<String, String> mqMap = (Map<String, String>) map.get("mq");
@@ -240,7 +240,7 @@ public class ConfigGenerator {
         mcEl.setAttribute("db", cfg.db);
         mcEl.setAttribute("collection", cfg.collection);
         mcEl.setAttribute("dbUserName", cfg.dbUserName);
-        mcEl.setAttribute("dbPassword", cfg.dbPassword);
+        mcEl.setAttribute("dbUserPassword", cfg.dbUserPassword);
         Element serversEl = new Element("servers");
         mcEl.addContent(serversEl);
         Element serverEl = new Element("server");
@@ -262,8 +262,8 @@ public class ConfigGenerator {
         String collection = "records";
         String brokerURL = "tcp://localhost:61616";
         String pluginDir;
-        String dbUserName;
-        String dbPassword;
+        String dbUserName ;
+        String dbUserPassword;
 
         @Override
         public String toString() {
