@@ -38,6 +38,8 @@ public class ConfigLoader {
 
             conf.setMongoDBName(mcEl.getAttributeValue("db"));
             conf.setCollectionName(mcEl.getAttributeValue("collection"));
+            conf.setMongoUserName(mcEl.getAttributeValue("dbUserName"));
+            conf.setMongoUserPassword(mcEl.getAttributeValue("dbUserPassword"));
             List<Element> sels = mcEl.getChild("servers").getChildren("server");
             for (Element sel : sels) {
                 String host = sel.getAttributeValue("host");

@@ -21,12 +21,13 @@ public class BaseIngestionService {
 
     public void start(IMongoConfig conf) throws UnknownHostException {
         this.dbName = conf.getMongoDBName();
+
         List<ServerAddress> servers = new ArrayList<ServerAddress>(conf.getServers().size());
         for (ServerInfo si : conf.getServers()) {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = MongoUtils.createMongoClient(servers);
+        mongoClient = MongoUtils.createMongoClient(servers,conf.getCredentialsList());
 
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);

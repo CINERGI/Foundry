@@ -112,7 +112,7 @@ public class Slurper implements Runnable {
                     }
                     logger.debug("Before waiting for 500 ms");
                     Thread.sleep(500);
-                } catch (MongoException.CursorNotFound e) {
+                } catch (MongoCursorNotFoundException e) {
                     logger.info(String.format("Cursor %s has been closed. About to open a new cursor.",
                             cursor.getCursorId()));
                     logger.debug(String.format("Total document inserted [%d]", totalDocuments.get()));
@@ -228,7 +228,7 @@ public class Slurper implements Runnable {
                     }
                     inProgress = false;
                 }
-            } catch (MongoException.CursorNotFound e) {
+            } catch (MongoCursorNotFoundException e) {
                 logger.info(String.format("Initial import - Cursor %d has been closed. About to open a new cursor.", cursor.getCursorId()));
                 logger.debug(String.format("Total document inserted [%d]", totalDocuments.get()));
             } finally {

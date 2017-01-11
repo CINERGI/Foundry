@@ -240,7 +240,7 @@ public class MongoDBRiver {
         for (String server : definition.split(",")) {
             try {
                 servers.add(new ServerAddress(server));
-            } catch (UnknownHostException uhEx) {
+            } catch (MongoTimeoutException uhEx) {
                 logger.warn("failed to execute bulk" + uhEx);
             }
         }

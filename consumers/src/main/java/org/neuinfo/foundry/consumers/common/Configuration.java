@@ -1,10 +1,12 @@
 package org.neuinfo.foundry.consumers.common;
 
+import com.mongodb.MongoCredential;
 import org.neuinfo.foundry.common.config.ConsumerConfig;
 import org.neuinfo.foundry.common.config.IMongoConfig;
 import org.neuinfo.foundry.common.config.ServerInfo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ public class Configuration implements IMongoConfig {
     private String pluginDir;
     private String libDir;
     private String collectionName;
+    String mongoUserName;
+    String mongoUserPassword;
 
     public List<ConsumerConfig> getConsumerConfigs() {
         return consumerConfigs;
@@ -67,6 +71,31 @@ public class Configuration implements IMongoConfig {
 
     public void setCollectionName(String collectionName) {
         this.collectionName = collectionName;
+    }
+
+    public String getMongoUserName() {
+        return mongoUserName;
+    }
+    public String getMongoUserPassword() {
+        return mongoUserPassword;
+    }
+    public void setMongoUserName(String mongoUserName) {
+        this.mongoUserName =  mongoUserName;
+    }
+    public void setMongoUserPassword(String mongoUserPassword) {
+        this.mongoUserPassword =  mongoUserPassword;
+    }
+    @Override
+    public List<MongoCredential> getCredentialsList(){
+
+        if (! getMongoUserName().isEmpty()&& !getMongoUserPassword().isEmpty())
+        { MongoCredential credentials = MongoCredential.createCredential(getMongoUserName(), getMongoDBName(), getMongoUserPassword().toCharArray());
+            return Arrays.asList(credentials);
+        } else {
+            return null;
+        }
+
+
     }
 
     @Override

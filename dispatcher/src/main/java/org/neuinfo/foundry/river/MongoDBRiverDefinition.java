@@ -12,7 +12,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.net.UnknownHostException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.*;
@@ -465,7 +464,7 @@ public class MongoDBRiverDefinition {
                         logger.info("Server: " + mongoHost + " - " + mongoPort);
                         try {
                             mongoServers.add(new ServerAddress(mongoHost, mongoPort));
-                        } catch (UnknownHostException uhEx) {
+                        } catch (MongoTimeoutException  uhEx) {
                             logger.warn("Cannot add mongo server " + uhEx.getMessage() + " " + mongoHost + ":" + mongoPort);
                         }
                     }
@@ -475,13 +474,13 @@ public class MongoDBRiverDefinition {
                 mongoPort = Utils.getIntValue(mongoSettings.get(PORT_FIELD), DEFAULT_DB_PORT);
                 try {
                     mongoServers.add(new ServerAddress(mongoHost, mongoPort));
-                } catch (UnknownHostException uhEx) {
+                } catch (MongoTimeoutException  uhEx) {
                     logger.warn("Cannot add mongo server " + uhEx.getMessage() + " " + mongoHost + ":" + mongoPort);
                 }
             }
             builder.mongoServers(mongoServers);
 
-            MongoClientOptions.Builder mongoClientOptionsBuilder = MongoClientOptions.builder().autoConnectRetry(true)
+            MongoClientOptions.Builder mongoClientOptionsBuilder = MongoClientOptions.builder()//.autoConnectRetry(true)
                     .socketKeepAlive(true);
 
             // MongoDB options
@@ -673,7 +672,7 @@ public class MongoDBRiverDefinition {
             try {
                 mongoServers.add(new ServerAddress(mongoHost, mongoPort));
                 builder.mongoServers(mongoServers);
-            } catch (UnknownHostException e) {
+            } catch (MongoTimeoutException e) {
                 e.printStackTrace();
             }
             builder.mongoDb(riverName);

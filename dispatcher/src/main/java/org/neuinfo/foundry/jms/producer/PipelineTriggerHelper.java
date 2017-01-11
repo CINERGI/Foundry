@@ -52,7 +52,7 @@ public class PipelineTriggerHelper {
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
 
-        mongoClient = MongoUtils.createMongoClient(servers);
+        mongoClient = MongoUtils.createMongoClient(servers,config.getCredentialsList());
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
         this.con = factory.createConnection();
 
