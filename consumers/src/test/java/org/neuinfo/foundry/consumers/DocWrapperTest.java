@@ -8,6 +8,7 @@ import org.neuinfo.foundry.consumers.common.ConfigLoader;
 import org.neuinfo.foundry.consumers.common.Configuration;
 import org.neuinfo.foundry.consumers.river.MongoDBRiverDefinition;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +26,15 @@ public class DocWrapperTest extends TestCase {
         MongoDBRiverDefinition definition = MongoDBRiverDefinition.parseSettings("consumer", "consumer",
                 config.getMongoListenerSettings());
         List<ServerAddress> mongoServers = definition.getMongoServers();
-        mongoClient = new MongoClient(mongoServers);
+        String user = config.getServers().get(0).getUser();
+        String pwd = config.getServers().get(0).getPwd();
+        if (user != null && pwd != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, config.getMongoDBName(), pwd.toCharArray());
+            mongoClient = new MongoClient(mongoServers, Arrays.asList(credential));
+        } else {
+
+            mongoClient = new MongoClient(mongoServers);
+        }
         this.mongoDbName = definition.getMongoDb();
     }
 
@@ -35,6 +44,13 @@ public class DocWrapperTest extends TestCase {
             mongoClient.close();
         }
         super.tearDown();
+    }
+
+    public void testIt() {
+        DB db = mongoClient.getDB(this.mongoDbName);
+        DBCollection collection = db.getCollection("records");
+        DBObject one = collection.findOne();
+        System.out.println(one);
     }
 
     public void testGetDocWrapper() {

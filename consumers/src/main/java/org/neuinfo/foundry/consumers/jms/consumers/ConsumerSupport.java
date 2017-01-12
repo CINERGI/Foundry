@@ -1,12 +1,14 @@
 package org.neuinfo.foundry.consumers.jms.consumers;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import org.neuinfo.foundry.consumers.common.ConfigLoader;
 import org.neuinfo.foundry.consumers.common.Configuration;
 import org.neuinfo.foundry.consumers.coordinator.IConsumer;
 import org.neuinfo.foundry.consumers.river.MongoDBRiverDefinition;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,8 +58,16 @@ public abstract class ConsumerSupport implements IConsumer {
         config.getMongoListenerSettings();
         this.definition = MongoDBRiverDefinition.parseSettings("consumer", "consumer",
                 config.getMongoListenerSettings());
+        String user = config.getServers().get(0).getUser();
+        String pwd = config.getServers().get(0).getPwd();
+
         List<ServerAddress> mongoServers = definition.getMongoServers();
-        mongoClient = new MongoClient(mongoServers);
+        if (user != null && pwd != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, config.getMongoDBName(), pwd.toCharArray());
+            mongoClient = new MongoClient(mongoServers, Arrays.asList(credential));
+        } else {
+            mongoClient = new MongoClient(mongoServers);
+        }
         this.mongoDbName = definition.getMongoDb();
     }
 

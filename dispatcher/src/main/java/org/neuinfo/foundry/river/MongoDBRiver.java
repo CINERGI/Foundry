@@ -19,6 +19,8 @@ import java.util.concurrent.LinkedTransferQueue;
 /**
  * Created by bozyurt on 4/4/14.
  */
+
+@Deprecated
 public class MongoDBRiver {
     public final static String TYPE = "mongodb";
     public final static String NAME = "mongodb-river";
@@ -107,8 +109,8 @@ public class MongoDBRiver {
 
             }
 
-           // consumerThread = new Thread(new DocIdAssigner(definition, context));
-           // consumerThread.setDaemon(true);
+            // consumerThread = new Thread(new DocIdAssigner(definition, context));
+            // consumerThread.setDaemon(true);
 
             if (tailerThread != null) {
                 tailerThread.start();
@@ -168,7 +170,9 @@ public class MongoDBRiver {
         return (process.contains("mongos"));
     }
 
+
     private DB getAdminDb() throws Exception {
+        /*
         if (adminDb == null) {
             adminDb = getMongoClient().getDB(MONGODB_ADMIN_DATABASE);
             if (logger.isTraceEnabled()) {
@@ -196,16 +200,20 @@ public class MongoDBRiver {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_ADMIN_DATABASE));
         }
         return adminDb;
+        */
+        return null;
     }
 
     private DB getConfigDb() throws Exception {
         DB configDb = getMongoClient().getDB(MONGODB_CONFIG_DATABASE);
+        /* not used
         if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && getAdminDb().isAuthenticated()) {
             configDb = getAdminDb().getMongo().getDB(MONGODB_CONFIG_DATABASE);
         }
         if (configDb == null) {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_CONFIG_DATABASE));
         }
+        */
         return configDb;
     }
 
@@ -238,11 +246,8 @@ public class MongoDBRiver {
         }
         List<ServerAddress> servers = new ArrayList<ServerAddress>();
         for (String server : definition.split(",")) {
-            try {
-                servers.add(new ServerAddress(server));
-            } catch (UnknownHostException uhEx) {
-                logger.warn("failed to execute bulk" + uhEx);
-            }
+            servers.add(new ServerAddress(server));
+
         }
         return servers;
     }

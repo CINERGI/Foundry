@@ -44,6 +44,12 @@ public class ConfigGenerator {
                 if (dbMap.containsKey("collection")) {
                     systemCfg.collection = dbMap.get("collection");
                 }
+                if (dbMap.containsKey("user")) {
+                    systemCfg.user = dbMap.get("user");
+                }
+                if (dbMap.containsKey("pwd")) {
+                    systemCfg.pwd = dbMap.get("pwd");
+                }
             }
             Map<String, String> mqMap = (Map<String, String>) map.get("mq");
             if (mqMap != null) {
@@ -101,8 +107,6 @@ public class ConfigGenerator {
         prepDB(cfg, rootEl);
         return rootEl;
     }
-
-
 
 
     static Element createDispatcherConfig(WFCfg wfCfg, SystemCfg cfg, List<ConsumerCfg> ccList) {
@@ -188,7 +192,7 @@ public class ConfigGenerator {
         rootEl.addContent(consumersEl);
         String inStatus = "new.1";
 
-        for (Iterator<String> iter =  wfCfg.steps.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = wfCfg.steps.iterator(); iter.hasNext(); ) {
             String step = iter.next();
             ConsumerCfg cc = ccMap.get(step);
             assertTrue(cc != null, "Cannot find a consumer named " + step);
@@ -239,6 +243,10 @@ public class ConfigGenerator {
         serversEl.addContent(serverEl);
         serverEl.setAttribute("host", cfg.host);
         serverEl.setAttribute("port", String.valueOf(cfg.port));
+        if (cfg.user != null) {
+            serverEl.setAttribute("user", cfg.user);
+            serverEl.setAttribute("pwd", cfg.pwd);
+        }
     }
 
     public static void assertTrue(boolean condition, String msg) {
@@ -254,6 +262,8 @@ public class ConfigGenerator {
         String collection = "records";
         String brokerURL = "tcp://localhost:61616";
         String pluginDir;
+        String user;
+        String pwd;
 
         @Override
         public String toString() {
@@ -338,7 +348,7 @@ public class ConfigGenerator {
             usage(options);
         }
         String configFile = line.getOptionValue('c');
-        String foundryRootDir = HOME + "/dev/java/Foundry-ES";
+        String foundryRootDir = HOME + "/dev/java/Foundry";
         if (line.hasOption('f')) {
             foundryRootDir = line.getOptionValue('f');
         }
@@ -361,9 +371,6 @@ public class ConfigGenerator {
         //ConfigGenerator.loadConfigSpec(HOME + "/dev/java/Foundry-ES/bin/config.yml", foundryRootDir);
         ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile);
     }
-
-
-
 
 
 }

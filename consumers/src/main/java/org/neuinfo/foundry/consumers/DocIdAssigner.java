@@ -12,6 +12,7 @@ import java.util.UUID;
 /**
  * Created by bozyurt on 4/8/14.
  */
+@Deprecated
 public class DocIdAssigner implements Runnable {
     private final MongoDBRiverDefinition definition;
     private final Context context;

@@ -34,7 +34,15 @@ public class ConfigLoader {
             for (Element c : children) {
                 String host = c.getAttributeValue("host");
                 int port = Utils.getIntValue(c.getAttributeValue("port"), -1);
-                ServerInfo si = new ServerInfo(host, port);
+                String user = null;
+                String pwd = null;
+                if (c.getAttribute("user") != null) {
+                    user = c.getAttributeValue("user");
+                }
+                if (c.getAttribute("pwd") != null) {
+                    pwd = c.getAttributeValue("pwd");
+                }
+                ServerInfo si = new ServerInfo(host, port, user, pwd);
                 siList.add(si);
             }
             conf.setMongoServers(siList);

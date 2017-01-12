@@ -112,10 +112,12 @@ public class Slurper implements Runnable {
                     }
                     logger.debug("Before waiting for 500 ms");
                     Thread.sleep(500);
+               /*
                 } catch (MongoException.CursorNotFound e) {
                     logger.info(String.format("Cursor %s has been closed. About to open a new cursor.",
                             cursor.getCursorId()));
                     logger.debug(String.format("Total document inserted [%d]", totalDocuments.get()));
+               */
                 } catch (SlurperException sEx) {
                     logger.warn("Exception in slurper", sEx);
                     break;
@@ -228,9 +230,11 @@ public class Slurper implements Runnable {
                     }
                     inProgress = false;
                 }
+            /*
             } catch (MongoException.CursorNotFound e) {
                 logger.info(String.format("Initial import - Cursor %d has been closed. About to open a new cursor.", cursor.getCursorId()));
                 logger.debug(String.format("Total document inserted [%d]", totalDocuments.get()));
+            */
             } finally {
                 if (cursor != null) {
                     logger.trace("Closing initial import cursor");
@@ -263,6 +267,7 @@ public class Slurper implements Runnable {
     }
 
     protected boolean assignCollections() {
+        /*
         DB adminDb = mongo.getDB(MongoDBRiver.MONGODB_ADMIN_DATABASE);
         oplogDb = mongo.getDB(MongoDBRiver.MONGODB_LOCAL_DATABASE);
 
@@ -303,7 +308,7 @@ public class Slurper implements Runnable {
         if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && adminDb.isAuthenticated()) {
             slurpedDb = adminDb.getMongo().getDB(definition.getMongoDb());
         }
-
+        */
         return true;
     }
 

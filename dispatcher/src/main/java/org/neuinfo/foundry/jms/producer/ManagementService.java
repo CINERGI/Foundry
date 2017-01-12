@@ -2,6 +2,7 @@ package org.neuinfo.foundry.jms.producer;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang.*;
+import org.apache.log4j.LogManager;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.ingestion.DocProcessingStatsService;
 import org.neuinfo.foundry.common.model.Source;
@@ -10,7 +11,10 @@ import org.neuinfo.foundry.common.util.Assertion;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by bozyurt on 10/30/14.
@@ -37,20 +41,20 @@ public class ManagementService {
         this.helper.getDocService().deleteDocuments4Resource(this.helper.getCollectionName(), sourceID, null);
     }
 
-    void showWorkflows() {
-        this.helper.showWS();
+    void showWorkflows(PrintWriter out) {
+        this.helper.showWS(out);
     }
 
-    void showProcessingStats(String sourceID) {
+    void showProcessingStats(String sourceID, PrintWriter out) {
         List<DocProcessingStatsService.SourceStats> processingStats = this.helper.getProcessingStats(sourceID);
         Map<String, DocProcessingStatsService.WFStatusInfo> wfsiMap = this.helper.getWorkflowStatusInfo(sourceID, processingStats);
         for (DocProcessingStatsService.SourceStats ss : processingStats) {
             DocProcessingStatsService.WFStatusInfo wfsi = wfsiMap.get(ss.getSourceID());
-            showSourceStats(ss, wfsi);
+            showSourceStats(ss, wfsi, out);
         }
     }
 
-    void showSourceStats(DocProcessingStatsService.SourceStats ss, DocProcessingStatsService.WFStatusInfo wfStatusInfo) {
+    void showSourceStats(DocProcessingStatsService.SourceStats ss, DocProcessingStatsService.WFStatusInfo wfStatusInfo, PrintWriter out) {
         StringBuilder sb = new StringBuilder(128);
         sb.append(StringUtils.rightPad(ss.getSourceID(), 15)).append(" ");
         if (wfStatusInfo != null) {
@@ -79,21 +83,21 @@ public class ManagementService {
             String s = StringUtils.leftPad(status + ":", 15) + StringUtils.leftPad(statusCount.toString(), 10);
             sb.append(s).append(" ");
         }
-        System.out.println(sb.toString().trim());
+        out.println(sb.toString().trim());
     }
 
-    public static void showHelp() {
-        System.out.println("Available commands");
-        System.out.println("\thelp - shows this message.");
-        System.out.println("\tingest <sourceID>");
-        System.out.println("\th - show all command history");
-        System.out.println("\tdd <sourceID>  - delete docs for a sourceID");
-        System.out.println("\ttrigger <sourceID> <status-2-match> <queue-2-send> [<new-status> [<new-out-status>]] (e.g. trigger nif-0000-00135 new.1 foundry.uuid.1)");
-        System.out.println("\trun <sourceID> status:<status-2-match> step:<step-name> [on|to_end] (e.g. run nif-0000-00135 status:new.1 step:transform)");
-        System.out.println("\tlist - lists all of the existing sources.");
-        System.out.println("\tstatus [<sourceID>] - show processing status of data source(s)");
-        System.out.println("\tws - show configured workflow(s)");
-        System.out.println("\texit - exits the management client.");
+    public static void showHelp(PrintWriter out) {
+        out.println("Available commands");
+        out.println("\thelp - shows this message.");
+        out.println("\tingest <sourceID>");
+        out.println("\th - show all command history");
+        out.println("\tdd <sourceID>  - delete docs for a sourceID");
+        out.println("\ttrigger <sourceID> <status-2-match> <queue-2-send> [<new-status> [<new-out-status>]] (e.g. trigger nif-0000-00135 new.1 foundry.uuid.1)");
+        out.println("\trun <sourceID> status:<status-2-match> step:<step-name> [on|to_end] (e.g. run nif-0000-00135 status:new.1 step:transform)");
+        out.println("\tlist - lists all of the existing sources.");
+        out.println("\tstatus [<sourceID>] - show processing status of data source(s)");
+        out.println("\tws - show configured workflow(s)");
+        out.println("\texit - exits the management client.");
     }
 
     public static void usage(Options options) {
@@ -168,12 +172,23 @@ public class ManagementService {
             configFile = line.getOptionValue('c');
         }
 
+        LogManager.getLogger("org.mongodb.driver.connection").setLevel(org.apache.log4j.Level.OFF);
+        LogManager.getLogger("org.mongodb.driver.management").setLevel(org.apache.log4j.Level.OFF);
+        LogManager.getLogger("org.mongodb.driver.cluster").setLevel(org.apache.log4j.Level.OFF);
+        LogManager.getLogger("org.mongodb.driver.protocol.insert").setLevel(org.apache.log4j.Level.OFF);
+        LogManager.getLogger("org.mongodb.driver.protocol.query").setLevel(org.apache.log4j.Level.OFF);
+        LogManager.getLogger("org.mongodb.driver.protocol.update").setLevel(org.apache.log4j.Level.OFF);
+
+
         ManagementService ms = new ManagementService("foundry.consumer.head");
         Set<String> history = new LinkedHashSet<String>();
         String lastCommand = null;
         try {
             ms.startup(configFile);
+            PrintWriter out = new PrintWriter(System.out, true);
+            out.flush();
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+
             boolean finished = false;
             while (!finished) {
                 System.out.print("Foundry:>> ");
@@ -182,13 +197,13 @@ public class ManagementService {
 
                 if (ans.equals("!!") && lastCommand != null) {
                     ans = lastCommand;
-                    System.out.println("running command:" + ans);
+                    out.println("running command:" + ans);
                 }
                 if (ans.equals("help")) {
-                    showHelp();
+                    showHelp(out);
                 }
                 if (ans.equals("ws")) {
-                    ms.showWorkflows();
+                    ms.showWorkflows(out);
                 } else if (ans.startsWith("ingest")) {
                     String[] toks = ans.split("\\s+");
                     if (toks.length == 2) {
@@ -203,7 +218,7 @@ public class ManagementService {
                     handleRun(ans, ms, options);
                 } else if (ans.equals("history") || ans.equals("h")) {
                     for (String h : history) {
-                        System.out.println(h);
+                        out.println(h);
                     }
                 } else if (ans.startsWith("dd")) {
                     String[] toks = ans.split("\\s+");
@@ -219,7 +234,7 @@ public class ManagementService {
                         StringBuilder sb = new StringBuilder(128);
                         sb.append(StringUtils.rightPad(source.getResourceID(), 16)).append(" - ");
                         sb.append(source.getName());
-                        System.out.println(sb.toString());
+                        out.println(sb.toString());
                     }
                     lastCommand = ans;
                 } else if (ans.startsWith("trigger")) {
@@ -247,9 +262,9 @@ public class ManagementService {
                     if (toks.length == 1 || toks.length == 2) {
                         if (toks.length == 2) {
                             String srcNifId = toks[1];
-                            ms.showProcessingStats(srcNifId);
+                            ms.showProcessingStats(srcNifId, out);
                         } else {
-                            ms.showProcessingStats(null);
+                            ms.showProcessingStats(null, out);
                         }
                         history.add(ans);
                         lastCommand = ans;

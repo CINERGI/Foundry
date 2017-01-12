@@ -11,10 +11,7 @@ import org.neuinfo.foundry.jms.common.Constants;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bozyurt on 7/9/15.
@@ -38,11 +35,21 @@ public class PipelineMessageConsumer implements Runnable, MessageListener {
 
     public void startup() throws Exception {
         List<ServerAddress> mongoServers = new ArrayList<ServerAddress>(configuration.getServers().size());
+        String user = null;
+        String pwd = null;
         for (ServerInfo si : configuration.getServers()) {
+            if(si.getUser() != null) {
+                user = si.getUser();
+                pwd = si.getPwd();
+            }
             mongoServers.add(new ServerAddress(si.getHost(), si.getPort()));
         }
-        this.mongoClient = new MongoClient(mongoServers);
-
+        if (user != null && pwd != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, configuration.getMongoDBName(), pwd.toCharArray());
+            this.mongoClient = new MongoClient(mongoServers, Arrays.asList(credential));
+        } else {
+            this.mongoClient = new MongoClient(mongoServers);
+        }
         this.factory = new ActiveMQConnectionFactory(configuration.getBrokerURL());
         this.con = factory.createConnection();
         con.start();

@@ -3,6 +3,8 @@ package org.neuinfo.foundry.common.util;
 import com.mongodb.*;
 import org.neuinfo.foundry.common.model.Source;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -24,11 +26,17 @@ public class MongoUtils {
         return source;
     }
 
-    public static MongoClient createMongoClient(List<ServerAddress> servers) {
+    public static MongoClient createMongoClient(List<ServerAddress> servers, String user, String pwd, String database) {
         MongoClientOptions mco = new MongoClientOptions.Builder().socketKeepAlive(false).
                 maxConnectionIdleTime(60000).connectionsPerHost(10).build();
-        MongoClient mongoClient = new MongoClient(servers, mco);
+        MongoClient mongoClient = null;
+        if (pwd != null &&  user != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, database, pwd.toCharArray());
 
+            mongoClient = new MongoClient(servers, Arrays.asList(credential), mco);
+        } else {
+            mongoClient = new MongoClient(servers, mco);
+        }
         mongoClient.setWriteConcern(WriteConcern.SAFE);
         return mongoClient;
     }

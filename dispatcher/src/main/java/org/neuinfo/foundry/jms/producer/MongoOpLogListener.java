@@ -152,6 +152,7 @@ public class MongoOpLogListener {
     }
 
     private DB getAdminDb() throws Exception {
+        /*
         if (adminDb == null) {
             adminDb = getMongoClient().getDB(MONGODB_ADMIN_DATABASE);
             if (logger.isTraceEnabled()) {
@@ -179,13 +180,17 @@ public class MongoOpLogListener {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_ADMIN_DATABASE));
         }
         return adminDb;
+        */
+        return null;
     }
 
     private DB getConfigDb() throws Exception {
         DB configDb = getMongoClient().getDB(MONGODB_CONFIG_DATABASE);
+        /*
         if (!definition.getMongoAdminUser().isEmpty() && !definition.getMongoAdminPassword().isEmpty() && getAdminDb().isAuthenticated()) {
             configDb = getAdminDb().getMongo().getDB(MONGODB_CONFIG_DATABASE);
         }
+        */
         if (configDb == null) {
             throw new Exception(String.format("Could not get %s database from MongoDB", MONGODB_CONFIG_DATABASE));
         }
@@ -221,11 +226,8 @@ public class MongoOpLogListener {
         }
         List<ServerAddress> servers = new ArrayList<ServerAddress>();
         for (String server : definition.split(",")) {
-            try {
-                servers.add(new ServerAddress(server));
-            } catch (UnknownHostException uhEx) {
-                logger.warn("failed to execute bulk" + uhEx);
-            }
+            servers.add(new ServerAddress(server));
+
         }
         return servers;
     }

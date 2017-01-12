@@ -16,6 +16,7 @@ import org.neuinfo.foundry.utils.MessagingUtils;
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.*;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,8 +52,10 @@ public class PipelineTriggerHelper {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
+        String user = config.getServers().get(0).getUser();
+        String pwd = config.getServers().get(0).getPwd();
 
-        mongoClient = MongoUtils.createMongoClient(servers);
+        mongoClient = MongoUtils.createMongoClient(servers, user, pwd, dbName);
         ConnectionFactory factory = new ActiveMQConnectionFactory(config.getBrokerURL());
         this.con = factory.createConnection();
 
@@ -84,9 +87,9 @@ public class PipelineTriggerHelper {
     }
 
 
-    public void showWS() {
+    public void showWS(PrintWriter out) {
         for (Workflow wf : this.config.getWorkflows()) {
-            System.out.println(wf.toString());
+            out.println(wf.toString());
         }
     }
 

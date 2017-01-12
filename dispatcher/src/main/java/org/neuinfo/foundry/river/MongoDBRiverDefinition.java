@@ -463,25 +463,17 @@ public class MongoDBRiverDefinition {
                         mongoHost = Utils.getStringValue(feed.get(HOST_FIELD), null);
                         mongoPort = Utils.getIntValue(feed.get(PORT_FIELD), DEFAULT_DB_PORT);
                         logger.info("Server: " + mongoHost + " - " + mongoPort);
-                        try {
-                            mongoServers.add(new ServerAddress(mongoHost, mongoPort));
-                        } catch (UnknownHostException uhEx) {
-                            logger.warn("Cannot add mongo server " + uhEx.getMessage() + " " + mongoHost + ":" + mongoPort);
-                        }
+                        mongoServers.add(new ServerAddress(mongoHost, mongoPort));
                     }
                 }
             } else {
                 mongoHost = Utils.getStringValue(mongoSettings.get(HOST_FIELD), DEFAULT_DB_HOST);
                 mongoPort = Utils.getIntValue(mongoSettings.get(PORT_FIELD), DEFAULT_DB_PORT);
-                try {
-                    mongoServers.add(new ServerAddress(mongoHost, mongoPort));
-                } catch (UnknownHostException uhEx) {
-                    logger.warn("Cannot add mongo server " + uhEx.getMessage() + " " + mongoHost + ":" + mongoPort);
-                }
+                mongoServers.add(new ServerAddress(mongoHost, mongoPort));
             }
             builder.mongoServers(mongoServers);
 
-            MongoClientOptions.Builder mongoClientOptionsBuilder = MongoClientOptions.builder().autoConnectRetry(true)
+            MongoClientOptions.Builder mongoClientOptionsBuilder = MongoClientOptions.builder() // .autoConnectRetry(true)
                     .socketKeepAlive(true);
 
             // MongoDB options
@@ -670,12 +662,9 @@ public class MongoDBRiverDefinition {
         } else {
             mongoHost = DEFAULT_DB_HOST;
             mongoPort = DEFAULT_DB_PORT;
-            try {
-                mongoServers.add(new ServerAddress(mongoHost, mongoPort));
-                builder.mongoServers(mongoServers);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
+            mongoServers.add(new ServerAddress(mongoHost, mongoPort));
+            builder.mongoServers(mongoServers);
+
             builder.mongoDb(riverName);
             builder.mongoCollection(riverName);
         }

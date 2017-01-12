@@ -29,7 +29,6 @@ public class MongoService {
     String dbName;
 
 
-
     public MongoClient getMongoClient() {
         return mongoClient;
     }
@@ -42,15 +41,22 @@ public class MongoService {
         Configuration conf = ConfigLoader.load("ingestor-cfg.xml", false);
         this.dbName = conf.getMongoDBName();
         List<ServerAddress> servers = new ArrayList<ServerAddress>(conf.getServers().size());
+        String user = conf.getServers().get(0).getUser();
+        String pwd = conf.getServers().get(0).getPwd();
         for (ServerInfo si : conf.getServers()) {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = new MongoClient(servers);
+        if (user != null && pwd != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, conf.getMongoDBName(), pwd.toCharArray());
+            mongoClient = new MongoClient(servers, Arrays.asList(credential));
+        } else {
+            mongoClient = new MongoClient(servers);
+        }
         mongoClient.setWriteConcern(WriteConcern.SAFE);
     }
 
-    public  void shutdown() {
+    public void shutdown() {
         if (mongoClient != null) {
             mongoClient.close();
             mongoClient = null;

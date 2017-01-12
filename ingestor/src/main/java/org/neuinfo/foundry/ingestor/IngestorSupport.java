@@ -11,6 +11,7 @@ import org.neuinfo.foundry.common.ingestion.Configuration;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +39,14 @@ public class IngestorSupport {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = new MongoClient(servers);
+        String user = conf.getServers().get(0).getUser();
+        String pwd = conf.getServers().get(0).getPwd();
+        if (user != null && pwd != null) {
+            MongoCredential credential = MongoCredential.createCredential(user, conf.getMongoDBName(), pwd.toCharArray());
+            mongoClient = new MongoClient(servers, Arrays.asList(credential));
+        } else {
+            mongoClient = new MongoClient(servers);
+        }
         mongoClient.setWriteConcern(WriteConcern.SAFE);
     }
 

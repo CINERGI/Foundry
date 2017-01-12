@@ -405,8 +405,8 @@ public class KeywordsEditor extends BaseIngestionService {
     public static void main(String[] args) throws Exception {
         //Configuration conf = new Configuration("cinergiStage");
         Configuration conf = new Configuration("discotest");
-        ServerInfo si = new ServerInfo("localhost", 27017);
-        si = new ServerInfo("132.249.238.128", 27017);
+        ServerInfo si = new ServerInfo("localhost", 27017, null, null);
+        si = new ServerInfo("132.249.238.128", 27017, null, null);
         conf.addServer(si);
         KeywordsEditor ke = new KeywordsEditor();
 

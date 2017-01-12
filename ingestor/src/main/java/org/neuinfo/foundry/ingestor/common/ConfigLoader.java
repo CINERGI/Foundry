@@ -45,7 +45,15 @@ public class ConfigLoader {
             String host = child.getAttributeValue("host");
             int port = Utils.getIntValue(child.getAttributeValue("port"), -1);
             Assertion.assertTrue(port != -1);
-            ServerInfo si = new ServerInfo(host, port);
+            String user = null;
+            String pwd = null;
+            if (child.getAttribute("user") != null) {
+                user = child.getAttributeValue("user");
+            }
+            if (child.getAttribute("pwd") != null) {
+                pwd = child.getAttributeValue("pwd");
+            }
+            ServerInfo si = new ServerInfo(host, port, user, pwd);
             conf.addServer(si);
         }
 
