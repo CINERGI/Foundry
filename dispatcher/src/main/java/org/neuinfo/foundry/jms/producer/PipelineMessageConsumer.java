@@ -41,7 +41,10 @@ public class PipelineMessageConsumer implements Runnable, MessageListener {
         for (ServerInfo si : configuration.getServers()) {
             mongoServers.add(new ServerAddress(si.getHost(), si.getPort()));
         }
-        this.mongoClient = new MongoClient(mongoServers,configuration.getCredentialsList());
+
+        MongoClientOptions mco = new MongoClientOptions.Builder().socketKeepAlive(false).
+                maxConnectionIdleTime(60000).connectionsPerHost(10).build();
+        this.mongoClient = new MongoClient(mongoServers,configuration.getCredentialsList(), mco);
 
         this.factory = new ActiveMQConnectionFactory(configuration.getBrokerURL());
         this.con = factory.createConnection();
