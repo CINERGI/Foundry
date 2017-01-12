@@ -2,7 +2,6 @@ package org.neuinfo.foundry.ingestor.common;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
-import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.neuinfo.foundry.common.config.ServerInfo;
 import org.neuinfo.foundry.common.ingestion.Configuration;
@@ -11,7 +10,6 @@ import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.Utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -40,6 +38,10 @@ public class ConfigLoader {
         Element mcEl = docRoot.getChild("mongo-config");
         String db = mcEl.getAttributeValue("db");
         conf = new Configuration(db);
+        String dbUserName = mcEl.getAttributeValue("dbUserName");
+        conf.setMongoUserName(dbUserName);
+        String dbUserPassword = mcEl.getAttributeValue("dbUserPassword");
+        conf.setMongoUserPassword(dbUserPassword);
         final List<Element> children = mcEl.getChild("servers").getChildren("server");
         for (Element child : children) {
             String host = child.getAttributeValue("host");
