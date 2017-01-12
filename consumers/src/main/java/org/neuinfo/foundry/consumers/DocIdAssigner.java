@@ -6,6 +6,7 @@ import org.bson.types.BSONTimestamp;
 import org.bson.types.ObjectId;
 import org.neuinfo.foundry.consumers.river.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +24,9 @@ public class DocIdAssigner implements Runnable {
         this.context = context;
 
         List<ServerAddress> mongoServers = definition.getMongoServers();
-        mongoClient = new MongoClient(mongoServers);
+        MongoCredential cred = MongoCredential.createCredential(definition.getMongoLocalUser(),
+                definition.getMongoDb(), definition.getMongoLocalPassword().toCharArray());
+        mongoClient = new MongoClient(mongoServers, Arrays.asList(cred));
         // mongoClient.setWriteConcern(WriteConcern.SAFE);
     }
 

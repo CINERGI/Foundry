@@ -3,6 +3,7 @@ package org.neuinfo.foundry.ingestor;
 import com.mongodb.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.config.Configuration;
 import org.neuinfo.foundry.common.util.JSONUtils;
 
 import java.net.InetAddress;
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public class SimpleIngestor {
     MongoClient mongoClient;
+    private Configuration configuration;
 
 
     public void start() throws UnknownHostException {
@@ -25,7 +27,9 @@ public class SimpleIngestor {
         servers.add(new ServerAddress(inetAddress, 27017));
         servers.add(new ServerAddress(inetAddress, 27018));
 
-        mongoClient = new MongoClient(servers);
+      // going to need to add auth
+         mongoClient = new MongoClient(servers);
+      //  mongoClient = new MongoClient(servers, configuration.getCredentialsList());
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);
     }

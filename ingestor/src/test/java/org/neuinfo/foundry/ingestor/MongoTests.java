@@ -31,7 +31,7 @@ public class MongoTests extends TestCase {
             InetAddress inetAddress = InetAddress.getByName(si.getHost());
             servers.add(new ServerAddress(inetAddress, si.getPort()));
         }
-        mongoClient = new MongoClient(servers);
+        mongoClient = new MongoClient(servers, conf.getCredentialsList());
 
         mongoClient.setWriteConcern(WriteConcern.SAFE);
 

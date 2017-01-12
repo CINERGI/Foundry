@@ -25,7 +25,7 @@ public class DocWrapperTest extends TestCase {
         MongoDBRiverDefinition definition = MongoDBRiverDefinition.parseSettings("consumer", "consumer",
                 config.getMongoListenerSettings());
         List<ServerAddress> mongoServers = definition.getMongoServers();
-        mongoClient = new MongoClient(mongoServers);
+        mongoClient = new MongoClient(mongoServers,config.getCredentialsList());
         this.mongoDbName = definition.getMongoDb();
     }
 
