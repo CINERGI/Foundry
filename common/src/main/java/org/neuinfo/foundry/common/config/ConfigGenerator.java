@@ -97,6 +97,10 @@ public class ConfigGenerator {
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
+            rootEL = createIngestorCongigXml(systemCfg);
+            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/ingestor-cfg.xml";
+            Utils.saveXML(rootEL, configFile);
+            System.out.println("wrote " + configFile);
         } finally {
             Utils.close(in);
         }
@@ -104,6 +108,12 @@ public class ConfigGenerator {
 
     static Element createCommonConfigXml(SystemCfg cfg) {
         Element rootEl = new Element("common-cfg");
+        prepDB(cfg, rootEl);
+        return rootEl;
+    }
+
+    static Element createIngestorCongigXml(SystemCfg cfg) {
+        Element rootEl = new Element("ingestor-cfg");
         prepDB(cfg, rootEl);
         return rootEl;
     }

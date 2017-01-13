@@ -91,7 +91,8 @@ public class SpatialEnhancerTest extends TestCase {
 
             //List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
           //  List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0023");
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0013");
+           // List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0013");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-1000");
             IPlugin plugin = new SpatialEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
           //  optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
