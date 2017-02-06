@@ -74,8 +74,8 @@ public class SpatialEnhancerTest extends TestCase {
         sampleDocFile = HOME_DIR + "/etc/hydro10/ScienceBase/00F67830-9DB7-4968-BE91-F5A82791B7B8.xml";
 
         String xmlDocStr = Utils.loadAsString(sampleDocFile);
-       // String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
-      //  String serverUrl = "http://cinergi.sdsc.edu:8080/cinergi_spatial/SpatialEnhancer";
+        // String serverUrl = "https://photon.sdsc.edu:8443/cinergi/SpatialEnhancer";
+        //  String serverUrl = "http://cinergi.sdsc.edu:8080/cinergi_spatial/SpatialEnhancer";
         String serverUrl = "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer";
         JSONObject json = SpatialEnhancer.callSpatialEnhancer(serverUrl, xmlDocStr);
         assertNotNull(json);
@@ -85,18 +85,20 @@ public class SpatialEnhancerTest extends TestCase {
     public void testSpatialEnhancer() throws Exception {
         String thePrimaryKey = "043dbb8c-66de-6897-e054-00144fdd4fa6";
         thePrimaryKey = null;
+        thePrimaryKey = "50eb6020e4b02dd6077122b7";
+        thePrimaryKey = "50eb5ff9e4b02dd607711fff";
         Helper helper = new Helper("");
         try {
             helper.startup("consumers-cfg.xml");
 
-            //List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
-          //  List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0023");
-           // List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0013");
-            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-1000");
+            List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
+            //  List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0023");
+            // List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0013");
+            //  List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-1000");
             IPlugin plugin = new SpatialEnhancer2();
             Map<String, String> optionMap = new HashMap<String, String>();
-          //  optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
-           //  optionMap.put("serverURL","http://132.249.238.169:8080/cinergi/SpatialEnhancer");
+            //  optionMap.put("serverURL","http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer");
+            //  optionMap.put("serverURL","http://132.249.238.169:8080/cinergi/SpatialEnhancer");
             plugin.initialize(optionMap);
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
@@ -110,7 +112,7 @@ public class SpatialEnhancerTest extends TestCase {
                         System.out.println(">>----------------------------------------");
 
                     }
-                   //  break;
+                    //  break;
                 }
             }
         } finally {

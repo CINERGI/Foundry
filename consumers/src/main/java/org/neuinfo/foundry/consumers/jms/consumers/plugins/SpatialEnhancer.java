@@ -77,7 +77,7 @@ public class SpatialEnhancer implements IPlugin {
         }
     }
 
-   public static  void prepBoundingBoxProv(JSONObject spatial, ProvData provData) {
+    public static void prepBoundingBoxProv(JSONObject spatial, ProvData provData) {
         boolean hasBBFromPlaces = false;
         if (spatial == null ||
                 (!spatial.has("bounding_boxes") &&
@@ -96,19 +96,20 @@ public class SpatialEnhancer implements IPlugin {
             JSONObject derivedBoundingBoxes = spatial.getJSONObject("derived_bounding_boxes_from_places");
             if (derivedBoundingBoxes.length() > 0) {
                 for (String place : derivedBoundingBoxes.keySet()) {
+                    sb.setLength(0);
                     JSONObject placeJson = derivedBoundingBoxes.getJSONObject(place);
-
                     sb.append("Added spatial extent for ").append(place);
                     sb.append(" with value ").append(placeJson.toString());
                     provData.addModifiedFieldProv(sb.toString().trim());
                 }
+                hasBBFromPlaces = true;
             }
-            hasBBFromPlaces = true;
         }
         if (!hasBB && !hasBBFromPlaces) {
             JSONObject derivedBoundingBoxes = spatial.getJSONObject("derived_bounding_boxes_from_derived_place");
             if (derivedBoundingBoxes.length() > 0) {
                 for (String place : derivedBoundingBoxes.keySet()) {
+                    sb.setLength(0);
                     JSONObject placeJson = derivedBoundingBoxes.getJSONObject(place);
                     sb.append("Added spatial extent for ").append(place);
                     sb.append(" with value ").append(placeJson.toString());
