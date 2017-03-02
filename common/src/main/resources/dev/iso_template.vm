@@ -8,17 +8,16 @@
     <gmd:language>
         <gco:CharacterString>en</gco:CharacterString>
     </gmd:language>
+    <gmd:hierarchyLevel>
+        <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
+                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                          codeListValue="dataset">$resourceType</gmd:MD_ScopeCode>
+    </gmd:hierarchyLevel>
     <!--
-       <gmd:hierarchyLevel>
-           <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
-                             codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
-                             codeListValue="dataset">dataset
-           </gmd:MD_ScopeCode>
-       </gmd:hierarchyLevel>
-   -->
     <gmd:hierarchyLevelName>
         <gco:CharacterString>$resourceType</gco:CharacterString>
     </gmd:hierarchyLevelName>
+    -->
     <gmd:contact>
         <gmd:CI_ResponsibleParty>
             <gmd:individualName>
@@ -103,48 +102,52 @@
             <gmd:pointOfContact>
                 <gmd:CI_ResponsibleParty>
                     <gmd:individualName>
-                        <gco:CharacterString>$resourceContributor</gco:CharacterString>
+                        <gco:CharacterString>$individualName</gco:CharacterString>
                     </gmd:individualName>
-                    <!--
                     <gmd:organisationName>
-                        <gco:CharacterString>$czoOrgName</gco:CharacterString>
+                        <gco:CharacterString>$resourceContributor</gco:CharacterString>
                     </gmd:organisationName>
+                    <!--
                     <gmd:positionName>
                         <gco:CharacterString>$czoRole</gco:CharacterString>
                     </gmd:positionName>
 -->
-                    <!--
-                    <gmd:contactInfo>
-                        <gmd:CI_Contact>
-                            <gmd:phone>
-                                <gmd:CI_Telephone>
-                                    <gmd:voice>
-                                        <gco:CharacterString>$phone</gco:CharacterString>
-                                    </gmd:voice>
-                                </gmd:CI_Telephone>
-                            </gmd:phone>
-                            <gmd:address>
-                                <gmd:CI_Address>
-                                    <gmd:deliveryPoint>
-                                        <gco:CharacterString>$deliveryPoint</gco:CharacterString>
-                                    </gmd:deliveryPoint>
-                                    <gmd:city>
-                                        <gco:CharacterString>$city</gco:CharacterString>
-                                    </gmd:city>
-                                    <gmd:administrativeArea>
-                                        <gco:CharacterString>$state</gco:CharacterString>
-                                    </gmd:administrativeArea>
-                                    <gmd:postalCode>
-                                        <gco:CharacterString>$zip</gco:CharacterString>
-                                    </gmd:postalCode>
-                                    <gmd:electronicMailAddress>
-                                        <gco:CharacterString>$email</gco:CharacterString>
-                                    </gmd:electronicMailAddress>
-                                </gmd:CI_Address>
-                            </gmd:address>
-                        </gmd:CI_Contact>
-                    </gmd:contactInfo>
--->
+                    #if(${contactEmail})
+                        <gmd:contactInfo>
+                            <gmd:CI_Contact>
+                                <!--
+                                <gmd:phone>
+                                    <gmd:CI_Telephone>
+                                        <gmd:voice>
+                                            <gco:CharacterString>$phone</gco:CharacterString>
+                                        </gmd:voice>
+                                    </gmd:CI_Telephone>
+                                </gmd:phone>
+                                -->
+                                <gmd:address>
+                                    <gmd:CI_Address>
+                                        <!--
+                                        <gmd:deliveryPoint>
+                                            <gco:CharacterString>$deliveryPoint</gco:CharacterString>
+                                        </gmd:deliveryPoint>
+                                        <gmd:city>
+                                            <gco:CharacterString>$city</gco:CharacterString>
+                                        </gmd:city>
+                                        <gmd:administrativeArea>
+                                            <gco:CharacterString>$state</gco:CharacterString>
+                                        </gmd:administrativeArea>
+                                        <gmd:postalCode>
+                                            <gco:CharacterString>$zip</gco:CharacterString>
+                                        </gmd:postalCode>
+                                        -->
+                                        <gmd:electronicMailAddress>
+                                            <gco:CharacterString>$contactEmail</gco:CharacterString>
+                                        </gmd:electronicMailAddress>
+                                    </gmd:CI_Address>
+                                </gmd:address>
+                            </gmd:CI_Contact>
+                        </gmd:contactInfo>
+                    #end
                     <gmd:role>
                         <gmd:CI_RoleCode codeSpace="ISOTC211/19115"
                                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
@@ -367,12 +370,14 @@
                             </gmd:temporalElement>
                         #end
                         #if($geologicAge)
-                             <gmd:temporalElement>
+                            <gmd:temporalElement>
                                 <gmd:EX_TemporalExtent>
                                     <gmd:extent>
                                         <gml:TimePeriod gml:id="GeologicAge">
-                                            <gml:beginPosition frame="geologicTime">${geologicAge.older}</gml:beginPosition>
-                                            <gml:endPosition frame="geologicTime">${geologicAge.younger}</gml:endPosition>
+                                            <gml:beginPosition
+                                                    frame="geologicTime">${geologicAge.older}</gml:beginPosition>
+                                            <gml:endPosition
+                                                    frame="geologicTime">${geologicAge.younger}</gml:endPosition>
                                         </gml:TimePeriod>
                                     </gmd:extent>
                                 </gmd:EX_TemporalExtent>
@@ -383,9 +388,10 @@
             #end
         </gmd:MD_DataIdentification>
     </gmd:identificationInfo>
-    #if($fileFormat)
+    #if($resourceURL)
         <gmd:distributionInfo>
             <gmd:MD_Distribution>
+                <!--
                 <gmd:distributionFormat>
                     <gmd:MD_Format>
                         <gmd:name>
@@ -393,6 +399,18 @@
                         </gmd:name>
                     </gmd:MD_Format>
                 </gmd:distributionFormat>
+                    -->
+                <gmd:transferOptions>
+                    <gmd:MD_DigitalTransferOptions>
+                        <gmd:onLine>
+                            <gmd:CI_OnlineResource>
+                                <gmd:linkage>
+                                    <gmd:URL>$resourceURL</gmd:URL>
+                                </gmd:linkage>
+                            </gmd:CI_OnlineResource>
+                        </gmd:onLine>
+                    </gmd:MD_DigitalTransferOptions>
+                </gmd:transferOptions>
             </gmd:MD_Distribution>
         </gmd:distributionInfo>
     #end

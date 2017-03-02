@@ -280,7 +280,7 @@ public class CinergiFormRec {
         CinergiFormRec cfr = new CinergiFormRec();
         cfr.resourceType = json.getString("resourceType");
         cfr.resourceTitle = json.getString("resourceTitle");
-        cfr.abstractText = json.getString("abstractText");
+        cfr.abstractText = json.getString("AbstractText");
         cfr.resourceURL = json.getString("resourceURL");
         cfr.individualName = json.getString("individualName");
         cfr.contactEmail = json.getString("contactEmail");
@@ -290,7 +290,7 @@ public class CinergiFormRec {
             cfr.alternateTitle = json.getString("alternateTitle");
         }
         prepList(cfr.geoscienceSubdomains, json, "geoscienceSubdomains");
-        prepList(cfr.equipments, json, "equipments");
+        prepList(cfr.equipments, json, "equipment");
         prepList(cfr.methods, json, "methods");
         prepList(cfr.earthProcesses, json, "earthProcesses");
         prepList(cfr.describedFeatures, json, "describedFeatures");
@@ -305,6 +305,10 @@ public class CinergiFormRec {
                 SpatialExtent se = SpatialExtent.fromJSON(jsArr.getJSONObject(i));
                 cfr.addSpatialExtent(se);
             }
+        }
+        if (json.has("Extent")) {
+            SpatialExtent se = SpatialExtent.fromJSON(json.getJSONObject("Extent"));
+            cfr.addSpatialExtent(se);
         }
         if (json.has("fileFormat")) {
             cfr.setFileFormat(json.getString("fileFormat"));
@@ -411,7 +415,7 @@ public class CinergiFormRec {
             String wbl = json.getString("westBoundLongitude");
             String ebl = json.getString("eastBoundLongitude");
             String sbl = json.getString("southBoundLatitude");
-            String nbl = json.getString("northBoundLatitude");
+            String nbl = json.getString("NorthBoundLatitude");
             return new SpatialExtent(wbl, ebl, sbl, nbl);
         }
 
@@ -420,7 +424,7 @@ public class CinergiFormRec {
             json.put("westBoundLongitude", westBoundLongitude);
             json.put("eastBoundLongitude", eastBoundLongitude);
             json.put("southBoundLatitude", southBoundLatitude);
-            json.put("northBoundLatitude", northBoundLatitude);
+            json.put("NorthBoundLatitude", northBoundLatitude); // to match form submission JSON from Tom
             return json;
         }
     }

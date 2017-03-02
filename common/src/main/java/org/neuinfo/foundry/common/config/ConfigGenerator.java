@@ -97,8 +97,12 @@ public class ConfigGenerator {
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
-            rootEL = createIngestorCongigXml(systemCfg);
+            rootEL = createIngestorConfigXml(systemCfg);
             configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/ingestor-cfg.xml";
+            Utils.saveXML(rootEL, configFile);
+            System.out.println("wrote " + configFile);
+
+            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/ingestor-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
         } finally {
@@ -112,7 +116,7 @@ public class ConfigGenerator {
         return rootEl;
     }
 
-    static Element createIngestorCongigXml(SystemCfg cfg) {
+    static Element createIngestorConfigXml(SystemCfg cfg) {
         Element rootEl = new Element("ingestor-cfg");
         prepDB(cfg, rootEl);
         return rootEl;
@@ -336,8 +340,8 @@ public class ConfigGenerator {
     public static void main(String[] args) throws Exception {
         Option help = new Option("h", "print this message");
         Option configFileOption = Option.builder("c").argName("cfg-spec-file").hasArg()
-                .desc("Full path to the Foundry-ES config spec YAML file").build();
-        Option foundryRootOption = Option.builder("f").argName("foundry-es-root-dir").hasArg().build();
+                .desc("Full path to the Foundry config spec YAML file").build();
+        Option foundryRootOption = Option.builder("f").argName("foundry-root-dir").hasArg().build();
         Option profileOption = Option.builder("p").argName("profile")
                 .desc("Maven profile ([dev]|prod)").hasArg().build();
         configFileOption.setRequired(true);

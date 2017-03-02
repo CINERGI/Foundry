@@ -1,7 +1,7 @@
 package org.neuinfo.foundry.jms.producer;
 
 import org.apache.commons.cli.*;
-import org.apache.commons.lang.*;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.LogManager;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.ingestion.DocProcessingStatsService;
@@ -12,9 +12,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by bozyurt on 10/30/14.
@@ -143,7 +144,6 @@ public class ManagementService {
         System.out.println("status2Match:" + status2Match + " stepName:" + stepName + " run2TheEnd:" + run2TheEnd);
         ms.helper.runPipelineSteps(source, status2Match, stepName, run2TheEnd);
     }
-
 
 
     public static void main(String[] args) throws Exception {

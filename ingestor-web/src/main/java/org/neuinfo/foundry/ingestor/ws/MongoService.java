@@ -162,8 +162,8 @@ public class MongoService {
         return records.findOne(query, fields) != null;
     }
 
-    public Source findSource(String nifId) {
-        BasicDBObject query = new BasicDBObject("nifId", nifId);
+    public Source findSource(String resourceID) {
+        BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", resourceID);
         DB db = mongoClient.getDB(dbName);
         DBCollection sources = db.getCollection("sources");
         final DBCursor cursor = sources.find(query);
