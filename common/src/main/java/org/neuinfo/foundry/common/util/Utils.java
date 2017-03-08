@@ -4,6 +4,7 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
+import org.jdom2.output.LineSeparator;
 import org.jdom2.output.XMLOutputter;
 
 import java.io.*;
@@ -118,7 +119,7 @@ public class Utils {
         BufferedWriter out = null;
         try {
             out = newUTF8CharSetWriter(filename);
-            XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+            XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat().setLineSeparator(LineSeparator.SYSTEM));
             xout.output(rootElem, out);
         } finally {
             close(out);

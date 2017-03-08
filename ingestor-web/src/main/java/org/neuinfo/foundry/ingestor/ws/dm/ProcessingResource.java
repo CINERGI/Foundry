@@ -26,14 +26,17 @@ import java.util.UUID;
 /**
  * Created by bozyurt on 3/1/17.
  */
-@Path("cinergi/processing")
+@Path("cinergi")
 public class ProcessingResource {
     private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
 
     @POST
+    @Path("processing")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     public Response post(String content, @QueryParam("apiKey") String apiKey) {
+        System.out.println("apiKey:" + apiKey);
+        System.out.println("content:" + content);
         if (apiKey == null) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
         }
@@ -41,11 +44,12 @@ public class ProcessingResource {
         if (!apiKey.equals(theApiKey)) {
             throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
         }
-        JSONObject json = new JSONObject(content);
-        CinergiFormRec cfr = CinergiFormRec.fromJSON(json);
-        ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+
         Connection con = null;
         try {
+            JSONObject json = new JSONObject(content);
+            CinergiFormRec cfr = CinergiFormRec.fromJSON(json);
+            ConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
             Result result = handle(cfr);
             if (result == null) {
                 throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).entity("Already exists").build());

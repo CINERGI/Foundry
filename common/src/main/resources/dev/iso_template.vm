@@ -87,12 +87,14 @@
                             </gmd:dateType>
                         </gmd:CI_Date>
                     </gmd:date>
+                    #if ($definingCitation)
                     <gmd:identifier>
                         <gmd:MD_Identifier>
                             <gmd:code>
                                 <gco:CharacterString>$definingCitation</gco:CharacterString>
                             </gmd:code>
                         </gmd:MD_Identifier>
+                     #end
                     </gmd:identifier>
                 </gmd:CI_Citation>
             </gmd:citation>

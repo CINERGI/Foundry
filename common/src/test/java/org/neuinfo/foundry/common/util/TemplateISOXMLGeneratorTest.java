@@ -35,6 +35,7 @@ public class TemplateISOXMLGeneratorTest extends TestCase {
         cfr.addSpatialExtent(new CinergiFormRec.SpatialExtent("39.0", "174.0", "-70.0", "-8.0"));
         cfr.setGeologicAge(new CinergiFormRec.GeologicAge("Cambrian", "Permian"));
         cfr.setFileFormat("CSV");
+
         TemplateISOXMLGenerator generator = new TemplateISOXMLGenerator();
 
 

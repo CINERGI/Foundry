@@ -26,7 +26,8 @@ public class IngestorWSApp extends ResourceConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //packages("org.neuinfo.foundry.ingestor.ws");
+        //FIXME for test
+        packages("org.neuinfo.foundry.ingestor.ws");
         packages("org.neuinfo.foundry.ingestor.ws.enhancers");
         packages("org.neuinfo.foundry.ingestor.ws.dm");
         register(MultiPartFeature.class);

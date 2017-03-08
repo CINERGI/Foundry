@@ -1,0 +1,23 @@
+{
+  "resourceType": "DataSet",
+  "resourceTitle": "2. Name/title of the resource",
+  "AbstractText": "Geodatabase of Treaties both in force and not yet in force between the Commonwealth of Australia and the Republic of Indonesia, Independent State of Papua New Guinea, the Republic of France, New Zealand, Government of the Solomon Islands and People's Republic of East Timor",
+  "resourceURL": "4. Resource URL",
+  "individualName": "5. Your name",
+  "contactEmail": "6. Your email",
+  "definingCitation": "7. Defining citation",
+  "resourceContributor": "8. Resource contributor",
+  "alternateTitle": "9. Abbrevations or synonyms",
+  "equipments": "LANDSAT",
+  "methods": "A method",
+  "earthProcesses": "An earth process",
+  "describedFeatures": "a described feature",
+  "otherTags": "An other tag",
+  "placeNames": "New Zealand",
+  "Extent": {
+    "westBoundLongitude": "39.0",
+    "eastBoundLongitude": "174.0",
+    "southBoundLatitude": "-70.0",
+    "NorthBoundLatitude": "-8.0"
+  }
+}

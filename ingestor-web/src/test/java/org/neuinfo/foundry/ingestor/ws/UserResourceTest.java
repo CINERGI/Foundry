@@ -20,7 +20,6 @@ import java.io.IOException;
  * Created by bozyurt on 10/17/14.
  */
 public class UserResourceTest {
-
     private HttpServer server;
     private WebTarget target;
     private Client c;
@@ -38,7 +37,7 @@ public class UserResourceTest {
         server.shutdownNow();
     }
 
-    @Ignore
+    @Test
     public void testAddUser() throws IOException {
         User.Builder builder = new User.Builder("bozyurt", "pwd", "iozyurt@ucsd.edu");
         User user = builder.firstName("Burak").lastName("Ozyurt").build();
