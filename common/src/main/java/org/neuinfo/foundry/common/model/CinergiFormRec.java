@@ -324,13 +324,17 @@ public class CinergiFormRec {
 
     static void prepList(List<String> list, JSONObject json, String name) {
         if (json.has(name)) {
-            JSONArray jsArr = json.getJSONArray(name);
-            int len = jsArr.length();
-            for (int i = 0; i < len; i++) {
-                list.add(jsArr.getString(i));
+            Object o = json.get(name);
+            if (o instanceof JSONArray) {
+                JSONArray jsArr = json.getJSONArray(name);
+                int len = jsArr.length();
+                for (int i = 0; i < len; i++) {
+                    list.add(jsArr.getString(i));
+                }
+            } else {
+                list.add(o.toString());
             }
         }
-
     }
 
     public static class TemporalExtent {

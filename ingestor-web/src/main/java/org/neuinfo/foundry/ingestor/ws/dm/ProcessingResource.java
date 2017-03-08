@@ -91,6 +91,7 @@ public class ProcessingResource {
             dis.initialize(mongoService.getDbName(), mongoService.getMongoClient());
 
             Source source = dis.findSource("cinergi-0000", null);
+            dis.setSource(source);
             TemplateISOXMLGenerator generator = new TemplateISOXMLGenerator();
             Date startDate = new Date();
             String batchId = Utils.prepBatchId(startDate);

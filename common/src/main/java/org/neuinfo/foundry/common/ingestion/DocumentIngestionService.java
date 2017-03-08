@@ -69,8 +69,10 @@ public class DocumentIngestionService extends BaseIngestionService {
     }
 
     public Source findSource(String nifId, String dataSource) {
-        BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", nifId)
-                .append("sourceInformation.dataSource", dataSource);
+        BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", nifId);
+        if (dataSource != null) {
+            query.append("sourceInformation.dataSource", dataSource);
+        }
         DB db = mongoClient.getDB(dbName);
         DBCollection sources = db.getCollection("sources");
         return MongoUtils.getSource(query, sources);
