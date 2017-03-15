@@ -3,16 +3,14 @@ package org.neuinfo.foundry.common.util;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by bozyurt on 4/8/14.
@@ -71,6 +69,7 @@ public class JSONUtils {
         }
     }
 
+
     public static DBObject encode(JSONObject o, boolean escape$) {
         BasicDBObject result = new BasicDBObject();
         try {
@@ -84,7 +83,7 @@ public class JSONUtils {
                 }
                 if (k.indexOf('.') != -1) {
                     // mongo does not allow period in a key
-                    k = k.replaceAll("\\.","");
+                    k = k.replaceAll("\\.", "");
                 }
                 if (v instanceof JSONArray) {
                     result.put(k, encode((JSONArray) v));
@@ -103,6 +102,14 @@ public class JSONUtils {
         }
     }
 
+    public static JSONObject toJSON(Document document, boolean unEscape$) throws JSONException {
+        final String jsonStr = document.toJson();
+        JSONObject json = new JSONObject(jsonStr);
+        if (unEscape$) {
+            unEscapeJson(json);
+        }
+        return json;
+    }
 
     /**
      * Given a MongoDB <code>BasicDBObject</code> convert it to a JSON object unescaping <code>_$</code> back to <code>$</code>

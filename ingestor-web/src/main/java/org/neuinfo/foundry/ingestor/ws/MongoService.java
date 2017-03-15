@@ -6,6 +6,11 @@ import com.github.fge.jsonschema.core.report.ProcessingReport;
 import com.github.fge.jsonschema.main.JsonSchema;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.mongodb.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +25,9 @@ import org.neuinfo.foundry.ingestor.common.ConfigLoader;
 
 import java.net.InetAddress;
 import java.util.*;
+
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created by bozyurt on 7/17/14.
@@ -53,7 +61,7 @@ public class MongoService {
         } else {
             mongoClient = new MongoClient(servers);
         }
-        mongoClient.setWriteConcern(WriteConcern.SAFE);
+        mongoClient.setWriteConcern(WriteConcern.ACKNOWLEDGED);
     }
 
     public void shutdown() {
@@ -65,13 +73,13 @@ public class MongoService {
 
     public List<JSONObject> getAllSources() {
         List<JSONObject> list = new LinkedList<JSONObject>();
-        DB db = mongoClient.getDB(dbName);
-        DBCollection sources = db.getCollection("sources");
-        final DBCursor cursor = sources.find(new BasicDBObject());
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> sources = db.getCollection("sources");
+        MongoCursor<Document> cursor = sources.find().iterator();
         try {
             while (cursor.hasNext()) {
-                BasicDBObject dbObject = (BasicDBObject) cursor.next();
-                final JSONObject js = JSONUtils.toJSON(dbObject, true);
+                Document sourceDoc = cursor.next();
+                final JSONObject js = JSONUtils.toJSON(sourceDoc, true);
                 list.add(js);
             }
         } finally {
@@ -81,11 +89,11 @@ public class MongoService {
     }
 
     public JSONObject getSource(String nifId) {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection sources = db.getCollection("sources");
-        BasicDBObject query = new BasicDBObject();
-        query.put("sourceInformation.resourceID", nifId);
-        BasicDBObject source = (BasicDBObject) sources.findOne(query);
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> sources = db.getCollection("sources");
+        Document source = sources.find(eq("sourceInformation.resourceID", nifId)).first();
+
+        // BasicDBObject source = (BasicDBObject) sources.findOne(query);
         if (source == null) {
             return null;
         }
@@ -117,14 +125,15 @@ public class MongoService {
 
 
     public JSONObject findDocument(String nifId, String docId) {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection records = db.getCollection("records");
-        BasicDBObject query = new BasicDBObject("primaryKey", docId).append("SourceInfo.SourceID", nifId);
-        final BasicDBObject dbObject = (BasicDBObject) records.findOne(query);
-        if (dbObject == null) {
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> records = db.getCollection("records");
+        //BasicDBObject query = new BasicDBObject("primaryKey", docId).append("SourceInfo.SourceID", nifId);
+        Bson query = and(eq("primaryKey", docId), eq("SourceInfo.SourceID", nifId));
+        Document document = records.find(query).first();
+        if (document == null) {
             return null;
         }
-        return JSONUtils.toJSON(dbObject, true);
+        return JSONUtils.toJSON(document, true);
     }
 
     public JSONObject findOriginalDocument(String nifId, String docId) {
@@ -155,24 +164,28 @@ public class MongoService {
 
 
     public boolean hasDocument(String nifId, String docId) {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection records = db.getCollection("records");
-        BasicDBObject query = new BasicDBObject("primaryKey", docId).append("SourceInfo.SourceID", nifId);
-        BasicDBObject fields = new BasicDBObject("primaryKey", 1);
-        return records.findOne(query, fields) != null;
+        //DB db = mongoClient.getDB(dbName);
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> records = db.getCollection("records");
+        // BasicDBObject query = new BasicDBObject("primaryKey", docId).append("SourceInfo.SourceID", nifId);
+        Bson query = and(eq("primaryKey", docId), eq("SourceInfo.SourceID", nifId));
+        // BasicDBObject fields = new BasicDBObject("primaryKey", 1);
+        // return records.findOne(query, fields) != null;
+        return records.count(query) > 0;
     }
 
     public Source findSource(String resourceID) {
-        BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", resourceID);
-        DB db = mongoClient.getDB(dbName);
-        DBCollection sources = db.getCollection("sources");
-        final DBCursor cursor = sources.find(query);
+        // BasicDBObject query = new BasicDBObject("sourceInformation.resourceID", resourceID);
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> sources = db.getCollection("sources");
+        MongoCursor<Document> cursor = sources.find(eq("sourceInformation.resourceID", resourceID)).iterator();
 
         Source source = null;
         try {
             if (cursor.hasNext()) {
-                final DBObject dbObject = cursor.next();
-                source = Source.fromDBObject(dbObject);
+                Document sourceDoc = cursor.next();
+                // source = Source.fromDBObject(dbObject);
+                source = Source.fromJSON(new JSONObject(sourceDoc.toJson()));
             }
         } finally {
             cursor.close();
@@ -182,19 +195,29 @@ public class MongoService {
 
 
     public Organization findOrganization(String orgName, String objectId) {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection organizations = db.getCollection("organizations");
+        //DB db = mongoClient.getDB(dbName);
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> organizations = db.getCollection("organizations");
+        /*
         BasicDBObject query;
         if (objectId != null) {
             query = new BasicDBObject("_id", new ObjectId(objectId));
         } else {
             query = new BasicDBObject("name", orgName);
         }
-        DBCursor cursor = organizations.find(query);
+        */
+        Bson query;
+        if (objectId != null) {
+            query = eq("_id", new ObjectId(objectId));
+        } else {
+            query = eq("name", orgName);
+        }
+
+        MongoCursor<Document> cursor = organizations.find(query).iterator();
         Organization org = null;
         try {
-            DBObject dbObject = cursor.next();
-            org = Organization.fromDBObject(dbObject);
+            Document doc = cursor.next();
+            org = Organization.fromDocument(doc);
         } finally {
             cursor.close();
         }
@@ -202,13 +225,15 @@ public class MongoService {
     }
 
     public ObjectId saveOrganization(String orgName) throws Exception {
-        DB db = mongoClient.getDB(dbName);
-        DBCollection organizations = db.getCollection("organizations");
+        MongoDatabase db = mongoClient.getDatabase(dbName);
+        MongoCollection<Document> organizations = db.getCollection("organizations");
         Organization org = new Organization(orgName);
         JSONObject json = org.toJSON();
-        DBObject dbObject = JSONUtils.encode(json, true);
-        organizations.save(dbObject);
-        ObjectId id = (ObjectId) dbObject.get("_id");
+        Document doc = Document.parse(json.toString());
+        //DBObject dbObject = JSONUtils.encode(json, true);
+        organizations.insertOne(doc);
+        // ObjectId id = (ObjectId) dbObject.get("_id");
+        ObjectId id = doc.getObjectId("_id");
         return id;
     }
 

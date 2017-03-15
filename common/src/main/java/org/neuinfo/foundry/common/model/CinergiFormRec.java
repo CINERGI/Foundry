@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.common.model;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -290,8 +291,12 @@ public class CinergiFormRec {
             cfr.alternateTitle = json.getString("alternateTitle");
         }
         prepList(cfr.geoscienceSubdomains, json, "geoscienceSubdomains");
-        prepList(cfr.equipments, json, "equipment");
-        prepList(cfr.methods, json, "methods");
+        if (json.has("equipment")) {
+            prepList(cfr.equipments, json, "equipment", ",");
+        } else if (json.has("equimpment")) { // Uncorrected typo in the form
+            prepList(cfr.equipments, json, "equimpment", ",");
+        }
+        prepList(cfr.methods, json, "methods", ",");
         prepList(cfr.earthProcesses, json, "earthProcesses");
         prepList(cfr.describedFeatures, json, "describedFeatures");
         prepList(cfr.otherTags, json, "otherTags");
@@ -323,16 +328,27 @@ public class CinergiFormRec {
     }
 
     static void prepList(List<String> list, JSONObject json, String name) {
+        prepList(list, json, name, null);
+    }
+
+    static void prepList(List<String> list, JSONObject json, String name, String delimiter) {
         if (json.has(name)) {
             Object o = json.get(name);
             if (o instanceof JSONArray) {
                 JSONArray jsArr = json.getJSONArray(name);
                 int len = jsArr.length();
                 for (int i = 0; i < len; i++) {
-                    list.add(jsArr.getString(i));
+                    list.add(StringEscapeUtils.escapeHtml(jsArr.getString(i)));
                 }
             } else {
-                list.add(o.toString());
+                if (delimiter != null) {
+                    String[] tokens = o.toString().split(delimiter);
+                    for (String token : tokens) {
+                        list.add(StringEscapeUtils.escapeXml(token));
+                    }
+                } else {
+                    list.add(StringEscapeUtils.escapeXml(o.toString()));
+                }
             }
         }
     }
@@ -416,10 +432,10 @@ public class CinergiFormRec {
         }
 
         public static SpatialExtent fromJSON(JSONObject json) {
-            String wbl = json.getString("westBoundLongitude");
-            String ebl = json.getString("eastBoundLongitude");
-            String sbl = json.getString("southBoundLatitude");
-            String nbl = json.getString("NorthBoundLatitude");
+            String wbl = json.get("westBoundLongitude").toString();
+            String ebl = json.get("eastBoundLongitude").toString();
+            String sbl = json.get("southBoundLatitude").toString();
+            String nbl = json.get("NorthBoundLatitude").toString();
             return new SpatialExtent(wbl, ebl, sbl, nbl);
         }
 

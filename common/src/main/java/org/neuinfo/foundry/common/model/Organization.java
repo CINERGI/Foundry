@@ -1,6 +1,7 @@
 package org.neuinfo.foundry.common.model;
 
 import com.mongodb.DBObject;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
@@ -41,6 +42,12 @@ public class Organization {
         String name = (String) dbo.get("name");
         String objectId = ((ObjectId) dbo.get("_id")).toHexString();
 
+        return new Organization(objectId, name);
+    }
+
+    public static Organization fromDocument(Document doc) {
+        String name = doc.getString("name");
+        String objectId = doc.getObjectId("_id").toHexString();
         return new Organization(objectId, name);
     }
 

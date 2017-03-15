@@ -1,5 +1,6 @@
 package org.neuinfo.foundry.common.util;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -9,6 +10,7 @@ import org.jdom2.Element;
 import org.neuinfo.foundry.common.model.CinergiFormRec;
 import org.neuinfo.foundry.common.model.ScicrunchResourceRec;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,15 +32,16 @@ public class TemplateISOXMLGenerator {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         VelocityContext ctx = new VelocityContext();
         ctx.put("guid", primaryKey);
-        ctx.put("resourceType", cfRec.getResourceType());
-        ctx.put("resourceTitle", cfRec.getResourceTitle());
-        ctx.put("abstract", cfRec.getAbstractText());
+
+        ctx.put("resourceType", StringEscapeUtils.escapeXml(cfRec.getResourceType()));
+        ctx.put("resourceTitle", StringEscapeUtils.escapeXml(cfRec.getResourceTitle()));
+        ctx.put("abstract", StringEscapeUtils.escapeXml(cfRec.getAbstractText()));
         ctx.put("resourceURL", cfRec.getResourceURL());
-        ctx.put("individualName", cfRec.getIndividualName());
+        ctx.put("individualName", StringEscapeUtils.escapeXml(cfRec.getIndividualName()));
         ctx.put("contactEmail", cfRec.getContactEmail());
         ctx.put("definingCitation", cfRec.getDefiningCitation());
-        ctx.put("resourceContributor", cfRec.getResourceContributor());
-        ctx.put("alternateTitle", cfRec.getAlternateTitle());
+        ctx.put("resourceContributor", StringEscapeUtils.escapeXml(cfRec.getResourceContributor()));
+        ctx.put("alternateTitle", StringEscapeUtils.escapeXml(cfRec.getAlternateTitle()));
         ctx.put("geoscienceSubdomains", cfRec.getGeoscienceSubdomains());
         ctx.put("equipments", cfRec.getEquipments());
         ctx.put("methods", cfRec.getMethods());
@@ -61,6 +64,9 @@ public class TemplateISOXMLGenerator {
         template.merge(ctx, sw);
 
         System.out.println(sw.toString());
+        File tempFile = File.createTempFile("form_", ".xml");
+        Utils.saveText(sw.toString(), tempFile.getAbsolutePath());
+        System.out.println("saved " + tempFile);
 
         Element rootEl = Utils.readXML(sw.toString());
 
