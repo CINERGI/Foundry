@@ -162,7 +162,10 @@ public class ISOXMLGeneratorSupport {
             List<KeywordInfo> kwiList = category2KwiListMap.get(category);
             Element dkEl = new Element("descriptiveKeywords", gmd);
             Date now = new Date();
-            Comment comment = new Comment("Cinergi keyword enhanced at " + now);
+            Comment comment = new Comment("Cinergi keyword enhanced. File generated at  " + now);
+            if (kwiList != null && kwiList.get(0) != null && kwiList.get(0).getLastChangedDate() != null) {
+                comment = new Comment("Cinergi keyword enhanced at " + kwiList.get(0).getLastChangedDate() );
+            }
             dkEl.addContent(comment);
             List<Element> keywords = new ArrayList<Element>(kwiList.size());
             String ontId = null;
@@ -240,7 +243,7 @@ public class ISOXMLGeneratorSupport {
 
 
         Element otherCitationDetailsEl = new Element("otherCitationDetails", gmd);
-        otherCitationDetailsEl.addContent(CinergiXMLUtils.createCharString("Cinergi keyword enhanced at " + date));
+        otherCitationDetailsEl.addContent(CinergiXMLUtils.createCharString("Cinergi keyword enhanced.File generated at " + date));
 
         citationEl.addContent(outDateEl);
 
