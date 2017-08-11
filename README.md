@@ -47,7 +47,7 @@ An example master configuration file can be found at `$HOME/Foundry/bin/config-s
 Once you create a master config file named say `config.yml` run the following to generate all configuration files for the subsystems (for dev profile)
 
 ```
-cd $HOME/Foundry-ES/bin
+cd $HOME/Foundry/bin
 ./config_gen.sh -c config.yml  -f $HOME/Foundry -p dev
 
 ```
