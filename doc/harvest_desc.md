@@ -1,46 +1,55 @@
 Harvest Descriptors
 ------------------
 
-## A 
+## A sample harvest descriptor JSON document
 
 ```JSON
 {
-    "SourceInformation": {
-      "ResourceID": "nlx_152590",
-      "Name": "Open Source Brain",
-      "DataSource": "OSB Projects"
+    "sourceInformation": {
+        "resourceID": "cinergi-0030",
+        "name": "IDEA MGDS",
+        "dataSource": "IDEA MGDS"
     },
-    
-    "IngestConfiguration": {
-      "IngestMethod": "XML",
-      "IngestURL": "http://www.opensourcebrain.org/projects.xml?limit=1000",
-      "allowDuplicates": "False",
-      
-      "CrawlFrequency": {
-        "CrawlType": "Frequency",
-        "Hours": "48",
-        "Minutes": "0",
-        "StartDays": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "StartTime": "0:00",
-        "OperationEndTime": "24:00" 
-      }  
+    "ingestConfiguration": {
+        "ingestMethod": "WAF",
+        "ingestURL": "http://get.iedadata.org/metadata/iso/series/",
+        "allowDuplicates": "false",
+        "crawlFrequency": {
+            "crawlType": "Frequency",
+            "hours": "48",
+            "minutes": "0",
+            "startDays": [
+                "Sunday",
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday"
+            ],
+            "startTime": "0:00",
+            "operationEndTime": "24:00"
+        }
     },
-        
-    "ContentSpecification": {
-      "KeepMissing": "false",
-      "TopElement": "projects",
-      "DocumentElement": "project",
-      "Locale": "en_US"
+    "contentSpecification": {
+        "keepMissing": "false",
+        "locale": "en_US"
     },
-    
-    "PrimaryKey": {
-      "Fields": ["$..id.'_$'"],
-      "Delimiter": [":"],
-      "Method": "Value"
+    "originalRecordIdentifierSpec": {
+        "fields": [
+            "$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
+        ],
+        "delimiter": [
+            ":"
+        ],
+        "method": "Value"
     },
-      
-    "DocumentProcessing": ["UUID Generation", "Index"]     
+    "documentProcessing": [
+        "UUID Generation",
+        "XML2Cinergi",
+        "Index"
+    ]
 }
-```
 
+```
 

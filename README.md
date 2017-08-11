@@ -99,8 +99,80 @@ consumers that are responsible for the retrieval of the original data as
 configured by harvest descriptor JSON file of the corresponding source.
 They are triggered by the manager application.
 
+## Initial Setup
 
-Further Documentation
+Before any processing the MongoDB needs to be populated with the source descriptors using
+the `$HOME/Foundry/bin/ingest_src_cli.sh`. 
+
+```
+./ingest_src_cli.sh -h
+usage: SourceIngestorCLI
+  -c <config-file>        config-file e.g. ingestor-cfg.xml (default)
+  -d                      delete the source given by the source-json-file
+  -h                      print this message
+  -j <source-json-file>   harvest source description file
+  -u                      update the source given by the source-json-file
+```
+
+Example source descriptors are under `$HOME/Foundry/consumers/etc`.
+
+An example usage for inserting IEDA Earthchem Library source descriptor document to the `sources` collection is show below
+
+ ```
+./ingest_src_cli.sh -j $HOME/Foundry/consumers/etc/cinergi-0023.json
+```
+
+Source descriptors are JSON files. To create a new source descriptor for a new resource, copy one of the example source descriptors to a new file and edit it. For more information about a source/harvest descriptor see [Document Ingestion](doc/doc_ingestion.md) and [Harvest Description](doc/harvest_desc.md).
+
+
+## Dispatcher
+
+The script for the dispatcher component `dispatcher.sh` is located in 
+`$HOME/Foundry_ES/bin`. By default it uses `dispatcher-cfg.xml` file for the 
+profile specified during the build. This needs to run in its own process. 
+To stop it, use `Ctrl-C`.
+
+```
+ ./dispatcher.sh -h
+ usage: Dispatcher
+  -c <config-file>   config-file e.g. dispatcher-cfg.xml (default)
+  -h                 print this message
+```
+
+
+## Consumer Head
+The script for the consumer head component `consumer_head.sh` is located in 
+`$HOME/Foundry_ES/bin`. By default it uses `consumers-cfg.xml` file for the 
+profile specified during the build. For production use you need to specify 
+ `-f` option. This needs to run in its own process. To stop it, use `Ctrl-C`.
+
+
+ ```
+ ./consumer_head.sh -h
+ usage: ConsumerCoordinator
+  -c <config-file>          config-file e.g. consumers-cfg.xml (default)
+  -cm                       run in consumer mode (no ingestors)
+   -f                        full data set default is 100 documents
+   -h                        print this message
+   -n <max number of docs>   Max number of documents to ingest
+   -p                        send provenance data to prov server
+   -t                        run ingestors in test mode
+```
+
+## Manager
+
+Manager is an interactive command line application for sending ingestion start messages for resources to the consumer head(s). 
+It also have some convenience functions to cleanup MongoDB data for a given resource and delete ElasticSearch indices. 
+By default manager app uses `dispatcher-cfg.xml` file for the profile specified 
+during the build. 
+
+```
+./manager.sh -h
+usage: ManagementService
+ -c <config-file>   config-file e.g. dispatcher-cfg.xml (default)
+ -h                 print this message
+```
+
 ---------------------
 
  * [System Architecture](doc/architecture.md)
