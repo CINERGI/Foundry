@@ -21,7 +21,9 @@ import javax.jms.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
 import java.util.Date;
+import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -30,19 +32,17 @@ import java.util.UUID;
 @Path("cinergi/processing")
 @Api(value = "cinergi/processing", description = "CINERGI Form based processing")
 public class ProcessingResource {
-    private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
-
     @POST
     @Path("/")
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiResponses(value = {@ApiResponse(code = 500, message = "An internal error occurred during submission of document for CINERGI pipeline processing"),
-        @ApiResponse(code = 400, message = "Either missing apiKey or document already exists"),
-        @ApiResponse(code = 403, message = "Not a valid API key")})
+            @ApiResponse(code = 400, message = "Either missing apiKey or document already exists"),
+            @ApiResponse(code = 403, message = "Not a valid API key")})
     @ApiOperation(value = "Submit a document for CINERGI pipeline processing",
             notes = "",
             response = String.class)
-    public Response post(@ApiParam(value="A JSON object from the form submission", required = true) String content,
+    public Response post(@ApiParam(value = "A JSON object from the form submission", required = true) String content,
                          @ApiParam(value = "API Key", required = true) @QueryParam("apiKey") String apiKey) {
         System.out.println("apiKey:" + apiKey);
         System.out.println("content:" + content);
@@ -50,6 +50,18 @@ public class ProcessingResource {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
         }
         // System.out.println("apiKey:" + apiKey);
+        String theApiKey = null;
+        try {
+            Properties properties = Utils.loadProperties("ingestor-web.properties");
+            theApiKey = properties.getProperty("apiKey");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
+        }
+        if (theApiKey == null) {
+            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+        }
+
         if (!apiKey.equals(theApiKey)) {
             throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
         }

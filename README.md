@@ -122,7 +122,7 @@ An example usage for inserting IEDA Earthchem Library source descriptor document
 ./ingest_src_cli.sh -j $HOME/Foundry/consumers/etc/cinergi-0023.json
 ```
 
-Source descriptors are JSON files. To create a new source descriptor for a new resource, copy one of the example source descriptors to a new file and edit it. For more information about a source/harvest descriptor see [Document Ingestion](doc/doc_ingestion.md) and [Harvest Description](doc/harvest_desc.md).
+Source descriptors are JSON files. To create a new source descriptor for a new resource, copy one of the example source descriptors to a new file and edit it. For more information about a source/harvest descriptor see [Harvest Description](doc/harvest_desc.md).
 
 
 ## Dispatcher

@@ -2,11 +2,14 @@ package org.neuinfo.foundry.ingestor.ws.dm;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.util.Utils;
 
 import javax.jms.*;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * Created by bozyurt on 5/8/15.
@@ -14,7 +17,6 @@ import javax.ws.rs.core.Response;
 
 @Path("cinergi/notification")
 public class NotificationResource {
-    private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
 
     @Path("/resourceEntered2Scicrunch")
     @GET
@@ -23,7 +25,17 @@ public class NotificationResource {
         if (apiKey == null) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
         }
-        System.out.println("apiKey:" + apiKey);
+        String theApiKey = null;
+        try {
+            Properties properties = Utils.loadProperties("ingestor-web.properties");
+            theApiKey = properties.getProperty("apiKey");
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
+        }
+        if (theApiKey == null) {
+            throw new WebApplicationException(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
+        }
         if (!apiKey.equals(theApiKey)) {
             throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
         }

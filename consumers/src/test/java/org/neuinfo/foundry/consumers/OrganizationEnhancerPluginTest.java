@@ -3,6 +3,10 @@ package org.neuinfo.foundry.consumers;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import junit.framework.TestCase;
+import org.apache.velocity.texen.util.FileUtil;
+import org.json.JSONObject;
+import org.neuinfo.foundry.common.util.JSONUtils;
+import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer2;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
@@ -29,7 +33,7 @@ public class OrganizationEnhancerPluginTest extends TestCase {
         try {
             String sourceID = "cinergi-0023";
             String thePrimaryKey = "org.marine-geo:metadata:10000";
-            helper.startup("cinergi-consumers-cfg.xml");
+            helper.startup("consumers-cfg.xml");
             List<BasicDBObject> docWrappers = helper.getDocWrappers(sourceID);
 
             IPlugin plugin = new OrganizationEnhancer2();
@@ -37,6 +41,9 @@ public class OrganizationEnhancerPluginTest extends TestCase {
             for (BasicDBObject docWrapper : docWrappers) {
                 String primaryKey = docWrapper.get("primaryKey").toString();
                 if (!filter || primaryKey.equalsIgnoreCase(thePrimaryKey)) {
+                    JSONObject json = JSONUtils.toJSON(docWrapper, false);
+                    Utils.saveText(json.toString(2), "/tmp/test_doc.json");
+
                     Result result = plugin.handle(docWrapper);
                     break;
                 }
@@ -53,9 +60,7 @@ public class OrganizationEnhancerPluginTest extends TestCase {
             helper.startup("cinergi-consumers-cfg.xml");
 
             List<BasicDBObject> docWrappers = helper.getDocWrappers("cinergi-0001");
-
             IPlugin orgEnhancer = new OrganizationEnhancer();
-
             Map<String, String> optionMap = new HashMap<String, String>();
 
             new File("/tmp/cinergi/org").mkdirs();
