@@ -1,0 +1,38 @@
+{
+  "metadataRecordLineageItems": [
+    {
+      "stepSequenceNo": 0,
+      "stepProcessors": [
+        {
+          "personName": "Test-Curator"
+        }
+      ],
+      "stepDateTime": "2017-10-24T20:55:52.393Z",
+      "metadataUpdates": [
+        {
+          "UpdateSequenceNo": 1,
+          "type": "insert",
+          "name": "term",
+          "newValue": "",
+          "insertPath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.1.gmd:MD_Keywords.gmd:keyword.-4.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 2,
+          "oldValue": "",
+          "newValue": "test-keyword",
+          "name": "term",
+          "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.1.gmd:MD_Keywords.gmd:keyword.4.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 3,
+          "oldValue": "test-keyword",
+          "newValue": "test-keyword",
+          "name": "term",
+          "type": "delete",
+          "deletePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.1.gmd:MD_Keywords.gmd:keyword.4.gco:CharacterString._$"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 package org.neuinfo.foundry.consumers.common;
 
+import org.neuinfo.foundry.common.util.DiffRecord;
+
 import java.util.List;
 import java.util.Map;
 

@@ -1,12 +1,13 @@
 package org.neuinfo.foundry.consumers;
 
 import junit.framework.TestCase;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.Utils;
-import org.neuinfo.foundry.consumers.common.DiffRecord;
+import org.neuinfo.foundry.common.util.DiffRecord;
 import org.neuinfo.foundry.consumers.common.EditDiffManager;
-import org.neuinfo.foundry.consumers.common.JsonPathJDOMHandler;
+import org.neuinfo.foundry.common.util.JsonPathDiffHandler;
 
 import java.net.URL;
 import java.util.List;
@@ -20,6 +21,21 @@ public class EditDiffManagerTests extends TestCase {
         super(name);
     }
 
+
+    public void testCreateUpdateKeywordDiffJson() throws Exception {
+        JSONObject docWrapper = new JSONObject(loadAsStringFromClassPath("testdata/edit_doc47_edit_record.json"));
+        assertTrue(docWrapper.has("Data"));
+        JSONObject dataJson = docWrapper.getJSONObject("Data");
+        DiffRecord diffRecord = new DiffRecord("update","Data.enhancedKeywords.6.validation","", "false");
+        List<JsonPathDiffHandler.JsonPathNode> path = JsonPathDiffHandler.parseJsonPath(diffRecord.getJsonPath());
+        path = path.subList(1, path.size());
+        JSONArray dest = new JSONArray();
+        JsonPathDiffHandler.createUpdateKeywordDiffJson(path, diffRecord, dataJson, dest);
+
+        JsonPathDiffHandler.createUpdateKeywordDiffJson(path, diffRecord, dataJson, dest);
+        System.out.println(dest.toString(2));
+
+    }
     public void testModifyJson() throws Exception {
         JSONObject docWrapper = new JSONObject(loadAsStringFromClassPath("testdata/edit_test_doc_wrapper.json"));
 
@@ -33,11 +49,11 @@ public class EditDiffManagerTests extends TestCase {
         assertNotNull(diffRecords);
         for(DiffRecord diffRecord : diffRecords) {
            // if (diffRecord.getType().equalsIgnoreCase("update")) {
-                System.out.println(diffRecord.getUpdatePath());
-                List<JsonPathJDOMHandler.JsonPathNode> path = JsonPathJDOMHandler.parseJsonPath(diffRecord.getUpdatePath());
+                System.out.println(diffRecord.getJsonPath());
+                List<JsonPathDiffHandler.JsonPathNode> path = JsonPathDiffHandler.parseJsonPath(diffRecord.getJsonPath());
                 path = path.subList(1, path.size());
                 try {
-                    JsonPathJDOMHandler.modifyJson(path, diffRecord, originalDoc);
+                    JsonPathDiffHandler.modifyJson(path, diffRecord, originalDoc);
                 } catch(JSONException je) {
                     System.err.println(je.getMessage());
                 }

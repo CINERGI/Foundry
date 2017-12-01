@@ -42,7 +42,14 @@ public class OrganizationEnhancer2 implements IPlugin {
             String srcId = siDBO.get("SourceID").toString();
             String sourceName = siDBO.get("Name").toString();
             String primaryKey = docWrapper.get("primaryKey").toString();
-            JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+            JSONObject json;
+            // handle edited documents (IBO)
+            DBObject editedDoc = (DBObject) docWrapper.get("EditedDoc");
+            if (editedDoc != null) {
+                json = JSONUtils.toJSON((BasicDBObject) editedDoc, false);
+            } else {
+                json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+            }
             JSONPathProcessor jpp = new JSONPathProcessor();
             List<Object> objects = jpp.find("$..'gmd:contact'.'gmd:CI_ResponsibleParty'.'gmd:organisationName'.'gco:CharacterString'.'_$'", json);
             if (objects != null) {

@@ -1,0 +1,1475 @@
+{
+  "_id" : "587f00cec0808571b5093736",
+  "primaryKey" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+  "Version" : 1,
+  "CrawlDate" : "2017-01-18T05:44:46.758Z",
+  "OriginalDoc" : {
+    "gmd:MD_Metadata" : {
+      "@xsi:schemaLocation" : "http://www.isotc211.org/2005/gmd http://schemas.opengis.net/csw/2.0.2/profiles/apiso/1.0.0/apiso.xsd",
+      "gmd:fileIdentifier" : {
+        "gco:CharacterString" : {
+          "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1"
+        }
+      },
+      "gmd:language" : {
+        "gco:CharacterString" : {
+          "_$" : "eng"
+        }
+      },
+      "gmd:characterSet" : {
+        "gmd:MD_CharacterSetCode" : {
+          "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode",
+          "@codeListValue" : "utf8",
+          "_$" : "utf8"
+        }
+      },
+      "gmd:hierarchyLevel" : {
+        "gmd:MD_ScopeCode" : {
+          "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ScopeCode",
+          "@codeListValue" : "dataset",
+          "_$" : "dataset"
+        }
+      },
+      "gmd:hierarchyLevelName" : {
+        "gco:CharacterString" : {
+          "_$" : "Dataset"
+        }
+      },
+      "gmd:contact" : [
+        {
+          "gmd:CI_ResponsibleParty" : {
+            "gmd:individualName" : {
+              "gco:CharacterString" : {
+                "_$" : "Missing"
+              }
+            },
+            "gmd:organisationName" : {
+              "gco:CharacterString" : {
+                "_$" : "Arizona Geological Survey"
+              }
+            },
+            "gmd:positionName" : {
+              "gco:CharacterString" : {
+                "_$" : "missing"
+              }
+            },
+            "gmd:contactInfo" : {
+              "gmd:CI_Contact" : {
+                "gmd:phone" : {
+                  "gmd:CI_Telephone" : {
+                    "gmd:voice" : {
+                      "gco:CharacterString" : {
+                        "_$" : "520.770.3500"
+                      }
+                    },
+                    "gmd:facsimile" : {
+                      "gco:CharacterString" : {
+                        "_$" : "520.770.3505"
+                      }
+                    }
+                  }
+                },
+                "gmd:address" : {
+                  "gmd:CI_Address" : {
+                    "gmd:deliveryPoint" : {
+                      "gco:CharacterString" : {
+                        "_$" : "416 W. Congress, Ste # 100"
+                      }
+                    },
+                    "gmd:city" : {
+                      "gco:CharacterString" : {
+                        "_$" : "Tucson"
+                      }
+                    },
+                    "gmd:administrativeArea" : {
+                      "gco:CharacterString" : {
+                        "_$" : "AZ"
+                      }
+                    },
+                    "gmd:postalCode" : {
+                      "gco:CharacterString" : {
+                        "_$" : "85701-1381"
+                      }
+                    },
+                    "gmd:country" : {
+                      "gco:CharacterString" : {
+                        "_$" : "USA"
+                      }
+                    },
+                    "gmd:electronicMailAddress" : {
+                      "gco:CharacterString" : {
+                        "_$" : "michael.conway@azgs.az.gov"
+                      }
+                    }
+                  }
+                },
+                "gmd:onlineResource" : {
+                  "gmd:CI_OnlineResource" : {
+                    "gmd:linkage" : {
+                      "gmd:URL" : {
+                        "_$" : "http://www.azgs.az.gov"
+                      }
+                    },
+                    "gmd:protocol" : {
+                      "gco:CharacterString" : {
+                        "_$" : "http"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "gmd:role" : {
+              "gmd:CI_RoleCode" : {
+                "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue" : "pointOfContact",
+                "_$" : "point of contact"
+              }
+            }
+          }
+        },
+        {
+          "gmd:CI_ResponsibleParty" : {
+            "gmd:individualName" : {
+              "gco:CharacterString" : {
+                "_$" : "missing"
+              }
+            },
+            "gmd:organisationName" : {
+              "gco:CharacterString" : {
+                "_$" : "Arizona Geological Survey"
+              }
+            },
+            "gmd:positionName" : {
+              "gco:CharacterString" : {
+                "_$" : "missing"
+              }
+            },
+            "gmd:contactInfo" : {
+              "gmd:CI_Contact" : {
+                "gmd:address" : {
+                  "gmd:CI_Address" : {
+                    "gmd:electronicMailAddress" : {
+                      "@gco:nilReason" : "missing",
+                      "gco:CharacterString" : {
+                        "_$" : "metadata@usgin.org"
+                      }
+                    }
+                  }
+                },
+                "gmd:onlineResource" : {
+                  "gmd:CI_OnlineResource" : {
+                    "gmd:linkage" : {
+                      "gmd:URL" : {
+                        "_$" : "http://repository.azgs.az.gov/sites/default/files/collection/image/icon/u1/azgs_ofr_icon_0.jpg"
+                      }
+                    },
+                    "gmd:name" : {
+                      "gco:CharacterString" : {
+                        "_$" : "icon"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "gmd:role" : {
+              "gmd:CI_RoleCode" : {
+                "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue" : "originator",
+                "_$" : "originator"
+              }
+            }
+          }
+        }
+      ],
+      "gmd:dateStamp" : {
+        "gco:DateTime" : {
+          "_$" : "2010-08-11T10:41:47"
+        }
+      },
+      "gmd:metadataStandardName" : {
+        "gco:CharacterString" : {
+          "_$" : "ISO-USGIN"
+        }
+      },
+      "gmd:metadataStandardVersion" : {
+        "gco:CharacterString" : {
+          "_$" : "1.2"
+        }
+      },
+      "gmd:dataSetURI" : {
+        "gco:CharacterString" : {
+          "_$" : "http://repository.azgs.az.gov/uri_gin/usgin/dlio/743"
+        }
+      },
+      "gmd:identificationInfo" : {
+        "gmd:MD_DataIdentification" : {
+          "gmd:citation" : {
+            "gmd:CI_Citation" : {
+              "gmd:title" : {
+                "gco:CharacterString" : {
+                  "_$" : "Preliminary geothermal assessment of the Big Sandy Valley, Mohave County, Arizona"
+                }
+              },
+              "gmd:date" : {
+                "gmd:CI_Date" : {
+                  "gmd:date" : {
+                    "gco:DateTime" : {
+                      "_$" : "1979-10-01T12:00:00"
+                    }
+                  },
+                  "gmd:dateType" : {
+                    "gmd:CI_DateTypeCode" : {
+                      "@codeList" : "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                      "@codeListValue" : "publication",
+                      "_$" : "publication"
+                    }
+                  }
+                }
+              },
+              "gmd:identifier" : {
+                "gmd:MD_Identifier" : {
+                  "gmd:code" : {
+                    "gco:CharacterString" : {
+                      "_$" : "OFR-79-15"
+                    }
+                  }
+                }
+              },
+              "gmd:citedResponsibleParty" : [
+                {
+                  "gmd:CI_ResponsibleParty" : {
+                    "gmd:individualName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "Campbell, A."
+                      }
+                    },
+                    "gmd:organisationName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "missing"
+                      }
+                    },
+                    "gmd:positionName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "missing"
+                      }
+                    },
+                    "gmd:contactInfo" : {
+                      "gmd:CI_Contact" : {
+                        "gmd:address" : {
+                          "gmd:CI_Address" : {
+                            "gmd:electronicMailAddress" : {
+                              "@gco:nilReason" : "missing",
+                              "gco:CharacterString" : {
+                                "_$" : "metadata@usgin.org"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "gmd:role" : {
+                      "gmd:CI_RoleCode" : {
+                        "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                        "@codeListValue" : "originator",
+                        "_$" : "originator"
+                      }
+                    }
+                  }
+                },
+                {
+                  "gmd:CI_ResponsibleParty" : {
+                    "gmd:individualName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "Jones, N.O."
+                      }
+                    },
+                    "gmd:organisationName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "missing"
+                      }
+                    },
+                    "gmd:positionName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "missing"
+                      }
+                    },
+                    "gmd:contactInfo" : {
+                      "gmd:CI_Contact" : {
+                        "gmd:address" : {
+                          "gmd:CI_Address" : {
+                            "gmd:electronicMailAddress" : {
+                              "@gco:nilReason" : "missing",
+                              "gco:CharacterString" : {
+                                "_$" : "metadata@usgin.org"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "gmd:role" : {
+                      "gmd:CI_RoleCode" : {
+                        "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                        "@codeListValue" : "originator",
+                        "_$" : "originator"
+                      }
+                    }
+                  }
+                },
+                {
+                  "gmd:CI_ResponsibleParty" : {
+                    "gmd:individualName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "Missing"
+                      }
+                    },
+                    "gmd:organisationName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "Arizona Geological Survey"
+                      }
+                    },
+                    "gmd:positionName" : {
+                      "gco:CharacterString" : {
+                        "_$" : "missing"
+                      }
+                    },
+                    "gmd:contactInfo" : {
+                      "gmd:CI_Contact" : {
+                        "gmd:phone" : {
+                          "gmd:CI_Telephone" : {
+                            "gmd:voice" : {
+                              "gco:CharacterString" : {
+                                "_$" : "520-770-3500"
+                              }
+                            }
+                          }
+                        },
+                        "gmd:address" : {
+                          "gmd:CI_Address" : {
+                            "gmd:deliveryPoint" : {
+                              "gco:CharacterString" : {
+                                "_$" : "416 W. Congress St., Suite #100"
+                              }
+                            },
+                            "gmd:city" : {
+                              "gco:CharacterString" : {
+                                "_$" : "Tucson"
+                              }
+                            },
+                            "gmd:administrativeArea" : {
+                              "gco:CharacterString" : {
+                                "_$" : "AZ"
+                              }
+                            },
+                            "gmd:postalCode" : {
+                              "gco:CharacterString" : {
+                                "_$" : "85701-1381"
+                              }
+                            },
+                            "gmd:country" : {
+                              "gco:CharacterString" : {
+                                "_$" : "USA"
+                              }
+                            },
+                            "gmd:electronicMailAddress" : {
+                              "gco:CharacterString" : {
+                                "_$" : "michael.conway@azgs.az.gov"
+                              }
+                            }
+                          }
+                        },
+                        "gmd:onlineResource" : {
+                          "gmd:CI_OnlineResource" : {
+                            "gmd:linkage" : {
+                              "gmd:URL" : {
+                                "_$" : "http://www.azgs.az.gov"
+                              }
+                            },
+                            "gmd:protocol" : {
+                              "gco:CharacterString" : {
+                                "_$" : "http"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "gmd:role" : {
+                      "gmd:CI_RoleCode" : {
+                        "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                        "@codeListValue" : "pointOfContact",
+                        "_$" : "point of contact"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "gmd:abstract" : {
+            "gco:CharacterString" : {
+              "_$" : "The Big Sandy Valley is a north-trending valley locatedsouth and east of Kingman, Mohave County, Arizona (Figure I-1).Interstate 93 between Phoenix and Kingman travels along theaxis of the Big Sandy Valley. This road provides major accessto several small communities located in and adjacent to thevalley. Well maintained dirt roads also lead to many of theranches and mines in the area.Three springs have temperatures in excess of 30 degrees C andmost wells have simple temperature gradients in excess of30 degrees C/km. Higher gradients are found along the coarse ofthe Big Sandy River as well as in the southern portion ofthe valley. Current data indicate reservoir temperaturesin excess of 150Â°C may be achieved at depths in excess of3 kilometers. Desalting operations are unlikely in most ofthe valley. The best area for such use lies in the southernportion of the area. Direct use applications appear to bemore likely. (26 pages)"
+            }
+          },
+          "gmd:status" : {
+            "gmd:MD_ProgressCode" : {
+              "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ProgressCode",
+              "@codeListValue" : "completed",
+              "_$" : "completed"
+            }
+          },
+          "gmd:pointOfContact" : {
+            "gmd:CI_ResponsibleParty" : {
+              "gmd:individualName" : {
+                "gco:CharacterString" : {
+                  "_$" : "Missing"
+                }
+              },
+              "gmd:organisationName" : {
+                "gco:CharacterString" : {
+                  "_$" : "Arizona Geological Survey"
+                }
+              },
+              "gmd:positionName" : {
+                "gco:CharacterString" : {
+                  "_$" : "missing"
+                }
+              },
+              "gmd:contactInfo" : {
+                "gmd:CI_Contact" : {
+                  "gmd:phone" : {
+                    "gmd:CI_Telephone" : {
+                      "gmd:voice" : {
+                        "gco:CharacterString" : {
+                          "_$" : "520-770-3500"
+                        }
+                      }
+                    }
+                  },
+                  "gmd:address" : {
+                    "gmd:CI_Address" : {
+                      "gmd:deliveryPoint" : {
+                        "gco:CharacterString" : {
+                          "_$" : "416 W. Congress St., Suite #100"
+                        }
+                      },
+                      "gmd:city" : {
+                        "gco:CharacterString" : {
+                          "_$" : "Tucson"
+                        }
+                      },
+                      "gmd:administrativeArea" : {
+                        "gco:CharacterString" : {
+                          "_$" : "AZ"
+                        }
+                      },
+                      "gmd:postalCode" : {
+                        "gco:CharacterString" : {
+                          "_$" : "85701-1381"
+                        }
+                      },
+                      "gmd:country" : {
+                        "gco:CharacterString" : {
+                          "_$" : "USA"
+                        }
+                      },
+                      "gmd:electronicMailAddress" : {
+                        "gco:CharacterString" : {
+                          "_$" : "michael.conway@azgs.az.gov"
+                        }
+                      }
+                    }
+                  },
+                  "gmd:onlineResource" : {
+                    "gmd:CI_OnlineResource" : {
+                      "gmd:linkage" : {
+                        "gmd:URL" : {
+                          "_$" : "http://www.azgs.az.gov"
+                        }
+                      },
+                      "gmd:protocol" : {
+                        "gco:CharacterString" : {
+                          "_$" : "http"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "gmd:role" : {
+                "gmd:CI_RoleCode" : {
+                  "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                  "@codeListValue" : "pointOfContact",
+                  "_$" : "point of contact"
+                }
+              }
+            }
+          },
+          "gmd:descriptiveKeywords" : [
+            {
+              "gmd:MD_Keywords" : {
+                "gmd:keyword" : [
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "Geology"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "geothermal"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "geothermal assessment"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "groundwater"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "hot springs"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "hydrothermal"
+                    }
+                  }
+                ],
+                "gmd:type" : {
+                  "gmd:MD_KeywordTypeCode" : {
+                    "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+                    "@codeListValue" : "theme",
+                    "_$" : "theme"
+                  }
+                }
+              }
+            },
+            {
+              "gmd:MD_Keywords" : {
+                "gmd:keyword" : [
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "Arizona"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "Big Sandy Valley"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "Kingman"
+                    }
+                  },
+                  {
+                    "gco:CharacterString" : {
+                      "_$" : "Mohave County"
+                    }
+                  }
+                ],
+                "gmd:type" : {
+                  "gmd:MD_KeywordTypeCode" : {
+                    "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+                    "@codeListValue" : "place",
+                    "_$" : "place"
+                  }
+                }
+              }
+            }
+          ],
+          "gmd:language" : {
+            "gco:CharacterString" : {
+              "_$" : "eng"
+            }
+          },
+          "gmd:characterSet" : {
+            "gmd:MD_CharacterSetCode" : {
+              "@codeList" : "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode ",
+              "@codeListValue" : "utf8",
+              "_$" : "UTF-8"
+            }
+          },
+          "gmd:topicCategory" : {
+            "gmd:MD_TopicCategoryCode" : {
+              "_$" : "geoscientificInformation"
+            }
+          },
+          "gmd:extent" : {
+            "gmd:EX_Extent" : {
+              "gmd:geographicElement" : {
+                "gmd:EX_GeographicBoundingBox" : {
+                  "gmd:extentTypeCode" : {
+                    "gco:Boolean" : {
+                      "_$" : "1"
+                    }
+                  },
+                  "gmd:westBoundLongitude" : {
+                    "gco:Decimal" : {
+                      "_$" : "-113.95"
+                    }
+                  },
+                  "gmd:eastBoundLongitude" : {
+                    "gco:Decimal" : {
+                      "_$" : "-113.016"
+                    }
+                  },
+                  "gmd:southBoundLatitude" : {
+                    "gco:Decimal" : {
+                      "_$" : "34.2345"
+                    }
+                  },
+                  "gmd:northBoundLatitude" : {
+                    "gco:Decimal" : {
+                      "_$" : "35.1648"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "gmd:distributionInfo" : {
+        "gmd:MD_Distribution" : {
+          "gmd:distributor" : {
+            "gmd:MD_Distributor" : {
+              "gmd:distributorContact" : {
+                "gmd:CI_ResponsibleParty" : {
+                  "gmd:individualName" : {
+                    "gco:CharacterString" : {
+                      "_$" : "missing"
+                    }
+                  },
+                  "gmd:organisationName" : {
+                    "gco:CharacterString" : {
+                      "_$" : "Arizona Geological Survey"
+                    }
+                  },
+                  "gmd:positionName" : {
+                    "gco:CharacterString" : {
+                      "_$" : "missing"
+                    }
+                  },
+                  "gmd:contactInfo" : {
+                    "gmd:CI_Contact" : {
+                      "gmd:address" : {
+                        "gmd:CI_Address" : {
+                          "gmd:electronicMailAddress" : {
+                            "@gco:nilReason" : "missing",
+                            "gco:CharacterString" : {
+                              "_$" : "metadata@usgin.org"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "gmd:role" : {
+                    "gmd:CI_RoleCode" : {
+                      "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                      "@codeListValue" : "distributor",
+                      "_$" : "distributor"
+                    }
+                  }
+                }
+              },
+              "gmd:distributorTransferOptions" : {
+                "gmd:MD_DigitalTransferOptions" : {
+                  "gmd:onLine" : {
+                    "gmd:CI_OnlineResource" : {
+                      "gmd:linkage" : {
+                        "gmd:URL" : {
+                          "_$" : "http://repository.azgs.az.gov/uri_gin/azgs/dlio/743"
+                        }
+                      },
+                      "gmd:protocol" : {
+                        "gco:CharacterString" : {
+                          "_$" : "http"
+                        }
+                      },
+                      "gmd:description" : {
+                        "gco:CharacterString" : {}
+                      },
+                      "gmd:function" : {
+                        "gmd:CI_OnLineFunctionCode" : {
+                          "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                          "@codeListValue" : "information",
+                          "_$" : "information"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "gmd:transferOptions" : {
+            "gmd:MD_DigitalTransferOptions" : {
+              "gmd:onLine" : {
+                "gmd:CI_OnlineResource" : {
+                  "gmd:linkage" : {
+                    "gmd:URL" : {
+                      "_$" : "http://repository.azgs.az.gov/uri_gin/azgs/dlio/743"
+                    }
+                  },
+                  "gmd:protocol" : {
+                    "gco:CharacterString" : {
+                      "_$" : "http"
+                    }
+                  },
+                  "gmd:description" : {
+                    "gco:CharacterString" : {}
+                  },
+                  "gmd:function" : {
+                    "gmd:CI_OnLineFunctionCode" : {
+                      "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                      "@codeListValue" : "information",
+                      "_$" : "information"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "gmd:dataQualityInfo" : {
+        "gmd:DQ_DataQuality" : {
+          "gmd:scope" : {
+            "gmd:DQ_Scope" : {
+              "gmd:level" : {
+                "gmd:MD_ScopeCode" : {
+                  "@codeList" : "http://standards.iso.org/ittf/PubliclyAvailableStandards/ISO_19139_Schemas/resources/Codelist/gmxCodelists.xml#MD_ScopeCode",
+                  "@codeListValue" : "dataset",
+                  "_$" : "dataset"
+                }
+              }
+            }
+          },
+          "gmd:report" : {
+            "gmd:DQ_NonQuantitativeAttributeAccuracy" : {
+              "gmd:result" : {
+                "gmd:DQ_QuantitativeResult" : {
+                  "gmd:valueType" : {
+                    "gco:RecordType" : {
+                      "_$" : "gco:CharacterString_PropertyType"
+                    }
+                  },
+                  "gmd:valueUnit" : {
+                    "@gco:nilReason" : "inapplicable"
+                  },
+                  "gmd:value" : {
+                    "gco:Record" : {
+                      "_$" : "missing accompanying sheets"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "gmd:lineage" : {
+            "gmd:LI_Lineage" : {}
+          }
+        }
+      },
+      "gmd:metadataMaintenance" : {
+        "gmd:MD_MaintenanceInformation" : {
+          "gmd:maintenanceAndUpdateFrequency" : {
+            "gmd:MD_MaintenanceFrequencyCode" : {
+              "@codeList" : "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_MaintenanceFrequencyCode",
+              "@codeListValue" : "IRREGULAR",
+              "_$" : "irregular"
+            }
+          },
+          "gmd:maintenanceNote" : {
+            "gco:CharacterString" : {
+              "_$" : "This metadata record has been processed by the iso-19115-to-usgin-19115-data XSLT to ensure that all mandatory content for USGIN profile has been added.2013-11-04T12:00:00"
+            }
+          }
+        }
+      }
+    },
+    "_@gmd" : "http://www.isotc211.org/2005/gmd",
+    "_@default" : "http://www.isotc211.org/2005/gmd",
+    "_@gco" : "http://www.isotc211.org/2005/gco",
+    "_@gmi" : "http://www.isotc211.org/2005/gmi",
+    "_@gml" : "http://www.opengis.net/gml",
+    "_@gmx" : "http://www.isotc211.org/2005/gmx",
+    "_@gts" : "http://www.isotc211.org/2005/gts",
+    "_@srv" : "http://www.isotc211.org/2005/srv",
+    "_@xlink" : "http://www.w3.org/1999/xlink",
+    "_@xml" : "http://www.w3.org/XML/1998/namespace",
+    "_@xsi" : "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "SourceInfo" : {
+    "SourceID" : "cinergi-0008",
+    "ViewID" : "",
+    "Name" : "U.S._Geoscience_Information_Network",
+    "DataSource" : "U.S._Geoscience_Information_Network"
+  },
+  "Data" : {
+    "spatial" : {
+      "bounding_boxes" : [
+        {
+          "southwest" : {
+            "lat" : 34.2345,
+            "lng" : -113.95
+          },
+          "northeast" : {
+            "lat" : 35.1648,
+            "lng" : -113.016
+          }
+        }
+      ],
+      "place_keywords" : [
+        "Arizona",
+        "Big Sandy Valley",
+        "Kingman",
+        "Mohave County"
+      ],
+      "text" : "Preliminary geothermal assessment of the Big Sandy Valley, Mohave County, Arizona \nThe Big Sandy Valley is a north-trending valley locatedsouth and east of Kingman, Mohave County, Arizona (Figure I-1).Interstate 93 between Phoenix and Kingman travels along theaxis of the Big Sandy Valley. This road provides major accessto several small communities located in and adjacent to thevalley. Well maintained dirt roads also lead to many of theranches and mines in the area.Three springs have temperatures in excess of 30 degrees C andmost wells have simple temperature gradients in excess of30 degrees C/km. Higher gradients are found along the coarse ofthe Big Sandy River as well as in the southern portion ofthe valley. Current data indicate reservoir temperaturesin excess of 150Â°C may be achieved at depths in excess of3 kilometers. Desalting operations are unlikely in most ofthe valley. The best area for such use lies in the southernportion of the area. Direct use applications appear to bemore likely. (26 pages) \n",
+      "invalid_place_keywords" : [
+        "Big Sandy Valley",
+        "Kingman"
+      ],
+      "derived_bounding_boxes_from_places" : {},
+      "derived_place_from_text" : [],
+      "derived_bounding_boxes_from_derived_place" : {}
+    },
+    "keywords" : [
+      {
+        "term" : "Valley",
+        "ontId" : "http://purl.obolibrary.org/obo/ENVO_00000191",
+        "fullHierarchy" : "Feature > Physiographic Feature > Depression > Valley",
+        "facetHierarchy" : "Feature > Physiographic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://purl.obolibrary.org/obo/ENVO_00000191",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Physiographic Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Road",
+        "ontId" : "http://purl.obolibrary.org/obo/ENVO_00002297",
+        "fullHierarchy" : "Feature > Environmental Feature > Geographic Feature > Anthropogenic Geographic Feature > Constructed Feature > Transport Feature > Road",
+        "facetHierarchy" : "Feature > Environmental Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://purl.obolibrary.org/obo/ENVO_00002297",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Environmental Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Mine",
+        "ontId" : "http://purl.obolibrary.org/obo/ENVO_00002297",
+        "fullHierarchy" : "Feature > Environmental Feature > Geographic Feature > Anthropogenic Geographic Feature > Constructed Feature > Mine",
+        "facetHierarchy" : "Feature > Environmental Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://purl.obolibrary.org/obo/ENVO_00002297",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Environmental Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Current",
+        "ontId" : "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+        "fullHierarchy" : "Feature > Marine Feature > Current",
+        "facetHierarchy" : "Feature > Marine Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Marine Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Groundwater",
+        "ontId" : "http://purl.obolibrary.org/obo/ENVO_00010483",
+        "fullHierarchy" : "Material > Environmental Material > Water > Ground Water",
+        "facetHierarchy" : "Material > Environmental Material",
+        "entityInfos" : [
+          {
+            "id" : "http://purl.obolibrary.org/obo/ENVO_00010483",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Material > Environmental Material"
+          }
+        ]
+      },
+      {
+        "term" : "Geothermal",
+        "ontId" : "http://sweet.jpl.nasa.gov/2.3/realmGeol.owl#GeologicFeature",
+        "fullHierarchy" : "Feature > Geologic Feature > Geothermal Feature",
+        "facetHierarchy" : "Feature > Geologic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://sweet.jpl.nasa.gov/2.3/realmGeol.owl#GeologicFeature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Geologic Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Temperature",
+        "ontId" : "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+        "fullHierarchy" : "Property > Measure > physical quality > temperature",
+        "facetHierarchy" : "Property > Measure",
+        "entityInfos" : [
+          {
+            "id" : "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Property > Measure"
+          }
+        ]
+      },
+      {
+        "term" : "Temperature Gradient",
+        "ontId" : "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+        "fullHierarchy" : "Property > Measure > Physical Quantity > Thermodynamic Quantity > Temperature Gradient",
+        "facetHierarchy" : "Property > Measure",
+        "entityInfos" : [
+          {
+            "id" : "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Property > Measure"
+          }
+        ]
+      },
+      {
+        "term" : "Well",
+        "ontId" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+        "fullHierarchy" : "Feature > Hydrologic Feature > Well",
+        "facetHierarchy" : "Feature > Hydrologic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Hydrologic Feature"
+          }
+        ]
+      },
+      {
+        "term" : "River",
+        "ontId" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+        "fullHierarchy" : "Feature > Hydrologic Feature > Water Body > Watercourse > Stream > River",
+        "facetHierarchy" : "Feature > Hydrologic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Hydrologic Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Reservoir",
+        "ontId" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+        "fullHierarchy" : "Feature > Hydrologic Feature > Water Body > Lake > Artificial Lake > Reservoir",
+        "facetHierarchy" : "Feature > Hydrologic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Hydrologic Feature"
+          }
+        ]
+      },
+      {
+        "term" : "Hot Spring",
+        "ontId" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+        "fullHierarchy" : "Feature > Hydrologic Feature > Water Body > Spring > Hot Spring",
+        "facetHierarchy" : "Feature > Hydrologic Feature",
+        "entityInfos" : [
+          {
+            "id" : "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Feature > Hydrologic Feature"
+          }
+        ]
+      }
+    ],
+    "orgKeywords" : [
+      {
+        "term" : "Arizona Geological Survey",
+        "entityInfos" : [
+          {
+            "contentLocation" : "",
+            "id" : "http://viaf.org/viaf/123432248/",
+            "start" : -1,
+            "end" : -1,
+            "category" : "Organization > Institution"
+          }
+        ]
+      }
+    ],
+    "enhancedKeywords" : [
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00000100",
+        "term" : "Valley",
+        "category" : "Feature > Physiographic Feature",
+        "hierarchyPath" : "Feature > Physiographic Feature > Depression > Valley",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://viaf.org/viaf/123432248/",
+        "term" : "Arizona Geological Survey",
+        "category" : "Organization > Institution",
+        "type" : "Organization",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00000064",
+        "term" : "Road",
+        "category" : "Feature > Environmental Feature",
+        "hierarchyPath" : "Feature > Environmental Feature > Geographic Feature > Anthropogenic Geographic Feature > Constructed Feature > Transport Feature > Road",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00000076",
+        "term" : "Mine",
+        "category" : "Feature > Environmental Feature",
+        "hierarchyPath" : "Feature > Environmental Feature > Geographic Feature > Anthropogenic Geographic Feature > Constructed Feature > Mine",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://yago-knowledge.org/resource/geoclass_current",
+        "term" : "Current",
+        "category" : "Feature > Marine Feature",
+        "hierarchyPath" : "Feature > Marine Feature > Current",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/PATO_0000146",
+        "term" : "Temperature",
+        "category" : "Property > Measure",
+        "hierarchyPath" : "Property > Measure > physical quality > temperature",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://sweet.jpl.nasa.gov/2.3/propTemperatureGradient.owl#TemperatureGradient",
+        "term" : "Temperature Gradient",
+        "category" : "Property > Measure",
+        "hierarchyPath" : "Property > Measure > Physical Quantity > Thermodynamic Quantity > Temperature Gradient",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00002041",
+        "term" : "Groundwater",
+        "category" : "Material > Environmental Material",
+        "hierarchyPath" : "Material > Environmental Material > Water > Ground Water",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Geothermal",
+        "term" : "Geothermal",
+        "category" : "Feature > Geologic Feature",
+        "hierarchyPath" : "Feature > Geologic Feature > Geothermal Feature",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://yago-knowledge.org/resource/geoclass_well",
+        "term" : "Well",
+        "category" : "Feature > Hydrologic Feature",
+        "hierarchyPath" : "Feature > Hydrologic Feature > Well",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://sweet.jpl.nasa.gov/2.3/realmHydroBody.owl#River",
+        "term" : "River",
+        "category" : "Feature > Hydrologic Feature",
+        "hierarchyPath" : "Feature > Hydrologic Feature > Water Body > Watercourse > Stream > River",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00000025",
+        "term" : "Reservoir",
+        "category" : "Feature > Hydrologic Feature",
+        "hierarchyPath" : "Feature > Hydrologic Feature > Water Body > Lake > Artificial Lake > Reservoir",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      },
+      {
+        "id" : "http://purl.obolibrary.org/obo/ENVO_00000051",
+        "term" : "Hot Spring",
+        "category" : "Feature > Hydrologic Feature",
+        "hierarchyPath" : "Feature > Hydrologic Feature > Water Body > Spring > Hot Spring",
+        "type" : "Keyword",
+        "lastChangedDate" : "2017-01-19T03:26:53Z"
+      }
+    ]
+  },
+  "Processing" : {
+    "status" : "finished",
+    "docId" : "b6375fb5-e953-46b4-964e-8b448c262695"
+  },
+  "History" : {
+    "batchId" : "01182017-05:29",
+    "prov" : {
+      "curVersion" : "1.4",
+      "lastProcessedDate" : "2017-01-19T03:26:53.940Z",
+      "events" : [
+        {
+          "wasGeneratedBy" : {
+            "_:wGB108751" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_2"
+            }
+          },
+          "entity" : {
+            "foundry:en_1" : {
+              "foundry:label" : {
+                "type" : "pre_0:string",
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1"
+              },
+              "foundry:creationTime" : {
+                "type" : "pre_0:string",
+                "_$" : "2017-01-18T05:44:46Z"
+              },
+              "foundry:version" : {
+                "type" : "pre_0:string",
+                "_$" : "1.0"
+              },
+              "foundry:sourceId" : {
+                "type" : "pre_0:string",
+                "_$" : "cinergi-0008"
+              },
+              "foundry:UUID" : {
+                "type" : "pre_0:string",
+                "_$" : "191a64ab-096b-4ec1-afba-ae4baf2946bd"
+              }
+            },
+            "foundry:en_2" : {
+              "foundry:label" : {
+                "type" : "pre_0:string",
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1"
+              },
+              "foundry:creationTime" : {
+                "type" : "pre_0:string",
+                "_$" : "2017-01-18T05:44:46Z"
+              },
+              "foundry:version" : {
+                "type" : "pre_0:string",
+                "_$" : "1.1"
+              },
+              "foundry:UUID" : {
+                "type" : "pre_0:string",
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1"
+              }
+            }
+          },
+          "prefix" : {
+            "xsd" : "http://www.w3.org/2001/XMLSchema#",
+            "pre_0" : "http://www.w3.org/2001/XMLSchema",
+            "prov" : "http://www.w3.org/ns/prov#",
+            "foundry" : "http://example.org"
+          },
+          "used" : {
+            "_:u108735" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_1"
+            }
+          },
+          "activity" : {
+            "foundry:ac_1" : {
+              "prov:type" : {
+                "type" : "pre_0:string",
+                "_$" : "ingestion"
+              },
+              "prov:startTime" : "2017-01-18T05:44:46Z",
+              "prov:endTime" : "2017-01-18T05:44:46Z",
+              "prov:how" : {
+                "type" : "pre_0:string",
+                "_$" : "Added document with uuid 1f40c449-a56e-11df-8f9b-cea7d94ae6a1"
+              }
+            }
+          }
+        },
+        {
+          "wasGeneratedBy" : {
+            "_:wGB270608" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_2"
+            }
+          },
+          "entity" : {
+            "foundry:en_1" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-18T05:44:46Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.1",
+                "type" : "pre_0:string"
+              },
+              "foundry:sourceId" : {
+                "_$" : "cinergi-0008",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            },
+            "foundry:en_2" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-19T03:26:52Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.2",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            }
+          },
+          "prefix" : {
+            "xsd" : "http://www.w3.org/2001/XMLSchema#",
+            "pre_0" : "http://www.w3.org/2001/XMLSchema",
+            "prov" : "http://www.w3.org/ns/prov#",
+            "foundry" : "http://example.org"
+          },
+          "wasDerivedFrom" : {
+            "_:wDF186190" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:generatedEntity" : "foundry:en_2",
+              "prov:usedEntity" : "foundry:en_1"
+            }
+          },
+          "used" : {
+            "_:u270589" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_1"
+            }
+          },
+          "activity" : {
+            "foundry:ac_1" : {
+              "prov:type" : {
+                "_$" : "spatialEnhancer",
+                "type" : "pre_0:string"
+              },
+              "prov:startTime" : "2017-01-19T03:26:52Z",
+              "prov:endTime" : "2017-01-19T03:26:52Z",
+              "prov:how" : {
+                "_$" : "No bounding box is added..",
+                "type" : "pre_0:string"
+              }
+            }
+          }
+        },
+        {
+          "wasGeneratedBy" : {
+            "_:wGB270610" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_2"
+            }
+          },
+          "entity" : {
+            "foundry:en_1" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-19T03:26:52Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.2",
+                "type" : "pre_0:string"
+              },
+              "foundry:sourceId" : {
+                "_$" : "cinergi-0008",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            },
+            "foundry:en_2" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-19T03:26:53Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.3",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            }
+          },
+          "prefix" : {
+            "xsd" : "http://www.w3.org/2001/XMLSchema#",
+            "pre_0" : "http://www.w3.org/2001/XMLSchema",
+            "prov" : "http://www.w3.org/ns/prov#",
+            "foundry" : "http://example.org"
+          },
+          "wasDerivedFrom" : {
+            "_:wDF186192" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:generatedEntity" : "foundry:en_2",
+              "prov:usedEntity" : "foundry:en_1"
+            }
+          },
+          "used" : {
+            "_:u270591" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_1"
+            }
+          },
+          "activity" : {
+            "foundry:ac_1" : {
+              "prov:type" : {
+                "_$" : "keywordEnhancer",
+                "type" : "pre_0:string"
+              },
+              "prov:startTime" : "2017-01-19T03:26:53Z",
+              "prov:endTime" : "2017-01-19T03:26:53Z",
+              "prov:how" : {
+                "_$" : "Added keywords Valley for category Feature > Physiographic Feature. Added keywords Road,Mine for category Feature > Environmental Feature. Added keywords Current for category Feature > Marine Feature. Added keywords Groundwater for category Material > Environmental Material. Added keywords Geothermal for category Feature > Geologic Feature. Added keywords Temperature,Temperature Gradient for category Property > Measure. Added keywords Well,River,Reservoir,Hot Spring for category Feature > Hydrologic Feature.",
+                "type" : "pre_0:string"
+              }
+            }
+          }
+        },
+        {
+          "wasGeneratedBy" : {
+            "_:wGB270611" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_2"
+            }
+          },
+          "entity" : {
+            "foundry:en_1" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-19T03:26:53Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.3",
+                "type" : "pre_0:string"
+              },
+              "foundry:sourceId" : {
+                "_$" : "cinergi-0008",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            },
+            "foundry:en_2" : {
+              "foundry:label" : {
+                "_$" : "U.S._Geoscience_Information_Network:1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              },
+              "foundry:creationTime" : {
+                "_$" : "2017-01-19T03:26:53Z",
+                "type" : "pre_0:string"
+              },
+              "foundry:version" : {
+                "_$" : "1.4",
+                "type" : "pre_0:string"
+              },
+              "foundry:UUID" : {
+                "_$" : "1f40c449-a56e-11df-8f9b-cea7d94ae6a1",
+                "type" : "pre_0:string"
+              }
+            }
+          },
+          "prefix" : {
+            "xsd" : "http://www.w3.org/2001/XMLSchema#",
+            "pre_0" : "http://www.w3.org/2001/XMLSchema",
+            "prov" : "http://www.w3.org/ns/prov#",
+            "foundry" : "http://example.org"
+          },
+          "wasDerivedFrom" : {
+            "_:wDF186193" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:generatedEntity" : "foundry:en_2",
+              "prov:usedEntity" : "foundry:en_1"
+            }
+          },
+          "used" : {
+            "_:u270592" : {
+              "prov:activity" : "foundry:ac_1",
+              "prov:entity" : "foundry:en_1"
+            }
+          },
+          "activity" : {
+            "foundry:ac_1" : {
+              "prov:type" : {
+                "_$" : "organizationEnhancer",
+                "type" : "pre_0:string"
+              },
+              "prov:startTime" : "2017-01-19T03:26:53Z",
+              "prov:endTime" : "2017-01-19T03:26:53Z",
+              "prov:how" : {
+                "_$" : "Added keywords Arizona Geological Survey for category Organization > Institution.",
+                "type" : "pre_0:string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

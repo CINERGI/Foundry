@@ -42,6 +42,10 @@ public class JSONUtils {
         return foundObj;
     }
 
+    public static JSONObject clone(JSONObject original) {
+        return new JSONObject(original.toString());
+    }
+
     public static DBObject encode(JSONArray a) {
         return encode(a, false);
     }

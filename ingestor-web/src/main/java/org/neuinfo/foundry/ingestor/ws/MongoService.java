@@ -21,6 +21,7 @@ import org.neuinfo.foundry.common.model.*;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONPathProcessor;
 import org.neuinfo.foundry.common.util.JSONUtils;
+import org.neuinfo.foundry.consumers.common.Constants;
 import org.neuinfo.foundry.ingestor.common.ConfigLoader;
 
 import java.net.InetAddress;
@@ -124,6 +125,14 @@ public class MongoService {
     }
 
 
+    public void updateDocument(BasicDBObject docWrapper) {
+        DB db = mongoClient.getDB(dbName);
+        ObjectId oid = docWrapper.getObjectId(Constants.MONGODB_ID_FIELD);
+        BasicDBObject query = new BasicDBObject(Constants.MONGODB_ID_FIELD, oid);
+        DBCollection records = db.getCollection("records");
+        records.update(query, docWrapper);
+    }
+
     public JSONObject findDocument(String nifId, String docId) {
         MongoDatabase db = mongoClient.getDatabase(dbName);
         MongoCollection<Document> records = db.getCollection("records");
@@ -160,6 +169,14 @@ public class MongoService {
         DBCollection records = db.getCollection("records");
         BasicDBObject query = new BasicDBObject("primaryKey", docId);
         return (BasicDBObject) records.findOne(query);
+    }
+
+
+    public BasicDBObject findTheEditedDocument(String resourceId, String primaryKey) {
+        DB db = mongoClient.getDB(dbName);
+        DBCollection editedRecords = db.getCollection("editedRecords");
+        BasicDBObject query = new BasicDBObject("primaryKey", primaryKey);
+        return (BasicDBObject) editedRecords.findOne(query);
     }
 
 

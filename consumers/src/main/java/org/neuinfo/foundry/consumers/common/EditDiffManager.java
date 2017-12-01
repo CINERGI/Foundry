@@ -2,6 +2,7 @@ package org.neuinfo.foundry.consumers.common;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.neuinfo.foundry.common.util.DiffRecord;
 
 import java.util.ArrayList;
 import java.util.List;

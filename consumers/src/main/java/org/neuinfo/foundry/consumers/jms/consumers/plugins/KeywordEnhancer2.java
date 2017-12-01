@@ -76,8 +76,17 @@ public class KeywordEnhancer2 implements IPlugin {
     @Override
     public Result handle(DBObject docWrapper) {
         try {
+
             DBObject originalDoc = (DBObject) docWrapper.get("OriginalDoc");
-            JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+
+            // handle edited documents (IBO)
+            DBObject editedDoc = (DBObject) docWrapper.get("EditedDoc");
+            JSONObject json;
+            if (editedDoc != null) {
+                json = JSONUtils.toJSON((BasicDBObject) editedDoc, false);
+            } else {
+                json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+            }
             DBObject siDBO = (DBObject) docWrapper.get("SourceInfo");
             String srcId = siDBO.get("SourceID").toString();
             String sourceName = siDBO.get("Name").toString();
