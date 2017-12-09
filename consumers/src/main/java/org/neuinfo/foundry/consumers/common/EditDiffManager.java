@@ -18,7 +18,12 @@ public class EditDiffManager {
         int len = metadataRecordLineageItems.length();
         List<JSONObject> uniqueItems = new ArrayList<JSONObject>(len);
         for(int i = 0; i < len; i++) {
-            JSONObject item = metadataRecordLineageItems.getJSONObject(i).getJSONObject("item");
+            JSONObject item;
+            if (metadataRecordLineageItems.getJSONObject(i).has("item")) {
+               item =  metadataRecordLineageItems.getJSONObject(i).getJSONObject("item");
+            } else {
+                item = metadataRecordLineageItems.getJSONObject(i);
+            }
             boolean foundSame = false;
             for(JSONObject uniqueItem : uniqueItems) {
                 if (uniqueItem.similar(item)) {

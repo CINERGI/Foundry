@@ -5,6 +5,7 @@ import com.mongodb.DBObject;
 import com.wordnik.swagger.annotations.*;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.bson.types.ObjectId;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.Constants;
@@ -45,7 +46,7 @@ public class EditorResource {
             response = String.class)
     public Response post(@ApiParam(value = "The primaryKey for the metadata document", required = true)
                          @QueryParam("primaryKey") String primaryKey,
-                         @ApiParam(value = "sourceID", required = true) @QueryParam("sourceID") String sourceID,
+                         @ApiParam(value = "sourceID", required = false) @QueryParam("sourceID") String sourceID,
                          @ApiParam(value = "API Key", required = true) @QueryParam("apiKey") String apiKey) {
 
         if (apiKey == null) {
@@ -70,27 +71,53 @@ public class EditorResource {
         MongoService mongoService = null;
         try {
             mongoService = new MongoService();
-            BasicDBObject editedDocWrapper = mongoService.findTheEditedDocument(sourceID, primaryKey);
+            String docId = primaryKey;
+            if (docId.indexOf('"') == -1) {
+                docId = (new StringBuilder()).append('"').append(docId).append('"').toString();
+            }
+            BasicDBObject editedDocWrapper = mongoService.findTheEditedDocument(sourceID, docId);
             if (editedDocWrapper == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No edited document with primaryKey:" + primaryKey + " is not found!").build();
             }
-            BasicDBObject docWrapper = mongoService.findTheDocument(sourceID, primaryKey);
+            BasicDBObject docWrapper;
+            if (Utils.isEmpty(sourceID)) {
+                docWrapper = mongoService.findTheDocument(primaryKey);
+            } else {
+                docWrapper = mongoService.findTheDocument(sourceID, primaryKey);
+            }
             if (docWrapper == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with primaryKey:" + primaryKey + " is not found!").build();
             }
             BasicDBObject originalDoc = (BasicDBObject) docWrapper.get("OriginalDoc");
-            JSONObject origDocJson = JSONUtils.toJSON( originalDoc, false);
+            JSONObject origDocJson = JSONUtils.toJSON(originalDoc, false);
             JSONObject editedDocJson = JSONUtils.clone(origDocJson);
             JSONObject editedDocWrapperJson = JSONUtils.toJSON(editedDocWrapper, false);
+            BasicDBObject dataDoc = (BasicDBObject) docWrapper.get("Data");
+            JSONObject dataSectionJson = null;
+            if (dataDoc != null) {
+                dataSectionJson = JSONUtils.toJSON(dataDoc, false);
+            }
 
             List<DiffRecord> diffRecords = EditDiffManager.extractEditDiffInformation(editedDocWrapperJson);
             boolean modified = handleOrigDataEdit(editedDocJson, diffRecords);
+            JSONArray keywordDiffs = null;
+            if (dataSectionJson != null) {
+                keywordDiffs = handleKeywordEdits(dataSectionJson, diffRecords);
+            }
 
-            if (modified) {
-                DBObject encoded = JSONUtils.encode(editedDocJson, true);
-                docWrapper.put("EditedDoc", encoded);
+            boolean hasKeywordDiffs = (keywordDiffs != null && keywordDiffs.length() > 0);
+            if (modified || hasKeywordDiffs) {
+                if (modified) {
+                    DBObject encoded = JSONUtils.encode(editedDocJson, true);
+                    docWrapper.put("EditedDoc", encoded);
+                }
+                if (hasKeywordDiffs) {
+                    dataSectionJson.put("keywordDiffs", keywordDiffs);
+                    DBObject encoded = JSONUtils.encode(dataSectionJson, true);
+                    docWrapper.put("Data", encoded);
+                }
                 // FIXME provenance
                 mongoService.updateDocument(docWrapper);
                 ObjectId oid = docWrapper.getObjectId(MONGODB_ID_FIELD);
@@ -154,9 +181,24 @@ public class EditorResource {
         }
     }
 
+    JSONArray handleKeywordEdits(JSONObject dataSectionJSON, List<DiffRecord> diffRecords) {
+        JSONArray keywordDiffs = new JSONArray();
+        for (DiffRecord diffRecord : diffRecords) {
+            List<JsonPathDiffHandler.JsonPathNode> path = JsonPathDiffHandler.parseJsonPath(diffRecord.getJsonPath());
+            if (path == null || path.isEmpty()) {
+                continue;
+            }
+            if (path.get(0).getFullName().equals("Data")) {
+                path = path.subList(1, path.size());
+                JsonPathDiffHandler.createUpdateKeywordDiffJson(path, diffRecord, dataSectionJSON, keywordDiffs);
+            }
+        }
+        return keywordDiffs;
+    }
+
     boolean handleOrigDataEdit(JSONObject editedDocJson, List<DiffRecord> diffRecords) {
         boolean modified = false;
-        for(DiffRecord diffRecord : diffRecords) {
+        for (DiffRecord diffRecord : diffRecords) {
             List<JsonPathDiffHandler.JsonPathNode> path = JsonPathDiffHandler.parseJsonPath(diffRecord.getJsonPath());
             if (path == null || path.isEmpty()) {
                 continue;
@@ -166,7 +208,7 @@ public class EditorResource {
                 try {
                     JsonPathDiffHandler.modifyJson(path, diffRecord, editedDocJson);
                     modified = true;
-                } catch(JSONException je) {
+                } catch (JSONException je) {
                     System.err.println(je.getMessage());
                 }
             }

@@ -35,7 +35,8 @@ public class JsonPathDiffHandler {
                                                    JSONObject source, JSONArray dest) {
         Iterator<JsonPathNode> it = path.iterator();
         JsonPathNode firstNode = it.next();
-        Assertion.assertTrue(firstNode.getLocalName().equals("enhancedKeywords") && firstNode.isArray());
+        String localName = firstNode.getLocalName();
+        Assertion.assertTrue((localName.equals("enhancedKeywords") || localName.equals("keywords")) && firstNode.isArray());
         JSONArray jsArr = source.getJSONArray(firstNode.getFullName());
         JSONObject sourceCloneJson = JSONUtils.clone(jsArr.getJSONObject(firstNode.arrIdx));
         List<JsonPathNode> relativePath = path.subList(1, path.size());
@@ -45,13 +46,13 @@ public class JsonPathDiffHandler {
         JSONObject diffWrapper = new JSONObject();
         diffWrapper.put("enhancedKeyword", sourceCloneJson);
         diffWrapper.put("diffType", diffRecord.getType());
-        diffWrapper.put("diffPath",diffRecord.getJsonPath());
+        diffWrapper.put("diffPath", diffRecord.getJsonPath());
         if (dest.length() == 0) {
             dest.put(diffWrapper);
         } else {
             String refKey = prepEnhancedKeywordKey(sourceCloneJson);
             int theIdx = -1;
-            for(int i = 0; i < dest.length(); i++) {
+            for (int i = 0; i < dest.length(); i++) {
                 String key = prepEnhancedKeywordKey(dest.getJSONObject(i).getJSONObject("enhancedKeyword"));
                 if (key.equals(refKey)) {
                     theIdx = i;
@@ -68,8 +69,8 @@ public class JsonPathDiffHandler {
 
     public static String prepEnhancedKeywordKey(JSONObject ekJson) {
         StringBuilder sb = new StringBuilder(100);
-        sb.append( ekJson.getString("id")).append(':');
-        sb.append( ekJson.getString("term")).append(':');
+        sb.append(ekJson.getString("id")).append(':');
+        sb.append(ekJson.getString("term")).append(':');
         sb.append(ekJson.getString("hierarchyPath"));
         return sb.toString();
     }
@@ -174,7 +175,7 @@ public class JsonPathDiffHandler {
 
     public static Map<String, KeywordDiffRec> extractKeywordDiffRecords(JSONArray keywordDiffArray) {
         Map<String, KeywordDiffRec> map = new HashMap<String, KeywordDiffRec>();
-        for (int i = 0; i < keywordDiffArray.length(); i++){
+        for (int i = 0; i < keywordDiffArray.length(); i++) {
             JSONObject json = keywordDiffArray.getJSONObject(i);
             KeywordDiffRec rec = KeywordDiffRec.fromJSON(json);
             StringBuilder sb = new StringBuilder();
@@ -185,7 +186,7 @@ public class JsonPathDiffHandler {
     }
 
 
-    public  static KeywordDiffRec findMatching(String keyword, String ontId, Map<String, KeywordDiffRec> map) {
+    public static KeywordDiffRec findMatching(String keyword, String ontId, Map<String, KeywordDiffRec> map) {
         StringBuilder sb = new StringBuilder();
         String key = sb.append(keyword).append(':').append(ontId).toString();
         if (map.containsKey(key)) {
