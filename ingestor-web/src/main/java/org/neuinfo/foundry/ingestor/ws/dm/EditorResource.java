@@ -15,6 +15,7 @@ import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.common.util.DiffRecord;
 import org.neuinfo.foundry.consumers.common.EditDiffManager;
 import org.neuinfo.foundry.common.util.JsonPathDiffHandler;
+import org.neuinfo.foundry.consumers.jms.consumers.plugins.ProvenanceHelper;
 import org.neuinfo.foundry.ingestor.ws.MongoService;
 
 import javax.jms.*;
@@ -22,6 +23,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -90,6 +92,9 @@ public class EditorResource {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No document with primaryKey:" + primaryKey + " is not found!").build();
             }
+            DBObject siDBO = (DBObject) docWrapper.get("SourceInfo");
+            String srcId = siDBO.get("SourceID").toString();
+            String sourceName = siDBO.get("Name").toString();
             BasicDBObject originalDoc = (BasicDBObject) docWrapper.get("OriginalDoc");
             JSONObject origDocJson = JSONUtils.toJSON(originalDoc, false);
             JSONObject editedDocJson = JSONUtils.clone(origDocJson);
@@ -118,7 +123,16 @@ public class EditorResource {
                     DBObject encoded = JSONUtils.encode(dataSectionJson, true);
                     docWrapper.put("Data", encoded);
                 }
-                // FIXME provenance
+                // save provenance
+                Date startDate = new Date();
+                ProvenanceHelper.ProvData provData = new ProvenanceHelper.ProvData(primaryKey,
+                        ProvenanceHelper.ModificationType.Edited);
+                provData.setSourceName(sourceName).setSrcId(srcId);
+                // first cleanup any previous provenance data
+
+                ProvenanceHelper.removeProvenanceSection(docWrapper);
+                ProvenanceHelper.saveEditedProvenance("edited",
+                        provData, startDate, docWrapper);
                 mongoService.updateDocument(docWrapper);
                 ObjectId oid = docWrapper.getObjectId(MONGODB_ID_FIELD);
                 sendStartProccessingMessage(oid.toString());

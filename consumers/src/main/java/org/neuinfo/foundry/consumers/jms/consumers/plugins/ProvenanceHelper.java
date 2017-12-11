@@ -9,9 +9,11 @@ import org.neuinfo.foundry.common.model.DocWrapper;
 import org.neuinfo.foundry.common.provenance.ProvenanceRec;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.JSONUtils;
+import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.common.ProvenanceClient;
 import org.neuinfo.foundry.consumers.common.ConsumerUtils;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.text.ParseException;
 import java.util.*;
 
@@ -30,7 +32,7 @@ public class ProvenanceHelper {
             history.put("prov", provDO);
         }
         provDO.put("curVersion", currentVersion);
-        provDO.put("lastProcessedDate",  DocWrapper.formatDate(processedDate));
+        provDO.put("lastProcessedDate", DocWrapper.formatDate(processedDate));
         BasicDBList events = (BasicDBList) provDO.get("events");
         if (events == null) {
             events = new BasicDBList();
@@ -39,6 +41,31 @@ public class ProvenanceHelper {
         events.add(JSONUtils.encode(provJSON, true));
     }
 
+
+    public static void saveEditedProvRec2DBO(DBObject docWrapper, JSONObject provJSON, String currentVersion, Date processedDate) {
+        DBObject history = (DBObject) docWrapper.get("History");
+
+        if (history == null) {
+            history = new BasicDBObject("batchId", Utils.prepBatchId(processedDate));
+            docWrapper.put("History", history);
+        } else {
+            history.put("batchId", Utils.prepBatchId(processedDate));
+        }
+        DBObject prov = (DBObject) history.get("prov");
+        if (prov == null) {
+            prov = new BasicDBObject();
+            history.put("prov", prov);
+        }
+        prov.put("curVersion", currentVersion);
+        prov.put("lastProcessedDate", DocWrapper.formatDate(processedDate));
+        BasicDBList events = (BasicDBList) prov.get("events");
+        if (events == null) {
+            events = new BasicDBList();
+            prov.put("events", events);
+        }
+        DBObject encoded = JSONUtils.encode(provJSON, true);
+        events.add(encoded);
+    }
 
     public static void saveIngestProvRec2DB(DocWrapper docWrapper, JSONObject provJSON, String currentVersion, Date processedDate) {
         JSONObject history = docWrapper.getHistory();
@@ -158,30 +185,36 @@ public class ProvenanceHelper {
         }
     }
 
+    public static void removeProvenanceSection(DBObject docWrapper) {
+        DBObject history = (DBObject) docWrapper.get("History");
+
+        if (history != null) {
+            DBObject prov = (DBObject) history.get("prov");
+            if (prov != null) {
+                history.removeField("prov");
+            }
+        }
+    }
+
+    public static void saveEditedProvenance(String activityName, ProvData provData, Date startTS, DBObject docWrapper) {
+        String nextVersion = org.neuinfo.foundry.common.util.Utils.nextVersion(provData.getVersion());
+        String startTime = ConsumerUtils.getTimeInProvenanceFormat(startTS);
+        Date now = new Date();
+        try {
+            ProvenanceRec provenanceRec = prepProvenanceRec(activityName, provData, nextVersion, startTime, now);
+            String provJSON = provenanceRec.asJSON();
+            saveEditedProvRec2DBO(docWrapper, new JSONObject(provJSON), nextVersion, now);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
     public static String saveIngestionProvenance(String activityName, ProvData provData, Date startTS, DocWrapper docWrapper) {
         try {
-            ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
+            String nextVersion = org.neuinfo.foundry.common.util.Utils.nextVersion(provData.getVersion());
             String startTime = ConsumerUtils.getTimeInProvenanceFormat(startTS);
             Date now = new Date();
-            String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat(now);
-            String startUUID = UUID.randomUUID().toString();
-            String label = provData.prepLabel();
-            String howLabel = provData.prepLabelHow();
-            String inDocId = builder.entityWithAttr("UUID=" + startUUID, "creationTime=" + startTime,
-                    "sourceId=" + provData.srcId,
-                    "label=" + label,
-                    "version=" + provData.getVersion()).getLastGeneratedId();
-            String nextVersion = org.neuinfo.foundry.common.util.Utils.nextVersion(provData.getVersion());
-
-            String outDocId = builder.entityWithAttr("UUID=" + provData.docIdentifier,
-                    "creationTime=" + docCreationTime,
-                    "label=" + label,
-                    "version=" + nextVersion).getLastGeneratedId();
-            String activityId = builder.activityWithAttr(activityName, docCreationTime,
-                    ConsumerUtils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
-
-            ProvenanceRec provenanceRec = builder.used(activityId, inDocId)
-                    .wasGeneratedBy(outDocId, activityId).build();
+            ProvenanceRec provenanceRec = prepProvenanceRec(activityName, provData, nextVersion, startTime, now);
             String provJSON = provenanceRec.asJSON();
 
             saveIngestProvRec2DB(docWrapper, new JSONObject(provJSON), nextVersion, now);
@@ -200,8 +233,31 @@ public class ProvenanceHelper {
         return null;
     }
 
+    static ProvenanceRec prepProvenanceRec(String activityName, ProvData provData, String nextVersion, String startTime, Date now) throws DatatypeConfigurationException {
+        ProvenanceRec.Builder builder = new ProvenanceRec.Builder("http://example.org", "foundry");
+        String docCreationTime = ConsumerUtils.getTimeInProvenanceFormat(now);
+        String startUUID = UUID.randomUUID().toString();
+        String label = provData.prepLabel();
+        String howLabel = provData.prepLabelHow();
+        String inDocId = builder.entityWithAttr("UUID=" + startUUID, "creationTime=" + startTime,
+                "sourceId=" + provData.srcId,
+                "label=" + label,
+                "version=" + provData.getVersion()).getLastGeneratedId();
+
+
+        String outDocId = builder.entityWithAttr("UUID=" + provData.docIdentifier,
+                "creationTime=" + docCreationTime,
+                "label=" + label,
+                "version=" + nextVersion).getLastGeneratedId();
+        String activityId = builder.activityWithAttr(activityName, docCreationTime,
+                ConsumerUtils.getTimeInProvenanceFormat(), "prov:how=" + howLabel).getLastGeneratedId();
+
+        return builder.used(activityId, inDocId)
+                .wasGeneratedBy(outDocId, activityId).build();
+    }
+
     public static enum ModificationType {
-        Added, Modified, Deleted, Ingested, None
+        Added, Modified, Deleted, Ingested, Edited, None
     }
 
     public static class ProvData {
@@ -295,6 +351,8 @@ public class ProvenanceHelper {
             } else {
                 if (this.modType == ModificationType.Ingested) {
                     sb.append("Added document with uuid ").append(docIdentifier);
+                } else if (this.modType == ModificationType.Edited) {
+                    sb.append("Edited document with uuid ").append(docIdentifier);
                 }
             }
 
