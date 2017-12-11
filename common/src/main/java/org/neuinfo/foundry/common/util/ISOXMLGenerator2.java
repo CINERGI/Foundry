@@ -86,7 +86,7 @@ public class ISOXMLGenerator2 {
             // need to fix bad IDs in the database:
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
 
-            DBObject kwDiffsDBO = (DBObject) data.get("keywordsDiff");
+            DBObject kwDiffsDBO = (DBObject) data.get("keywordDiffs");
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
             Map<String, KeywordDiffRec> kdrMap = null;
