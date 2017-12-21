@@ -171,6 +171,13 @@ public class MongoService {
         return (BasicDBObject) records.findOne(query);
     }
 
+    public BasicDBObject findDocumentByOID(String oid) {
+        DB db = mongoClient.getDB(dbName);
+        DBCollection records = db.getCollection("records");
+        BasicDBObject query = new BasicDBObject("_id", new ObjectId(oid));
+        return (BasicDBObject) records.findOne(query);
+    }
+
 
     public BasicDBObject findTheEditedDocument(String resourceId, String primaryKey) {
         DB db = mongoClient.getDB(dbName);
