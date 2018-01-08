@@ -41,6 +41,7 @@ public class ProcessingResourceTest {
     @Test
     public void testFormProcessingSubmission() throws Exception {
         String formJsonStr = loadAsStringFromClassPath("testdata/form_test_data2.json");
+        formJsonStr = loadAsStringFromClassPath("testdata/form_empty_extent_form.json");
         Response response = target.path("cinergi/processing")
                 .queryParam("apiKey", apiKey)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.text(formJsonStr));

@@ -301,7 +301,7 @@ public class CinergiFormRec {
         prepList(cfr.describedFeatures, json, "describedFeatures");
         prepList(cfr.otherTags, json, "otherTags");
         prepList(cfr.placeNames, json, "placeNames");
-        if (json.has("temporalExtent")) {
+        if (json.has("temporalExtent") && !isEmptyObject(json.getJSONObject("temporalExtent"))) {
             cfr.temporalExtent = TemporalExtent.fromJSON(json.getJSONObject("temporalExtent"));
         }
         if (json.has("spatialExtents")) {
@@ -311,7 +311,7 @@ public class CinergiFormRec {
                 cfr.addSpatialExtent(se);
             }
         }
-        if (json.has("Extent")) {
+        if (json.has("Extent") && !isEmptyObject(json.getJSONObject("Extent"))) {
             SpatialExtent se = SpatialExtent.fromJSON(json.getJSONObject("Extent"));
             cfr.addSpatialExtent(se);
         }
@@ -321,10 +321,14 @@ public class CinergiFormRec {
         if (json.has("lineage")) {
             cfr.setLineage(json.getString("lineage"));
         }
-        if (json.has("geologicAge")) {
+        if (json.has("geologicAge") && !isEmptyObject(json.getJSONObject("geologicAge"))) {
             cfr.setGeologicAge(GeologicAge.fromJSON(json.getJSONObject("geologicAge")));
         }
         return cfr;
+    }
+
+    public static boolean isEmptyObject(JSONObject json) {
+        return json == null || json.keySet() == null || json.keySet().isEmpty();
     }
 
     static void prepList(List<String> list, JSONObject json, String name) {
@@ -478,4 +482,10 @@ public class CinergiFormRec {
         }
     }
 
+
+    public static void main(String[] args) {
+        JSONObject json = new JSONObject();
+        json.put("field", (new JSONObject()).put("flag",true));
+        System.out.println(isEmptyObject(json.getJSONObject("field")));
+    }
 }
