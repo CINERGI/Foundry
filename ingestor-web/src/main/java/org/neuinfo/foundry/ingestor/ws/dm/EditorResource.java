@@ -72,6 +72,7 @@ public class EditorResource {
 
         MongoService mongoService = null;
         try {
+            System.out.println("primaryKey:" + primaryKey);
             mongoService = new MongoService();
             String docId = primaryKey;
             if (docId.indexOf('"') == -1) {
@@ -82,6 +83,7 @@ public class EditorResource {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("No edited document with primaryKey:" + primaryKey + " is not found!").build();
             }
+            System.out.println("editedDoc:" + editedDocWrapper.toJson());
             BasicDBObject docWrapper;
             if (Utils.isEmpty(sourceID)) {
                 docWrapper = mongoService.findTheDocument(primaryKey);

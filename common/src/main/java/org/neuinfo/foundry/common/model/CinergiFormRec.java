@@ -206,12 +206,12 @@ public class CinergiFormRec {
         return this;
     }
 
-    public TemporalExtent getTemporalExtent() {
-        return temporalExtent;
-    }
-
     public void setTemporalExtent(TemporalExtent temporalExtent) {
         this.temporalExtent = temporalExtent;
+    }
+
+    public TemporalExtent getTemporalExtent() {
+        return temporalExtent;
     }
 
     public List<SpatialExtent> getSpatialExtents() {

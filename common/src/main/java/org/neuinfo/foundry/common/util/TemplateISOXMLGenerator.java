@@ -36,10 +36,10 @@ public class TemplateISOXMLGenerator {
         ctx.put("resourceType", StringEscapeUtils.escapeXml(cfRec.getResourceType()));
         ctx.put("resourceTitle", StringEscapeUtils.escapeXml(cfRec.getResourceTitle()));
         ctx.put("abstract", StringEscapeUtils.escapeXml(cfRec.getAbstractText()));
-        ctx.put("resourceURL", cfRec.getResourceURL());
+        ctx.put("resourceURL",  StringEscapeUtils.escapeXml(cfRec.getResourceURL()));
         ctx.put("individualName", StringEscapeUtils.escapeXml(cfRec.getIndividualName()));
-        ctx.put("contactEmail", cfRec.getContactEmail());
-        ctx.put("definingCitation", cfRec.getDefiningCitation());
+        ctx.put("contactEmail",  StringEscapeUtils.escapeXml(cfRec.getContactEmail()));
+        ctx.put("definingCitation", StringEscapeUtils.escapeXml(cfRec.getDefiningCitation()));
         ctx.put("resourceContributor", StringEscapeUtils.escapeXml(cfRec.getResourceContributor()));
         ctx.put("alternateTitle", StringEscapeUtils.escapeXml(cfRec.getAlternateTitle()));
         ctx.put("geoscienceSubdomains", cfRec.getGeoscienceSubdomains());
@@ -55,8 +55,8 @@ public class TemplateISOXMLGenerator {
                 || !cfRec.getSpatialExtents().isEmpty() || cfRec.getGeologicAge() != null);
         ctx.put("editDate", sdf.format(new Date()));
         ctx.put("geologicAge", cfRec.getGeologicAge());
-        ctx.put("fileFormat", cfRec.getFileFormat());
-        ctx.put("lineage", cfRec.getLineage());
+        ctx.put("fileFormat", StringEscapeUtils.escapeXml(cfRec.getFileFormat()));
+        ctx.put("lineage", StringEscapeUtils.escapeXml(cfRec.getLineage()));
         Template template = null;
         template = ve.getTemplate("iso_template.vm");
 
