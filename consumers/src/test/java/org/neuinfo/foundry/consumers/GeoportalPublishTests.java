@@ -1,39 +1,31 @@
 package org.neuinfo.foundry.consumers;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
-import junit.framework.Assert;
-import junit.framework.TestCase;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-import org.neuinfo.foundry.common.model.Keyword;
-import org.neuinfo.foundry.common.util.*;
-import org.neuinfo.foundry.consumers.common.EditDiffManager;
+import org.junit.jupiter.api.Test;
+import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.jms.consumers.plugins.Geoportal2Exporter;
-import org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer2;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
 import org.neuinfo.foundry.consumers.util.Helper;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Created by valentine.
  */
-public class GeoportalPublishTests extends TestCase {
-
-    public GeoportalPublishTests(String name) {
-        super(name);
-    }
+public class GeoportalPublishTests  {
 
 
+
+    @Test
     public void testPublishGPT() throws Exception {
-        JSONObject docWrapperJson = new JSONObject(loadAsStringFromClassPath("testdata/edit_doc47_edit_record.json"));
+        JSONObject docWrapperJson = new JSONObject(loadAsStringFromClassPath("testdata/gpt_test_doc_wrapper.json"));
         assertTrue(docWrapperJson.has("OriginalDoc"));
         assertTrue(docWrapperJson.has("Processing"));
         Helper helper = new Helper("");
@@ -58,7 +50,7 @@ public class GeoportalPublishTests extends TestCase {
             Result result = plugin.handle(docWrapper);
             if (result.getStatus() != Result.Status.OK_WITH_CHANGE) {
 
-                Assert.fail("publish to GPT failed");
+                fail("publish to GPT failed");
             }
 
 
