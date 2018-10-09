@@ -13,6 +13,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URL;
+import java.util.Properties;
 
 /**
  * Created by bozyurt on 3/7/17.
@@ -21,12 +22,15 @@ public class ProcessingResourceTest {
     private HttpServer server;
     private WebTarget target;
     private Client c;
+    String apiKey;
 
     @Before
     public void setup() throws Exception {
         server = Main.startServer();
         c = ClientBuilder.newClient();
         target = c.target(Main.BASE_URI);
+        Properties properties = Utils.loadProperties("ingestor-web.properties");
+        this.apiKey = properties.getProperty("apiKey");
     }
 
     @After
@@ -37,8 +41,9 @@ public class ProcessingResourceTest {
     @Test
     public void testFormProcessingSubmission() throws Exception {
         String formJsonStr = loadAsStringFromClassPath("testdata/form_test_data2.json");
+        formJsonStr = loadAsStringFromClassPath("testdata/form_empty_extent_form.json");
         Response response = target.path("cinergi/processing")
-                .queryParam("apiKey", "72b6afb31ba46a4e797c3f861c5a945f78dfaa81")
+                .queryParam("apiKey", apiKey)
                 .request(MediaType.APPLICATION_JSON_TYPE).post(Entity.text(formJsonStr));
         System.out.println(response.getStatus());
         System.out.println(response.readEntity(String.class));
@@ -48,6 +53,17 @@ public class ProcessingResourceTest {
         URL url = ProcessingResourceTest.class.getClassLoader().getResource(classpath);
         String path = url.toURI().getPath();
         return Utils.loadAsString(path);
+    }
+
+
+    @Test
+    public void testDocStatusCheck() throws Exception {
+        Response response = target.path("cinergi/processing/status")
+                .queryParam("apiKey", apiKey)
+                .queryParam("docId", "5717c2a1cb74d89cc0a65238")
+                .request(MediaType.APPLICATION_JSON_TYPE).get();
+        System.out.println(response.getStatus());
+        System.out.println(response.readEntity(String.class));
     }
 
 }

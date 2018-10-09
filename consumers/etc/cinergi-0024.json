@@ -1,7 +1,7 @@
 {
     "sourceInformation": {
         "resourceID": "cinergi-0024",
-        "name": "epa_models",
+        "name": "EPA Models",
         "dataSource": "epa_models"
     },
     "ingestConfiguration": {

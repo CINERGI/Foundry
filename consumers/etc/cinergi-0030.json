@@ -6,7 +6,7 @@
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://get.iedadata.org/metadata/iso/series/",
+        "ingestURL": "http://get.iedadata.org/metadata/iso/mgdl/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

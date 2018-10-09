@@ -44,6 +44,15 @@ public class Utils {
         return props;
     }
 
+    public static boolean isNumber(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch(NumberFormatException ne) {
+            return false;
+        }
+    }
+
     public static String getStringValue(Object o, String defaultVal) {
         if (o == null) {
             return defaultVal;

@@ -1,0 +1,148 @@
+{
+  "metadataRecordLineageItems": [
+    {
+      "item": {
+        "stepSequenceNo": 0,
+        "stepProcessors": [
+          {
+            "personName": "Gary Hudman"
+          }
+        ],
+        "stepDateTime": "2017-05-27T01:29:44.405Z",
+        "metadataUpdates": [
+          {
+            "UpdateSequenceNo": 3,
+            "type": "update",
+            "oldValue": "Monitoring",
+            "newValue": "free radical scavengers",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.4.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 4,
+            "type": "update",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv",
+            "newValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.2.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 5,
+            "type": "update",
+            "oldValue": "Marine Animals",
+            "newValue": "Marine Animals - xxx",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.5.gco:CharacterString._$"
+          }
+        ]
+      }
+    },
+    {
+      "item": {
+        "stepSequenceNo": 0,
+        "stepProcessors": [
+          {
+            "personName": "Gary Hudman"
+          }
+        ],
+        "stepDateTime": "2017-05-27T01:29:44.405Z",
+        "metadataUpdates": [
+          {
+            "UpdateSequenceNo": 3,
+            "type": "update",
+            "oldValue": "Monitoring",
+            "newValue": "free radical scavengers",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.4.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 4,
+            "type": "update",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv",
+            "newValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.2.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 5,
+            "type": "update",
+            "oldValue": "Marine Animals",
+            "newValue": "Marine Animals - xxx",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.5.gco:CharacterString._$"
+          }
+        ]
+      }
+    },
+    {
+      "item": {
+        "stepSequenceNo": 2,
+        "stepProcessors": [
+          {}
+        ],
+        "stepDateTime": "2017-09-07T18:38:13.556Z",
+        "metadataUpdates": [
+          {
+            "UpdateSequenceNo": 2,
+            "type": "update",
+            "oldValue": "Corals",
+            "newValue": "Cloned from corals",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 3,
+            "type": "add",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "newValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "name": "keywords",
+            "insertPath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-1.gmd:MD_Keywords.gmd:keyword.-1.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 4,
+            "type": "update",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "newValue": "Test Clone Sept 7",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.3.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          }
+        ]
+      }
+    },
+    {
+      "item": {
+        "stepSequenceNo": 2,
+        "stepProcessors": [
+          {}
+        ],
+        "stepDateTime": "2017-09-07T18:38:13.556Z",
+        "metadataUpdates": [
+          {
+            "UpdateSequenceNo": 2,
+            "type": "update",
+            "oldValue": "Corals",
+            "newValue": "Cloned from corals",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.0.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 3,
+            "type": "add",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "newValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "name": "keywords",
+            "insertPath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-1.gmd:MD_Keywords.gmd:keyword.-1.gco:CharacterString._$"
+          },
+          {
+            "UpdateSequenceNo": 4,
+            "type": "update",
+            "oldValue": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv- XXX",
+            "newValue": "Test Clone Sept 7",
+            "name": "term",
+            "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.3.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+          }
+        ]
+      }
+    }
+  ]
+}

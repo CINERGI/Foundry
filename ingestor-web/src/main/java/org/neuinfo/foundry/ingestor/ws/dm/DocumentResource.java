@@ -32,7 +32,6 @@ import java.util.*;
 @Path("cinergi/docs")
 @Api(value = "cinergi/docs", description = "Metadata Documents")
 public class DocumentResource {
-    private static String theApiKey = "72b6afb31ba46a4e797c3f861c5a945f78dfaa81";
     static FacetHierarchyHandler fhh;
     private final static Logger logger = Logger.getLogger("DocumentResourceWs");
 

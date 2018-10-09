@@ -39,7 +39,16 @@ public class SpatialEnhancer2 implements IPlugin {
             DBObject siDBO = (DBObject) docWrapper.get("SourceInfo");
             String srcId = siDBO.get("SourceID").toString();
             String sourceName = siDBO.get("Name").toString();
-            JSONObject json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+
+            JSONObject json;
+            // handle edited documents (IBO)
+            DBObject editedDoc = (DBObject) docWrapper.get("EditedDoc");
+            if (editedDoc != null) {
+                json = JSONUtils.toJSON((BasicDBObject) editedDoc, false);
+            } else {
+                json = JSONUtils.toJSON((BasicDBObject) originalDoc, false);
+            }
+
             XML2JSONConverter converter = new XML2JSONConverter();
             Element docEl = converter.toXML(json);
 

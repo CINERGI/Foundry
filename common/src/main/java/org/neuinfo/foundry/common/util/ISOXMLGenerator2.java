@@ -13,6 +13,7 @@ import org.neuinfo.foundry.common.model.Keyword;
 import java.util.*;
 
 import org.apache.log4j.Logger;
+import org.neuinfo.foundry.common.util.JsonPathDiffHandler.KeywordDiffRec;
 
 /**
  * Created by bozyurt on 6/10/16.
@@ -85,8 +86,14 @@ public class ISOXMLGenerator2 {
             // need to fix bad IDs in the database:
             FacetHierarchyHandler fhh = FacetHierarchyHandler.getInstance(Constants.SCIGRAPH_URL);
 
+            DBObject kwDiffsDBO = (DBObject) data.get("keywordDiffs");
             DBObject kwDBO = (DBObject) data.get("keywords");
             JSONArray jsArr = JSONUtils.toJSONArray((BasicDBList) kwDBO);
+            Map<String, KeywordDiffRec> kdrMap = null;
+            if (kwDiffsDBO != null) {
+                JSONArray diffArr = JSONUtils.toJSONArray((BasicDBList) kwDiffsDBO);
+                kdrMap = JsonPathDiffHandler.extractKeywordDiffRecords(diffArr);
+            }
             for (int i = 0; i < jsArr.length(); i++) {
                 JSONObject kwJson = jsArr.getJSONObject(i);
                 Keyword keyword = Keyword.fromJSON(kwJson);
@@ -102,18 +109,29 @@ public class ISOXMLGenerator2 {
                 String ontId = getOntIdFromScigraph(keyword.getTerm());
                 // IBO
                 if (ontId != null) {
-                    KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
-                    List<KeywordInfo> kwiList = category2KWIListMap.get(category);
-                    if (kwiList == null) {
-                        kwiList = new ArrayList<KeywordInfo>(10);
-                        category2KWIListMap.put(category, kwiList);
+                    if (kdrMap != null) {
+                        KeywordDiffRec matching = JsonPathDiffHandler.findMatching(keyword.getTerm(), ontId, kdrMap);
+                        if (matching != null) {
+                            if (JsonPathDiffHandler.shouldRemoveKeyword(matching)) {
+                                continue;
+                            }
+                        }
                     }
-                    if (!kwiList.contains(kwi)) {
-                        kwiList.add(kwi);
+                    KeywordInfo kwi = new KeywordInfo(ontId, keyword.getTerm(), category, keyword.getFullHierarchy());
+                    updateCategory2KWIListMap(category2KWIListMap, category, kwi);
+                }
+            }
+            if (kdrMap != null && !kdrMap.isEmpty()) {
+                // add any missing curator added keywords
+                for (KeywordDiffRec kdr : kdrMap.values()) {
+                    if (JsonPathDiffHandler.shouldAddKeyword(kdr)) {
+                        KeywordInfo kwi = new KeywordInfo(kdr.getId(), kdr.getTerm(), kdr.getCategory(), kdr.getHierarchyPath());
+                        updateCategory2KWIListMap(category2KWIListMap, kdr.getCategory(), kwi);
                     }
                 }
             }
         }
+
         if (!category2KWIListMap.isEmpty()) {
             docEl = ISOXMLGeneratorSupport.addKeywords(docEl, category2KWIListMap, docWrapper);
         }
@@ -122,12 +140,24 @@ public class ISOXMLGenerator2 {
         return docEl;
     }
 
-    private static LRUCache<String,String> keyword2OntIdCache = new LRUCache<String, String>(5000);
+    static void updateCategory2KWIListMap(Map<String, List<KeywordInfo>> category2KWIListMap, String category, KeywordInfo kwi) {
+        List<KeywordInfo> kwiList = category2KWIListMap.get(category);
+        if (kwiList == null) {
+            kwiList = new ArrayList<KeywordInfo>(10);
+            category2KWIListMap.put(category, kwiList);
+        }
+        if (!kwiList.contains(kwi)) {
+            kwiList.add(kwi);
+        }
+    }
+
+    private static LRUCache<String, String> keyword2OntIdCache = new LRUCache<String, String>(5000);
+
     // FIXME Assumption: only a single ontology id per keyword (Not valid IBO)
     // Dave
     private String getOntIdFromScigraph(String keyword) {
         if (keyword2OntIdCache.containsKey(keyword)) {
-            return  keyword2OntIdCache.get(keyword);
+            return keyword2OntIdCache.get(keyword);
         }
         Map<String, Keyword> keywordMap = new HashMap<String, Keyword>(7);
         try {

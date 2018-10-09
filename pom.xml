@@ -20,6 +20,7 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <jackson.version>2.9.7</jackson.version>
     </properties>
 
     <profiles>
@@ -79,7 +80,7 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongo-java-driver</artifactId>
-            <version>3.4.1</version>
+            <version>3.6.0</version>
         </dependency>
         <!--
                 <dependency>
@@ -96,7 +97,7 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.2.3</version>
+            <version>4.5.4</version>
         </dependency>
     </dependencies>
 </project>

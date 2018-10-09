@@ -1,12 +1,9 @@
 package org.neuinfo.foundry.consumers;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.neuinfo.foundry.common.util.JSONPathProcessor;
-import org.neuinfo.foundry.common.util.JSONUtils;
 import org.neuinfo.foundry.common.util.Utils;
 import org.neuinfo.foundry.consumers.jms.consumers.ingestors.WAFIngestor;
 import org.neuinfo.foundry.consumers.plugin.Ingestor;
@@ -27,7 +24,7 @@ public class WAFIngestorTest extends TestCase {
 
     public void testWAFSubdirs() throws Exception {
         Map<String, String> options = new HashMap<String, String>(3);
-        options.put("ingestURL", "http://maxim.ucsd.edu/waf/data.gov_all");
+        options.put("ingestURL", "http://hydro10.sdsc.edu/metadata/tests/");
         Ingestor ingestor = new WAFIngestor();
         ingestor.initialize(options);
         ingestor.startup();
@@ -50,7 +47,7 @@ public class WAFIngestorTest extends TestCase {
     public void testWAFIngest() throws Exception {
         Map<String, String> options = new HashMap<String, String>(3);
         //options.put("ingestURL", "http://hydro10.sdsc.edu/metadata/NODC/");
-        options.put("ingestURL", "http://hydro10.sdsc.edu/metadata/CZO_Datasets/");
+        options.put("ingestURL", "http://hydro10.sdsc.edu/metadata/tests/");
         List<String> jsonPaths = new ArrayList<String>(2);
         List<String> titleJsonPaths = new ArrayList<String>(2);
         jsonPaths.add("$..'gmd:abstract'.'gco:CharacterString'.'_$'");

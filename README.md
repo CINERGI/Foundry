@@ -23,41 +23,54 @@ Before you start the build process, you need to install three libraries from `de
 
 Afterwards
 
-    mvn clean compile assembly:single
-    cp dispatcher/target/foundry-dispatcher-1.0-SNAPSHOT-prod.jar bin
-    cp consumers/target/foundry-consumers-1.0-SNAPSHOT-prod.jar bin/
-    cp ingestor/target/foundry-ingestor-1.0-SNAPSHOT-prod.jar bin/
+    mvn -Pdev clean install
 
-MongoDB Replicate Set
----------------------
+Here dev profile is used. There are production `prod` and `dev` profiles for differrent configurations for development and production environments.
 
-```
-mongod --replSet mongotest --port 27017 --dbpath /var/burak/mongodb/disco1 --smallfiles --oplogSize 128
-mongod --replSet mongotest --port 27018 --dbpath /var/burak/mongodb/disco2 --smallfiles --oplogSize 128
-mongod --replSet mongotest --port 27019 --dbpath /var/burak/mongodb/disco3 --smallfiles --oplogSize 128
-```
-## Replicate Set Configuration (One time)
+The configuration files are located under each sub-project. For example,
+the configuration files for the dispatcher component are located under
+`$HOME/Foundry/dispatcher/src/main/resources`.
 
-Connect to first node and run `rs.initiate()` 
-```
-mongo --port 27017
->rs.initiate()
-```
-After that add the other two members (one being the arbiter node) to the just configured replica set. (Using the hostname of your machine instead of `burak.crbs.ucsd.edu` of course)
 
 ```
->rs.add("burak.crbs.ucsd.edu:27018")
-{"ok":1}
->rs.add("burak.crbs.ucsd.edu:27019", {arbiterOnly:true})
-{"ok":1}
+$HOME/Foundry/dispatcher/src/main/resources
+├── dev
+│   └── dispatcher-cfg.xml
+└── prod
+    └── dispatcher-cfg.xml
 ```
-Now you are done with the replicate set configuration and can exit MongoDB client via `quit()` command. 
 
-You can connect to PRIMARY via CLI mongo client any time via
+When you use `-Pdev` argument, configuration file from the `dev` directory is included in the jar file.
+
+All subsystem configuration files are generated from a master configuration file in YAML format.
+An example master configuration file can be found at `$HOME/Foundry/bin/config-spec.yml.example`.
+Once you create a master config file named say `config.yml` run the following to generate all configuration files for the subsystems (for dev profile)
 
 ```
-mongo --port 27017
+cd $HOME/Foundry/bin
+./config_gen.sh -c config.yml  -f $HOME/Foundry -p dev
+
 ```
+
+```
+./config_gen.sh -h
+usage: ConfigGenerator
+ -c <cfg-spec-file>      Full path to the Foundry config spec YAML file
+ -f <foundry-root-dir>
+ -h                      print this message
+ -p <profile>            Maven profile ([dev]|prod)
+```
+
+After each configuration file generation you need to run maven to move the configs to their target locations
+
+    mvn -Pdev install
+
+MongoDB
+--------
+
+The system uses MongoDB as its backend. Both 2.x and 3.x versions of MongoDB are tested with the system. If you are using MongoDB 3.x, preferred storage engine is wiredTiger.
+
+
 
 ActiveMQ
 --------
@@ -73,18 +86,93 @@ ActiveMQ
     activemq stop
 ```
 
-ElasticSearch
--------------
+Running the system
+------------------
 
-    curl 'http://localhost:9200/?pretty'
+The system consists of a dispatcher, a consumer head and a CLI manager interface.
+The dispatcher listens to the MongoDB changes and using
+its configured workflow dispatches messages to the message queue for the
+listening consumer head(s). The consumer head coordinates a set of configured
+consumers that do a prefined operation of a document indicated by the message
+they receive from the dispatcher and ingestors. The ingestors are specialized
+consumers that are responsible for the retrieval of the original data as
+configured by harvest descriptor JSON file of the corresponding source.
+They are triggered by the manager application.
 
-Querying documents for responsible organisation fields that contains the term `Boulder`
+## Initial Setup
 
-    curl -XGET localhost:9200/nif/_search -d '{
-       "query":{"match":{"cinergi.gmi:MI_Metadata.gmd:contact.gmd:CI_ResponsibleParty.gmd:organisationName.gco:CharacterString._$":"Boulder"}}}'
+Before any processing the MongoDB needs to be populated with the source descriptors using
+the `$HOME/Foundry/bin/ingest_src_cli.sh`. 
+
+```
+./ingest_src_cli.sh -h
+usage: SourceIngestorCLI
+  -c <config-file>        config-file e.g. ingestor-cfg.xml (default)
+  -d                      delete the source given by the source-json-file
+  -h                      print this message
+  -j <source-json-file>   harvest source description file
+  -u                      update the source given by the source-json-file
+```
+
+Example source descriptors are under `$HOME/Foundry/consumers/etc`.
+
+An example usage for inserting IEDA Earthchem Library source descriptor document to the `sources` collection is show below
+
+ ```
+./ingest_src_cli.sh -j $HOME/Foundry/consumers/etc/cinergi-0023.json
+```
+
+Source descriptors are JSON files. To create a new source descriptor for a new resource, copy one of the example source descriptors to a new file and edit it. For more information about a source/harvest descriptor see [Harvest Description](doc/harvest_desc.md).
 
 
-Further Documentation
+## Dispatcher
+
+The script for the dispatcher component `dispatcher.sh` is located in 
+`$HOME/Foundry_ES/bin`. By default it uses `dispatcher-cfg.xml` file for the 
+profile specified during the build. This needs to run in its own process. 
+To stop it, use `Ctrl-C`.
+
+```
+ ./dispatcher.sh -h
+ usage: Dispatcher
+  -c <config-file>   config-file e.g. dispatcher-cfg.xml (default)
+  -h                 print this message
+```
+
+
+## Consumer Head
+The script for the consumer head component `consumer_head.sh` is located in 
+`$HOME/Foundry_ES/bin`. By default it uses `consumers-cfg.xml` file for the 
+profile specified during the build. For production use you need to specify 
+ `-f` option. This needs to run in its own process. To stop it, use `Ctrl-C`.
+
+
+ ```
+ ./consumer_head.sh -h
+ usage: ConsumerCoordinator
+  -c <config-file>          config-file e.g. consumers-cfg.xml (default)
+  -cm                       run in consumer mode (no ingestors)
+   -f                        full data set default is 100 documents
+   -h                        print this message
+   -n <max number of docs>   Max number of documents to ingest
+   -p                        send provenance data to prov server
+   -t                        run ingestors in test mode
+```
+
+## Manager
+
+Manager is an interactive command line application for sending ingestion start messages for resources to the consumer head(s). 
+It also have some convenience functions to cleanup MongoDB data for a given resource and delete ElasticSearch indices. 
+By default manager app uses `dispatcher-cfg.xml` file for the profile specified 
+during the build. 
+
+```
+./manager.sh -h
+usage: ManagementService
+ -c <config-file>   config-file e.g. dispatcher-cfg.xml (default)
+ -h                 print this message
+```
+
 ---------------------
 
  * [System Architecture](doc/architecture.md)

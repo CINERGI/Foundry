@@ -1,0 +1,820 @@
+{
+  "_id": "59e55b42b48d0b6b759e9e8c",
+  "primaryKey": "\"47\"",
+  "OriginalDoc": {
+    "gmi:MI_Metadata": {
+      "gmd:fileIdentifier": {
+        "gco:CharacterString": {
+          "_$": "47"
+        }
+      },
+      "gmd:language": {
+        "gco:CharacterString": {
+          "_$": "en"
+        }
+      },
+      "gmd:contact": [
+        {
+          "gmd:CI_ResponsibleParty": {
+            "gmd:organisationName": {
+              "gco:CharacterString": {
+                "_$": "Earthcube CINERGI Metadata Pipeline"
+              }
+            },
+            "gmd:positionName": {
+              "gco:CharacterString": {
+                "_$": "CINERGI Metadata Contact"
+              }
+            },
+            "gmd:contactInfo": {
+              "gmd:CI_Contact": {
+                "gmd:address": {
+                  "gmd:CI_Address": {
+                    "gmd:electronicMailAddress": {
+                      "gco:CharacterString": {
+                        "_$": "metadata@earthcube.org"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "gmd:role": {
+              "gmd:CI_RoleCode": {
+                "@codeSpace": "ISOTC211/19115",
+                "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue": "pointOfContact",
+                "_$": "pointOfContact"
+              }
+            }
+          }
+        },
+        {
+          "gmd:CI_ResponsibleParty": {
+            "gmd:organisationName": {
+              "gco:CharacterString": {
+                "_$": "Earthcube CINERGI Metadata Pipeline"
+              }
+            },
+            "gmd:positionName": {
+              "gco:CharacterString": {
+                "_$": "CINERGI Metadata Contact - TEST AUTHOR"
+              }
+            },
+            "gmd:contactInfo": {
+              "gmd:CI_Contact": {
+                "gmd:address": {
+                  "gmd:CI_Address": {
+                    "gmd:electronicMailAddress": {
+                      "gco:CharacterString": {
+                        "_$": "metadata@earthcube.org"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "gmd:role": {
+              "gmd:CI_RoleCode": {
+                "@codeSpace": "ISOTC211/19115",
+                "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue": "pointOfContact",
+                "_$": "gmd:CI_ResponsibleParty [pointOfContact]"
+              }
+            }
+          }
+        }
+      ],
+      "gmd:dateStamp": {
+        "@gco:nilReason": "unknown"
+      },
+      "gmd:metadataStandardVersion": {
+        "gco:CharacterString": {
+          "_$": "2003"
+        }
+      },
+      "gmd:identificationInfo": {
+        "gmd:MD_DataIdentification": {
+          "gmd:citation": {
+            "gmd:CI_Citation": {
+              "gmd:title": {
+                "gco:CharacterString": {
+                  "_$": "Cloud-Hosted Real-time Data Services for the Geosciences"
+                }
+              },
+              "gmd:date": {
+                "gmd:CI_Date": {
+                  "gmd:date": {
+                    "gco:Date": {
+                      "_$": "2016-10-18"
+                    }
+                  },
+                  "gmd:dateType": {
+                    "gmd:CI_DateTypeCode": {
+                      "@codeSpace": "ISOTC211/19115",
+                      "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                      "@codeListValue": "publication",
+                      "_$": "publication"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "gmd:abstract": {
+            "gco:CharacterString": {
+              "_$": "Create a cloud-based infrastructure for real-time geosciences data needed for improved flood forcasts and other applications. Provide the best possible estimate of what is happening on the ground at any time and then use it to forecast into future.\n               Main CI Challenges: - real-time data acquisition & management;- Scaling the architecture up to the number of sensors\n               Data Discovery Challenges: \n                    Data Types and Formats: - Data Types & Sources: real time field sensor point data (weather sensors). Radar (model output as product/future goal.) ;- Data repositories: a number of repositories including for radar data;- Data Formats: csv, NetCDF, SensorML, rudimentary database;- Data Volumes: could be huge. High resolution radar, many streams;- Data Velocity: real time or near real time;- Data Veracity/Quality: need QA/QC on real-time data;\n                    Additional Information: 1. Start with a data logger connected to the Internet; ;2. Go on Amazon or other cloud provider and download it once your CHORD instance has been launched; ;3. Create a sensor feed with however many sensors so that each is streaming the data; ;4. You put together the sensor notes and post the HTTP address after copying and pasting; ;5. Stream data into CHORDS; ;6. Develop real-time models simultaneously (sensorML models already connected) TEST"
+            }
+          },
+          "gmd:descriptiveKeywords": [
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": [
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Hazards"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Predictions"
+                    }
+                  }
+                ],
+                "gmd:type": {
+                  "gmd:MD_KeywordTypeCode": {
+                    "@codeSpace": "ISOTC211/19115",
+                    "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+                    "@codeListValue": "theme",
+                    "_$": "theme"
+                  }
+                },
+                "gmd:thesaurusName": {
+                  "gmd:CI_Citation": {
+                    "gmd:title": {
+                      "gco:CharacterString": {
+                        "_$": "CINERGI Themes"
+                      }
+                    },
+                    "gmd:date": {
+                      "gmd:CI_Date": {
+                        "gmd:date": {
+                          "gco:Date": {
+                            "_$": "2015-01-01"
+                          }
+                        },
+                        "gmd:dateType": {
+                          "gmd:CI_DateTypeCode": {
+                            "@codeListValue": "publication",
+                            "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": {
+                  "gco:CharacterString": {
+                    "_$": "SensorML;NetCDF"
+                  }
+                },
+                "gmd:type": {
+                  "gmd:MD_KeywordTypeCode": {
+                    "@codeSpace": "ISOTC211/19115",
+                    "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+                    "@codeListValue": "theme",
+                    "_$": "theme"
+                  }
+                }
+              }
+            },
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": [
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Hazards-TEST"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Predictions-TEST"
+                    }
+                  }
+                ],
+                "gmd:type": {
+                  "gmd:MD_KeywordTypeCode": {
+                    "@codeSpace": "ISOTC211/19115",
+                    "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+                    "@codeListValue": "theme",
+                    "_$": "theme"
+                  }
+                },
+                "gmd:thesaurusName": {
+                  "gmd:CI_Citation": {
+                    "gmd:title": {
+                      "gco:CharacterString": {
+                        "_$": "CINERGI Themes-TEST"
+                      }
+                    },
+                    "gmd:date": {
+                      "gmd:CI_Date": {
+                        "gmd:date": {
+                          "gco:Date": {
+                            "_$": "2015-01-01"
+                          }
+                        },
+                        "gmd:dateType": {
+                          "gmd:CI_DateTypeCode": {
+                            "@codeListValue": "publication",
+                            "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "gmd:language": {
+            "gco:CharacterString": {
+              "_$": "en"
+            }
+          },
+          "gmd:topicCategory": [
+            {
+              "gmd:MD_TopicCategoryCode": {
+                "_$": "geoscientificInformation"
+              }
+            },
+            {
+              "gmd:MD_TopicCategoryCode": {
+                "_$": "environment"
+              }
+            }
+          ]
+        }
+      },
+      "gmd:distributionInfo": {
+        "gmd:MD_Distribution": {
+          "gmd:distributionFormat": {
+            "gmd:MD_Format": {
+              "gmd:name": {
+                "gco:CharacterString": {
+                  "_$": "Resource URL"
+                }
+              },
+              "gmd:version": {
+                "gco:CharacterString": {
+                  "_$": "0.0"
+                }
+              }
+            }
+          },
+          "gmd:transferOptions": {
+            "gmd:MD_DigitalTransferOptions": {
+              "gmd:onLine": [
+                {
+                  "gmd:CI_OnlineResource": {
+                    "gmd:linkage": {
+                      "gmd:URL": {
+                        "_$": "https://drive.google.com/open?id=1xyqv4qDbZ83JVym3E0iCFRh9-Brj5iffANifXlbXqPA"
+                      }
+                    },
+                    "gmd:name": {
+                      "gco:CharacterString": {
+                        "_$": "CHORDS (Cloud-Hosted Real-time Data Services for the Geosciences) ?Access of Real Time Data"
+                      }
+                    },
+                    "gmd:function": {
+                      "gmd:CI_OnLineFunctionCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                        "@codeListValue": "download"
+                      }
+                    }
+                  }
+                },
+                {
+                  "gmd:CI_OnlineResource": {
+                    "gmd:linkage": {
+                      "gmd:URL": {
+                        "_$": "https://google.com"
+                      }
+                    },
+                    "gmd:name": {
+                      "gco:CharacterString": {
+                        "_$": "CHORDS - Test"
+                      }
+                    },
+                    "gmd:function": {
+                      "gmd:CI_OnLineFunctionCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                        "@codeListValue": "download"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "_@gmi": "http://www.isotc211.org/2005/gmi",
+    "_@default": "",
+    "_@gco": "http://www.isotc211.org/2005/gco",
+    "_@gmd": "http://www.isotc211.org/2005/gmd",
+    "_@gml": "http://www.opengis.net/gml",
+    "_@gmx": "http://www.isotc211.org/2005/gmx",
+    "_@srv": "http://www.isotc211.org/2005/srv",
+    "_@xlink": "http://www.w3.org/1999/xlink",
+    "_@xml": "http://www.w3.org/XML/1998/namespace",
+    "gmd:MD_Metadata": {
+      "gmd:identificationInfo": {
+        "gmd:MD_DataIdentification": {
+          "gmd:extent": {
+            "gmd:EX_Extent": {
+              "gmd:geographicElement": {
+                "gmd:EX_GeographicBoundingBox": {
+                  "gmd:northBoundLatitude": {
+                    "gco:Decimal": {
+                      "_$": 43.2358657873948
+                    }
+                  },
+                  "gmd:southBoundLatitude": {
+                    "gco:Decimal": {
+                      "_$": 18.196304632458
+                    }
+                  },
+                  "gmd:eastBoundLongitude": {
+                    "gco:Decimal": {
+                      "_$": -81.0308861732483
+                    }
+                  },
+                  "gmd:westBoundLongitude": {
+                    "gco:Decimal": {
+                      "_$": -111.089479923248
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "Data": {
+    "spatial": {
+      "bounding_boxes": [],
+      "place_keywords": [],
+      "text": "Cloud-Hosted Real-time Data Services for the Geosciences \nCreate a cloud-based infrastructure for real-time geosciences data needed for improved flood forcasts and other applications. Provide the best possible estimate of what is happening on the ground at any time and then use it to forecast into future.\n               Main CI Challenges: - real-time data acquisition & management;- Scaling the architecture up to the number of sensors\n               Data Discovery Challenges: \n                    Data Types and Formats: - Data Types & Sources: real time field sensor point data (weather sensors). Radar (model output as product/future goal.) ;- Data repositories: a number of repositories including for radar data;- Data Formats: csv, NetCDF, SensorML, rudimentary database;- Data Volumes: could be huge. High resolution radar, many streams;- Data Velocity: real time or near real time;- Data Veracity/Quality: need QA/QC on real-time data;\n                    Additional Information: 1. Start with a data logger connected to the Internet; ;2. Go on Amazon or other cloud provider and download it once your CHORD instance has been launched; ;3. Create a sensor feed with however many sensors so that each is streaming the data; ;4. You put together the sensor notes and post the HTTP address after copying and pasting; ;5. Stream data into CHORDS; ;6. Develop real-time models simultaneously (sensorML models already connected) \n",
+      "invalid_place_keywords": [],
+      "derived_bounding_boxes_from_places": {},
+      "derived_place_from_text": [
+        "Amazon"
+      ],
+      "derived_bounding_boxes_from_derived_place": {
+        "Amazon": {
+          "southwest": {
+            "lat": 33.5793800000001,
+            "lng": -7.63818999999996
+          },
+          "northeast": {
+            "lat": 33.5893800000001,
+            "lng": -7.62818999999996
+          }
+        }
+      }
+    },
+    "keywords": [
+      {
+        "term": "Radar",
+        "ontId": "http://sweet.jpl.nasa.gov/2.3/matrInstrument.owl#Instrument",
+        "fullHierarchy": "Equipment > Instrument > Radar",
+        "facetHierarchy": "Equipment > Instrument",
+        "entityInfos": [
+          {
+            "id": "http://sweet.jpl.nasa.gov/2.3/matrInstrument.owl#Instrument",
+            "start": -1,
+            "end": -1,
+            "category": "Equipment > Instrument"
+          }
+        ]
+      },
+      {
+        "term": "Flood",
+        "ontId": "http://www.vocabularyserver.com/usgs/index.php?tema=796&/hydrologic-processes",
+        "fullHierarchy": "Process > Hydrologic Process > Floods",
+        "facetHierarchy": "Process > Hydrologic Process",
+        "entityInfos": [
+          {
+            "id": "http://www.vocabularyserver.com/usgs/index.php?tema=796&/hydrologic-processes",
+            "start": -1,
+            "end": -1,
+            "category": "Process > Hydrologic Process"
+          }
+        ]
+      },
+      {
+        "term": "Volume",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+        "fullHierarchy": "Property > Measure > Volume",
+        "facetHierarchy": "Property > Measure",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+            "start": -1,
+            "end": -1,
+            "category": "Property > Measure"
+          }
+        ],
+        "validation": false
+      },
+      {
+        "term": "Velocity",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+        "fullHierarchy": "Property > Measure > Velocity",
+        "facetHierarchy": "Property > Measure",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+            "start": -1,
+            "end": -1,
+            "category": "Property > Measure"
+          }
+        ]
+      },
+      {
+        "term": "Sensor",
+        "ontId": "http://purl.oclc.org/NET/ssnx/ssn#Sensor",
+        "fullHierarchy": "Equipment > Sensor",
+        "facetHierarchy": "Equipment > Sensor",
+        "entityInfos": [
+          {
+            "id": "http://purl.oclc.org/NET/ssnx/ssn#Sensor",
+            "start": -1,
+            "end": -1,
+            "category": "Equipment > Sensor"
+          }
+        ],
+        "validation": false
+      },
+      {
+        "term": "Repository",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Repository",
+        "fullHierarchy": "Resource Type > Repository",
+        "facetHierarchy": "Resource Type > Repository",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Repository",
+            "start": -1,
+            "end": -1,
+            "category": "Resource Type > Repository"
+          }
+        ]
+      },
+      {
+        "term": "Stream",
+        "ontId": "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+        "fullHierarchy": "Feature > Hydrologic Feature > Water Body > Watercourse > Stream",
+        "facetHierarchy": "Feature > Hydrologic Feature",
+        "entityInfos": [
+          {
+            "id": "http://sweet.jpl.nasa.gov/2.3/realmHydro.owl#HydrosphereFeature",
+            "start": -1,
+            "end": -1,
+            "category": "Feature > Hydrologic Feature"
+          }
+        ]
+      }
+    ],
+    "enhancedKeywords": [
+      {
+        "id": "http://www.vocabularyserver.com/usgs/index.php?tema=581&/floods",
+        "term": "Flood",
+        "category": "Process > Hydrologic Process",
+        "hierarchyPath": "Process > Hydrologic Process > Floods",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://sweet.jpl.nasa.gov/2.3/matrInstrument.owl#Radar",
+        "term": "Radar",
+        "category": "Equipment > Instrument",
+        "hierarchyPath": "Equipment > Instrument > Radar",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://hydro10.sdsc.edu/cinergi_ontology/InitiativeType/sensor",
+        "term": "Sensor",
+        "category": "Equipment > Sensor",
+        "hierarchyPath": "Equipment > Sensor",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://hydro10.sdsc.edu/cinergi_ontology/metadata#volumes",
+        "term": "Volume",
+        "category": "Property > Measure",
+        "hierarchyPath": "Property > Measure > Volume",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Velocity",
+        "term": "Velocity",
+        "category": "Property > Measure",
+        "hierarchyPath": "Property > Measure > Velocity",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Repository",
+        "term": "Repository",
+        "category": "Resource Type > Repository",
+        "hierarchyPath": "Resource Type > Repository",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      },
+      {
+        "id": "http://sweet.jpl.nasa.gov/2.3/realmHydroBody.owl#Stream",
+        "term": "Stream",
+        "category": "Feature > Hydrologic Feature",
+        "hierarchyPath": "Feature > Hydrologic Feature > Water Body > Watercourse > Stream",
+        "type": "Keyword",
+        "lastChangedDate": "2017-08-16T22:20:08Z"
+      }
+    ]
+  },
+  "metadataRecordLineageItems": [
+    {
+      "stepSequenceNo": 0,
+      "stepProcessors": [
+        {
+          "personName": "Test-Curator-xxx-aa"
+        }
+      ],
+      "stepDateTime": "2017-10-17T01:19:32.850Z",
+      "metadataUpdates": [
+        {
+          "UpdateSequenceNo": 1,
+          "oldValue": "",
+          "newValue": 43.2358657873948,
+          "name": "northBoundLatitude",
+          "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:northBoundLatitude.gco:Decimal._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 2,
+          "oldValue": "",
+          "newValue": 18.196304632458,
+          "name": "southBoundLatitude",
+          "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:southBoundLatitude.gco:Decimal._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 3,
+          "oldValue": "",
+          "newValue": -81.0308861732483,
+          "name": "eastBoundLongitude",
+          "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:eastBoundLongitude.gco:Decimal._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 4,
+          "oldValue": "",
+          "newValue": -111.089479923248,
+          "name": "westBoundLongitude",
+          "updatePath": "OriginalDoc.gmd:MD_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:extent.gmd:EX_Extent.gmd:geographicElement.gmd:EX_GeographicBoundingBox.gmd:westBoundLongitude.gco:Decimal._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 5,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "Earthcube CINERGI Metadata Pipeline",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:organisationName.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 6,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "CINERGI Metadata Contact",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:positionName.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 7,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "metadata@earthcube.org",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:contactInfo.gmd:CI_Contact.gmd:address.gmd:CI_Address.gmd:electronicMailAddress.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 8,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "ISOTC211/19115",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:role.gmd:CI_RoleCode.@codeSpace"
+        },
+        {
+          "UpdateSequenceNo": 9,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:role.gmd:CI_RoleCode.@codeList"
+        },
+        {
+          "UpdateSequenceNo": 10,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "pointOfContact",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:role.gmd:CI_RoleCode.@codeListValue"
+        },
+        {
+          "UpdateSequenceNo": 11,
+          "type": "insert",
+          "name": "gmd:CI_ResponsibleParty",
+          "newValue": "pointOfContact",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.-1.gmd:CI_ResponsibleParty.gmd:role.gmd:CI_RoleCode._$"
+        },
+        {
+          "UpdateSequenceNo": 12,
+          "oldValue": "pointOfContact",
+          "newValue": "gmd:CI_ResponsibleParty [pointOfContact]",
+          "name": "agentRole",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.1.gmd:CI_ResponsibleParty.gmd:role.gmd:CI_RoleCode._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 13,
+          "oldValue": "CINERGI Metadata Contact",
+          "newValue": "CINERGI Metadata Contact - TEST AUTHOR",
+          "name": "gmd:positionName",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:contact.1.gmd:CI_ResponsibleParty.gmd:positionName.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 14,
+          "type": "insert",
+          "name": "gmd:CI_OnlineResource",
+          "newValue": "https://drive.google.com/open?id=1xyqv4qDbZ83JVym3E0iCFRh9-Brj5iffANifXlbXqPA",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions.gmd:MD_DigitalTransferOptions.gmd:onLine.-1.gmd:CI_OnlineResource.gmd:linkage.gmd:URL._$"
+        },
+        {
+          "UpdateSequenceNo": 15,
+          "type": "insert",
+          "name": "gmd:CI_OnlineResource",
+          "newValue": "CHORDS (Cloud-Hosted Real-time Data Services for the Geosciences) ?Access of Real Time Data",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions.gmd:MD_DigitalTransferOptions.gmd:onLine.-1.gmd:CI_OnlineResource.gmd:name.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 16,
+          "type": "insert",
+          "name": "gmd:CI_OnlineResource",
+          "newValue": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions.gmd:MD_DigitalTransferOptions.gmd:onLine.-1.gmd:CI_OnlineResource.gmd:function.gmd:CI_OnLineFunctionCode.@codeList"
+        },
+        {
+          "UpdateSequenceNo": 17,
+          "type": "insert",
+          "name": "gmd:CI_OnlineResource",
+          "newValue": "download",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions.gmd:MD_DigitalTransferOptions.gmd:onLine.-1.gmd:CI_OnlineResource.gmd:function.gmd:CI_OnLineFunctionCode.@codeListValue"
+        },
+        {
+          "UpdateSequenceNo": 18,
+          "oldValue": "CHORDS (Cloud-Hosted Real-time Data Services for the Geosciences) ?Access of Real Time Data",
+          "newValue": "CHORDS - Test",
+          "name": "gmd:Name",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:distributionInfo.gmd:MD_Distribution.gmd:transferOptions.gmd:MD_DigitalTransferOptions.gmd:onLine.1.gmd:CI_OnlineResource.gmd:name.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 19,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "Hazards",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 20,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "Predictions",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:keyword.1.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 21,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "ISOTC211/19115",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:type.gmd:MD_KeywordTypeCode.@codeSpace"
+        },
+        {
+          "UpdateSequenceNo": 22,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:type.gmd:MD_KeywordTypeCode.@codeList"
+        },
+        {
+          "UpdateSequenceNo": 23,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "theme",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:type.gmd:MD_KeywordTypeCode.@codeListValue"
+        },
+        {
+          "UpdateSequenceNo": 24,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "theme",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:type.gmd:MD_KeywordTypeCode._$"
+        },
+        {
+          "UpdateSequenceNo": 25,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "CINERGI Themes",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:thesaurusName.gmd:CI_Citation.gmd:title.gco:CharacterString._$"
+        },
+        {
+          "UpdateSequenceNo": 26,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "2015-01-01",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:thesaurusName.gmd:CI_Citation.gmd:date.gmd:CI_Date.gmd:date.gco:Date._$"
+        },
+        {
+          "UpdateSequenceNo": 27,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "publication",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:thesaurusName.gmd:CI_Citation.gmd:date.gmd:CI_Date.gmd:dateType.gmd:CI_DateTypeCode.@codeListValue"
+        },
+        {
+          "UpdateSequenceNo": 28,
+          "type": "insert",
+          "name": "keywords",
+          "newValue": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+          "insertPath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.-2.gmd:MD_Keywords.gmd:thesaurusName.gmd:CI_Citation.gmd:date.gmd:CI_Date.gmd:dateType.gmd:CI_DateTypeCode.@codeList"
+        },
+        {
+          "UpdateSequenceNo": 29,
+          "oldValue": "Hazards",
+          "newValue": "Hazards-TEST",
+          "name": "term",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.2.gmd:MD_Keywords.gmd:keyword.0.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 30,
+          "oldValue": "Predictions",
+          "newValue": "Predictions-TEST",
+          "name": "term",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.2.gmd:MD_Keywords.gmd:keyword.1.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 31,
+          "oldValue": "CINERGI Themes",
+          "newValue": "CINERGI Themes-TEST",
+          "name": "gmd:thesaurusName",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:descriptiveKeywords.2.gmd:MD_Keywords.gmd:thesaurusName.gmd:CI_Citation.gmd:title.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 32,
+          "oldValue": "Create a cloud-based infrastructure for real-time geosciences data needed for improved flood forcasts and other applications. Provide the best possible estimate of what is happening on the ground at any time and then use it to forecast into future.\n               Main CI Challenges: - real-time data acquisition & management;- Scaling the architecture up to the number of sensors\n               Data Discovery Challenges: \n                    Data Types and Formats: - Data Types & Sources: real time field sensor point data (weather sensors). Radar (model output as product/future goal.) ;- Data repositories: a number of repositories including for radar data;- Data Formats: csv, NetCDF, SensorML, rudimentary database;- Data Volumes: could be huge. High resolution radar, many streams;- Data Velocity: real time or near real time;- Data Veracity/Quality: need QA/QC on real-time data;\n                    Additional Information: 1. Start with a data logger connected to the Internet; ;2. Go on Amazon or other cloud provider and download it once your CHORD instance has been launched; ;3. Create a sensor feed with however many sensors so that each is streaming the data; ;4. You put together the sensor notes and post the HTTP address after copying and pasting; ;5. Stream data into CHORDS; ;6. Develop real-time models simultaneously (sensorML models already connected)",
+          "newValue": "Create a cloud-based infrastructure for real-time geosciences data needed for improved flood forcasts and other applications. Provide the best possible estimate of what is happening on the ground at any time and then use it to forecast into future.\n               Main CI Challenges: - real-time data acquisition & management;- Scaling the architecture up to the number of sensors\n               Data Discovery Challenges: \n                    Data Types and Formats: - Data Types & Sources: real time field sensor point data (weather sensors). Radar (model output as product/future goal.) ;- Data repositories: a number of repositories including for radar data;- Data Formats: csv, NetCDF, SensorML, rudimentary database;- Data Volumes: could be huge. High resolution radar, many streams;- Data Velocity: real time or near real time;- Data Veracity/Quality: need QA/QC on real-time data;\n                    Additional Information: 1. Start with a data logger connected to the Internet; ;2. Go on Amazon or other cloud provider and download it once your CHORD instance has been launched; ;3. Create a sensor feed with however many sensors so that each is streaming the data; ;4. You put together the sensor notes and post the HTTP address after copying and pasting; ;5. Stream data into CHORDS; ;6. Develop real-time models simultaneously (sensorML models already connected) TEST",
+          "name": "gmd:abstract",
+          "updatePath": "OriginalDoc.gmi:MI_Metadata.gmd:identificationInfo.gmd:MD_DataIdentification.gmd:abstract.gco:CharacterString._$",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 33,
+          "oldValue": "Equipment > Sensor",
+          "newValue": "false",
+          "name": "keywords",
+          "updatePath": "Data.keywords.4.validation",
+          "type": "update"
+        },
+        {
+          "UpdateSequenceNo": 34,
+          "oldValue": "Property > Measure > Volume",
+          "newValue": "false",
+          "name": "keywords",
+          "updatePath": "Data.keywords.2.validation",
+          "type": "update"
+        }
+      ]
+    }
+  ]
+}

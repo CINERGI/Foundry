@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gmd:MD_Metadata xmlns:gmd="http://www.isotc211.org/2005/gmd" xmlns:gco="http://www.isotc211.org/2005/gco"
+                 xmlns:srv="http://www.isotc211.org/2005/srv" xmlns:gml="http://www.opengis.net/gml"
+                 xmlns:xlink="http://www.w3.org/1999/xlink">
+    <gmd:fileIdentifier>
+        <gco:CharacterString>d34a8f0d-f86b-4c4b-a5a5-bffd9a21932f</gco:CharacterString>
+    </gmd:fileIdentifier>
+    <gmd:language>
+        <gco:CharacterString>en</gco:CharacterString>
+    </gmd:language>
+    <gmd:hierarchyLevel>
+        <gmd:MD_ScopeCode codeSpace="ISOTC211/19115"
+                          codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode"
+                          codeListValue="dataset">Dataset</gmd:MD_ScopeCode>
+    </gmd:hierarchyLevel>
+    <!--
+    <gmd:hierarchyLevelName>
+        <gco:CharacterString>Dataset</gco:CharacterString>
+    </gmd:hierarchyLevelName>
+    -->
+    <gmd:contact>
+        <gmd:CI_ResponsibleParty>
+            <gmd:individualName>
+                <gco:CharacterString>Ilya Zaslavsky</gco:CharacterString>
+            </gmd:individualName>
+            <gmd:contactInfo>
+                <gmd:CI_Contact>
+                    <gmd:address>
+                        <gmd:CI_Address>
+                            <gmd:electronicMailAddress>
+                                <gco:CharacterString>izaslavsky@ucsd.edu</gco:CharacterString>
+                            </gmd:electronicMailAddress>
+                        </gmd:CI_Address>
+                    </gmd:address>
+                </gmd:CI_Contact>
+            </gmd:contactInfo>
+            <gmd:role>
+                <gmd:CI_RoleCode codeSpace="ISOTC211/19115"
+                                 codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
+                                 codeListValue="pointOfContact">pointOfContact
+                </gmd:CI_RoleCode>
+            </gmd:role>
+        </gmd:CI_ResponsibleParty>
+    </gmd:contact>
+    <gmd:dateStamp>
+        <gco:Date>2018-03-30</gco:Date>
+    </gmd:dateStamp>
+    <gmd:metadataStandardName>
+        <gco:CharacterString>ISO 19139/19115 Metadata for Datasets</gco:CharacterString>
+    </gmd:metadataStandardName>
+    <gmd:metadataStandardVersion>
+        <gco:CharacterString>2003</gco:CharacterString>
+    </gmd:metadataStandardVersion>
+    <gmd:referenceSystemInfo>
+        <gmd:MD_ReferenceSystem>
+            <gmd:referenceSystemIdentifier>
+                <gmd:RS_Identifier>
+                    <gmd:code>
+                        <gco:CharacterString>4326</gco:CharacterString>
+                    </gmd:code>
+                </gmd:RS_Identifier>
+            </gmd:referenceSystemIdentifier>
+        </gmd:MD_ReferenceSystem>
+    </gmd:referenceSystemInfo>
+    <gmd:identificationInfo>
+        <gmd:MD_DataIdentification>
+            <gmd:citation>
+                <gmd:CI_Citation>
+                    <gmd:title>
+                        <gco:CharacterString>Station MOKH1 - 1612480 - Mokuoloe, HI. 2014 Standard Meteorological Data </gco:CharacterString>
+                    </gmd:title>
+                                            <gmd:alternateTitle>
+                            <gco:CharacterString>Station MOKH1 - 1612480 - Mokuoloe, HI. 2014 Standard Meteorological Data </gco:CharacterString>
+                        </gmd:alternateTitle>
+                                        <gmd:date>
+                        <gmd:CI_Date>
+                            <gmd:date>
+                                <gco:Date>2018-03-30</gco:Date>
+                            </gmd:date>
+                            <gmd:dateType>
+                                <gmd:CI_DateTypeCode codeSpace="ISOTC211/19115"
+                                                     codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode"
+                                                     codeListValue="publication">publication
+                                </gmd:CI_DateTypeCode>
+                            </gmd:dateType>
+                        </gmd:CI_Date>
+                    </gmd:date>
+                                        <gmd:identifier>
+                        <gmd:MD_Identifier>
+                            <gmd:code>
+                                <gco:CharacterString></gco:CharacterString>
+                            </gmd:code>
+                        </gmd:MD_Identifier>
+                                         </gmd:identifier>
+                </gmd:CI_Citation>
+            </gmd:citation>
+            <gmd:abstract>
+                <gco:CharacterString>National Bouy Data Center, 2014 standard meteorological variables
+Historical data and climatic summaries
+Owned and maintained by NOAA&apos;s National Ocean Service
+Water Level Observation Network
+21.433 N 157.790 W (21?25&apos;59&quot; N 157?47&apos;23&quot; W)
+WDIR	Wind direction (the direction the wind is coming from in degrees clockwise from true N) during the same period used for WSPD. See Wind Averaging Methods
+WSPD	Wind speed (m/s) averaged over an eight-minute period for buoys and a two-minute period for land stations. Reported Hourly. See Wind Averaging Methods.
+GST	Peak 5 or 8 second gust speed (m/s) measured during the eight-minute or two-minute period. The 5 or 8 second period can be determined by payload, See the Sensor Reporting, Sampling, and Accuracy section.
+WVHT	Significant wave height (meters) is calculated as the average of the highest one-third of all of the wave heights during the 20-minute sampling period. See the Wave Measurements section.
+DPD	Dominant wave period (seconds) is the period with the maximum wave energy. See the Wave Measurements section.
+APD	Average wave period (seconds) of all waves during the 20-minute period. See the Wave Measurements section.
+MWD	The direction from which the waves at the dominant period (DPD) are coming. The units are degrees from true North, increasing clockwise, with North as 0 (zero) degrees and East as 90 degrees. See the Wave Measurements section.
+PRES	Sea level pressure (hPa). For C-MAN sites and Great Lakes buoys, the recorded pressure is reduced to sea level using the method described in NWS Technical Procedures Bulletin 291 (11/14/80). ( labeled BAR in Historical files)
+ATMP	Air temperature (Celsius). For sensor heights on buoys, see Hull Descriptions. For sensor heights at C-MAN stations, see C-MAN Sensor Locations
+WTMP	Sea surface temperature (Celsius). For buoys the depth is referenced to the hull&apos;s waterline. For fixed platforms it varies with tide, but is referenced to, or near Mean Lower Low Water (MLLW).
+DEWP	Dewpoint temperature taken at the same height as the air temperature measurement.
+VIS	Station visibility (nautical miles). Note that buoy stations are limited to reports from 0 to 1.6 nmi.
+PTDY	Pressure Tendency is the direction (plus or minus) and the amount of pressure change (hPa)for a three hour period ending at the time of observation. (not in Historical files)
+TIDE	The water level in feet above or below Mean Lower Low Water (MLLW).</gco:CharacterString>
+            </gmd:abstract>
+            <gmd:pointOfContact>
+                <gmd:CI_ResponsibleParty>
+                    <gmd:individualName>
+                        <gco:CharacterString>Ilya Zaslavsky</gco:CharacterString>
+                    </gmd:individualName>
+                    <gmd:organisationName>
+                        <gco:CharacterString>NOAA</gco:CharacterString>
+                    </gmd:organisationName>
+                    <!--
+                    <gmd:positionName>
+                        <gco:CharacterString>$czoRole</gco:CharacterString>
+                    </gmd:positionName>
+-->
+                                            <gmd:contactInfo>
+                            <gmd:CI_Contact>
+                                <!--
+                                <gmd:phone>
+                                    <gmd:CI_Telephone>
+                                        <gmd:voice>
+                                            <gco:CharacterString>$phone</gco:CharacterString>
+                                        </gmd:voice>
+                                    </gmd:CI_Telephone>
+                                </gmd:phone>
+                                -->
+                                <gmd:address>
+                                    <gmd:CI_Address>
+                                        <!--
+                                        <gmd:deliveryPoint>
+                                            <gco:CharacterString>$deliveryPoint</gco:CharacterString>
+                                        </gmd:deliveryPoint>
+                                        <gmd:city>
+                                            <gco:CharacterString>$city</gco:CharacterString>
+                                        </gmd:city>
+                                        <gmd:administrativeArea>
+                                            <gco:CharacterString>$state</gco:CharacterString>
+                                        </gmd:administrativeArea>
+                                        <gmd:postalCode>
+                                            <gco:CharacterString>$zip</gco:CharacterString>
+                                        </gmd:postalCode>
+                                        -->
+                                        <gmd:electronicMailAddress>
+                                            <gco:CharacterString>izaslavsky@ucsd.edu</gco:CharacterString>
+                                        </gmd:electronicMailAddress>
+                                    </gmd:CI_Address>
+                                </gmd:address>
+                            </gmd:CI_Contact>
+                        </gmd:contactInfo>
+                                        <gmd:role>
+                        <gmd:CI_RoleCode codeSpace="ISOTC211/19115"
+                                         codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode"
+                                         codeListValue="pointOfContact">pointOfContact
+                        </gmd:CI_RoleCode>
+                    </gmd:role>
+                </gmd:CI_ResponsibleParty>
+            </gmd:pointOfContact>
+                            <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString>ocean</gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="discipline">discipline
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString></gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Equipment</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString></gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Methods</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString></gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Earth processes</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString></gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:thesaurusName>
+                            <gmd:CI_Citation>
+                                <gmd:title>
+                                    <gco:CharacterString>Features</gco:CharacterString>
+                                </gmd:title>
+                            </gmd:CI_Citation>
+                        </gmd:thesaurusName>
+                        <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString>null</gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="theme">theme
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                                        <gmd:descriptiveKeywords>
+                    <gmd:MD_Keywords>
+                                                    <gmd:keyword>
+                                <gco:CharacterString>null</gco:CharacterString>
+                            </gmd:keyword>
+                                                <gmd:type>
+                            <gmd:MD_KeywordTypeCode
+                                    codeList="http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode"
+                                    codeListValue="place">place
+                            </gmd:MD_KeywordTypeCode>
+                        </gmd:type>
+                    </gmd:MD_Keywords>
+                </gmd:descriptiveKeywords>
+                        
+            <gmd:language>
+                <gco:CharacterString>en</gco:CharacterString>
+            </gmd:language>
+                                        <gmd:extent>
+                    <gmd:EX_Extent>
+                                                                                    <gmd:geographicElement>
+                                    <gmd:EX_GeographicBoundingBox>
+                                        <gmd:westBoundLongitude>
+                                            <gco:Decimal>-159.96826171875</gco:Decimal>
+                                        </gmd:westBoundLongitude>
+                                        <gmd:eastBoundLongitude>
+                                            <gco:Decimal>-154.37255859375</gco:Decimal>
+                                        </gmd:eastBoundLongitude>
+                                        <gmd:southBoundLatitude>
+                                            <gco:Decimal>18.5841260797517</gco:Decimal>
+                                        </gmd:southBoundLatitude>
+                                        <gmd:northBoundLatitude>
+                                            <gco:Decimal>22.69477914083335</gco:Decimal>
+                                        </gmd:northBoundLatitude>
+                                    </gmd:EX_GeographicBoundingBox>
+                                </gmd:geographicElement>
+                                                                                                                        </gmd:EX_Extent>
+                </gmd:extent>
+                    </gmd:MD_DataIdentification>
+    </gmd:identificationInfo>
+            <gmd:distributionInfo>
+            <gmd:MD_Distribution>
+                <!--
+                <gmd:distributionFormat>
+                    <gmd:MD_Format>
+                        <gmd:name>
+                            <gco:CharacterString>$fileFormat</gco:CharacterString>
+                        </gmd:name>
+                    </gmd:MD_Format>
+                </gmd:distributionFormat>
+                    -->
+                <gmd:transferOptions>
+                    <gmd:MD_DigitalTransferOptions>
+                        <gmd:onLine>
+                            <gmd:CI_OnlineResource>
+                                <gmd:linkage>
+                                    <gmd:URL>http://www.ndbc.noaa.gov/view_text_file.php?filename=mokh1h2014.txt.gz&amp;dir=data/historical/stdmet/</gmd:URL>
+                                </gmd:linkage>
+                            </gmd:CI_OnlineResource>
+                        </gmd:onLine>
+                    </gmd:MD_DigitalTransferOptions>
+                </gmd:transferOptions>
+            </gmd:MD_Distribution>
+        </gmd:distributionInfo>
+        </gmd:MD_Metadata>

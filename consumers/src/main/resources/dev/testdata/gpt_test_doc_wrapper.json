@@ -1,0 +1,904 @@
+{
+  "_id": "5879b20431e4e13bdfa56c43",
+  "primaryKey": "5057848ae4b01ad7e0280693",
+  "Version": 1,
+  "CrawlDate": "2017-01-14T05:07:16.306Z",
+  "OriginalDoc": {
+    "gmd:MD_Metadata": {
+      "@xsi:schemaLocation": "http://www.isotc211.org/2005/gmi http://ngdc.noaa.gov/metadata/published/xsd/schema.xsd",
+      "gmd:fileIdentifier": {
+        "gco:CharacterString": {
+          "_$": "5057848ae4b01ad7e0280693"
+        }
+      },
+      "gmd:language": {
+        "gmd:LanguageCode": {
+          "@codeList": "http://www.loc.gov/standards/iso639-2/php/English_list.php",
+          "@codeListValue": "eng: USA",
+          "_$": "eng USA"
+        }
+      },
+      "gmd:characterSet": {
+        "gmd:MD_CharacterSetCode": {
+          "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode",
+          "@codeListValue": "utf8",
+          "_$": "UTF8"
+        }
+      },
+      "gmd:hierarchyLevel": {
+        "gmd:MD_ScopeCode": {
+          "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode",
+          "@codeListValue": "dataset",
+          "_$": "dataset"
+        }
+      },
+      "gmd:contact": [
+        {
+          "gmd:CI_ResponsibleParty": {
+            "gmd:organisationName": {
+              "gco:CharacterString": {
+                "_$": "H Holden"
+              }
+            },
+            "gmd:contactInfo": {
+              "gmd:CI_Contact": {}
+            },
+            "gmd:role": {
+              "gmd:CI_RoleCode": {
+                "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue": "author",
+                "_$": "author"
+              }
+            }
+          }
+        },
+        {
+          "gmd:CI_ResponsibleParty": {
+            "gmd:organisationName": {
+              "gco:CharacterString": {
+                "_$": "E LeDrew"
+              }
+            },
+            "gmd:contactInfo": {
+              "gmd:CI_Contact": {}
+            },
+            "gmd:role": {
+              "gmd:CI_RoleCode": {
+                "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode",
+                "@codeListValue": "author",
+                "_$": "author"
+              }
+            }
+          }
+        }
+      ],
+      "gmd:dateStamp": {
+        "gco:DateTime": {
+          "_$": "2014-07-04T04:51:43Z"
+        }
+      },
+      "gmd:metadataStandardName": {
+        "gco:CharacterString": {
+          "_$": "ISO19115"
+        }
+      },
+      "gmd:metadataStandardVersion": {
+        "gco:CharacterString": {
+          "_$": "1.0"
+        }
+      },
+      "gmd:dataSetURI": {
+        "gco:CharacterString": {
+          "_$": "https://www.sciencebase.gov/catalog/item/5057848ae4b01ad7e0280693"
+        }
+      },
+      "gmd:identificationInfo": {
+        "gmd:MD_DataIdentification": {
+          "gmd:citation": {
+            "gmd:CI_Citation": {
+              "gmd:title": {
+                "gco:CharacterString": {
+                  "_$": "Hyperspectral Discrimination of Healthy Versus Stressed Corals Using In Situ Reflectance"
+                }
+              },
+              "gmd:date": [
+                {
+                  "gmd:CI_Date": {
+                    "gmd:date": {
+                      "gco:Date": {
+                        "_$": "2001"
+                      }
+                    },
+                    "gmd:dateType": {
+                      "gmd:CI_DateTypeCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                        "@codeListValue": ""
+                      }
+                    }
+                  }
+                },
+                {
+                  "gmd:CI_Date": {
+                    "gmd:date": {
+                      "gco:Date": {
+                        "_$": "2001"
+                      }
+                    },
+                    "gmd:dateType": {
+                      "gmd:CI_DateTypeCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                        "@codeListValue": ""
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "gmd:abstract": {
+            "gco:CharacterString": {
+              "_$": "REQUIRED FIELD"
+            }
+          },
+          "gmd:descriptiveKeywords": [
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": [
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Corals"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Reefs"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Environmental Quality"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Remote Sensing"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Monitoring"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Marine Animals"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Limiting Factors"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Coral reefs"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Biological stress"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Coral"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Seaweeds"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Environmental monitoring"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Ecosystem management"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Reflectance"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Classification systems"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Ecosystem disturbance"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Anthozoa"
+                    }
+                  },
+                  {
+                    "gco:CharacterString": {
+                      "_$": "Corals"
+                    }
+                  }
+                ],
+                "gmd:thesaurusName": {
+                  "gmd:CI_Citation": {
+                    "gmd:title": {
+                      "gco:CharacterString": {
+                        "_$": "CSA Descriptor"
+                      }
+                    },
+                    "gmd:date": {
+                      "gmd:CI_Date": {
+                        "gmd:date": {
+                          "gco:Date": {
+                            "_$": "2015-07-19"
+                          }
+                        },
+                        "gmd:dateType": {
+                          "gmd:CI_DateTypeCode": {
+                            "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                            "@codeListValue": "revision",
+                            "_$": "Date Revised"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": {
+                  "gco:CharacterString": {
+                    "_$": "SW 5040 Data acquisition; Q1 01382 Ecological techniques and"
+                  }
+                },
+                "gmd:thesaurusName": {
+                  "gmd:CI_Citation": {
+                    "gmd:title": {
+                      "gco:CharacterString": {
+                        "_$": "CSA Classification"
+                      }
+                    },
+                    "gmd:date": {
+                      "gmd:CI_Date": {
+                        "gmd:date": {
+                          "gco:Date": {
+                            "_$": "2015-07-19"
+                          }
+                        },
+                        "gmd:dateType": {
+                          "gmd:CI_DateTypeCode": {
+                            "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                            "@codeListValue": "revision",
+                            "_$": "Date Revised"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "gmd:MD_Keywords": {
+                "gmd:keyword": {
+                  "gco:CharacterString": {
+                    "_$": "Water Resources Abstracts; ASFA 1: Biological Sciences & Liv"
+                  }
+                },
+                "gmd:thesaurusName": {
+                  "gmd:CI_Citation": {
+                    "gmd:title": {
+                      "gco:CharacterString": {
+                        "_$": "CSA Subfile"
+                      }
+                    },
+                    "gmd:date": {
+                      "gmd:CI_Date": {
+                        "gmd:date": {
+                          "gco:Date": {
+                            "_$": "2015-07-19"
+                          }
+                        },
+                        "gmd:dateType": {
+                          "gmd:CI_DateTypeCode": {
+                            "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode",
+                            "@codeListValue": "revision",
+                            "_$": "Date Revised"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "gmd:language": {
+            "gco:CharacterString": {
+              "_$": "eng"
+            }
+          },
+          "gmd:topicCategory": {
+            "gmd:MD_TopicCategoryCode": {
+              "_$": "geoscientificInformation"
+            }
+          }
+        }
+      },
+      "gmd:distributionInfo": {
+        "gmd:MD_Distribution": {
+          "gmd:transferOptions": {
+            "gmd:MD_DigitalTransferOptions": {
+              "gmd:onLine": [
+                {
+                  "gmd:CI_OnlineResource": {
+                    "gmd:linkage": {
+                      "gmd:URL": {
+                        "_$": "https://www.sciencebase.gov/catalog/item/5057848ae4b01ad7e0280693"
+                      }
+                    },
+                    "gmd:protocol": {
+                      "gco:CharacterString": {
+                        "_$": "WWW:LINK-1.0-http--link"
+                      }
+                    },
+                    "gmd:applicationProfile": {
+                      "gco:CharacterString": {
+                        "_$": "Web Browser"
+                      }
+                    },
+                    "gmd:name": {
+                      "gco:CharacterString": {
+                        "_$": "ScienceBase Item Summary Page"
+                      }
+                    },
+                    "gmd:description": {
+                      "gco:CharacterString": {
+                        "_$": "Link to the ScienceBase Item Summary page for the item described by this metadata record"
+                      }
+                    },
+                    "gmd:function": {
+                      "gmd:CI_OnLineFunctionCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                        "@codeListValue": "information",
+                        "_$": "information"
+                      }
+                    }
+                  }
+                },
+                {
+                  "gmd:CI_OnlineResource": {
+                    "gmd:linkage": {
+                      "gmd:URL": {
+                        "_$": "https://www.sciencebase.gov/catalog/file/get/5057848ae4b01ad7e0280693"
+                      }
+                    },
+                    "gmd:protocol": {
+                      "gco:CharacterString": {
+                        "_$": "WWW:LINK-1.0-http--link"
+                      }
+                    },
+                    "gmd:applicationProfile": {
+                      "gco:CharacterString": {
+                        "_$": "Web Browser"
+                      }
+                    },
+                    "gmd:name": {
+                      "gco:CharacterString": {
+                        "_$": "Download Attached Files"
+                      }
+                    },
+                    "gmd:description": {
+                      "gco:CharacterString": {
+                        "_$": "Download Link"
+                      }
+                    },
+                    "gmd:function": {
+                      "gmd:CI_OnLineFunctionCode": {
+                        "@codeList": "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_OnLineFunctionCode",
+                        "@codeListValue": "information",
+                        "_$": "information"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "gmd:metadataConstraints": {
+        "gmd:MD_Constraints": {
+          "gmd:useLimitation": {
+            "gco:CharacterString": {
+              "_$": "This metadata record is the intellectual property of CSA/ProQuest, and was licensed for use under a contract with the USGS to support scientific research and understanding. As such, this copyrighted material should not be electronically reproduced or shared outside of ScienceBase."
+            }
+          }
+        }
+      }
+    },
+    "_@gmd": "http://www.isotc211.org/2005/gmd",
+    "_@default": "",
+    "_@gco": "http://www.isotc211.org/2005/gco",
+    "_@gmi": "http://www.isotc211.org/2005/gmi",
+    "_@gml": "http://www.opengis.net/gml/3.2",
+    "_@gmx": "http://www.isotc211.org/2005/gmx",
+    "_@gsr": "http://www.isotc211.org/2005/gsr",
+    "_@gss": "http://www.isotc211.org/2005/gss",
+    "_@gts": "http://www.isotc211.org/2005/gts",
+    "_@srv": "http://www.isotc211.org/2005/srv",
+    "_@xlink": "http://www.w3.org/1999/xlink",
+    "_@xml": "http://www.w3.org/XML/1998/namespace",
+    "_@xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "SourceInfo": {
+    "SourceID": "cinergi-9999",
+    "ViewID": "",
+    "Name": "Test GPT",
+    "DataSource": "GPT Tests"
+  },
+  "Data": {
+    "spatial": {
+      "bounding_boxes": [],
+      "place_keywords": [],
+      "text": "Hyperspectral Discrimination of Healthy Versus Stressed Corals Using In Situ Reflectance \nREQUIRED FIELD \n",
+      "invalid_place_keywords": [],
+      "derived_bounding_boxes_from_places": {},
+      "derived_place_from_text": [],
+      "derived_bounding_boxes_from_derived_place": {}
+    },
+    "keywords": [
+      {
+        "term": "Water",
+        "ontId": "http://purl.obolibrary.org/obo/ENVO_00010483",
+        "fullHierarchy": "Material > Environmental Material > Water",
+        "facetHierarchy": "Material > Environmental Material",
+        "entityInfos": [
+          {
+            "id": "http://purl.obolibrary.org/obo/ENVO_00010483",
+            "start": -1,
+            "end": -1,
+            "category": "Material > Environmental Material"
+          }
+        ]
+      },
+      {
+        "term": "Marine",
+        "ontId": "http://sweet.jpl.nasa.gov/2.3/realmOcean.owl#OceanRegion",
+        "fullHierarchy": "Realm > Ocean Region",
+        "facetHierarchy": "Realm > Ocean Region",
+        "entityInfos": [
+          {
+            "id": "http://sweet.jpl.nasa.gov/2.3/realmOcean.owl#OceanRegion",
+            "start": -1,
+            "end": -1,
+            "category": "Realm > Ocean Region"
+          }
+        ]
+      },
+      {
+        "term": "Reflectance",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+        "fullHierarchy": "Property > Measure > Dimensionless Measures > Reflectance",
+        "facetHierarchy": "Property > Measure",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/basic#Measure",
+            "start": -1,
+            "end": -1,
+            "category": "Property > Measure"
+          }
+        ]
+      },
+      {
+        "term": "Reef",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+        "fullHierarchy": "Feature > Marine Feature > Reef",
+        "facetHierarchy": "Feature > Marine Feature",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+            "start": -1,
+            "end": -1,
+            "category": "Feature > Marine Feature"
+          }
+        ]
+      },
+      {
+        "term": "Coral Reef",
+        "ontId": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+        "fullHierarchy": "Feature > Marine Feature > Reef > Marine Reef > Coral Reef",
+        "facetHierarchy": "Feature > Marine Feature",
+        "entityInfos": [
+          {
+            "id": "http://hydro10.sdsc.edu/cinergi_ontology/cinergi.owl#Marine_Feature",
+            "start": -1,
+            "end": -1,
+            "category": "Feature > Marine Feature"
+          }
+        ]
+      },
+      {
+        "term": "Animal",
+        "ontId": "http://edamontology.org/topic_3070",
+        "fullHierarchy": "Science Domain > Biology > Organisms > Eukaryotes > Animals",
+        "facetHierarchy": "Science Domain > Biology",
+        "entityInfos": [
+          {
+            "id": "http://edamontology.org/topic_3070",
+            "start": -1,
+            "end": -1,
+            "category": "Science Domain > Biology"
+          }
+        ]
+      },
+      {
+        "term": "CORAL",
+        "ontId": "http://gcmdservices.gsfc.nasa.gov/kms/concept/f8762581-b92f-48f9-b077-964ee6b0c8ee",
+        "fullHierarchy": "Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS > Coral Reef Alliance",
+        "facetHierarchy": "Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS",
+        "entityInfos": [
+          {
+            "id": "http://gcmdservices.gsfc.nasa.gov/kms/concept/f8762581-b92f-48f9-b077-964ee6b0c8ee",
+            "start": -1,
+            "end": -1,
+            "category": "Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS"
+          }
+        ]
+      },
+      {
+        "term": "Factor A",
+        "ontId": "http://purl.obolibrary.org/obo/CHEBI_24431",
+        "fullHierarchy": "Material > Chemical > mixture > A-factor",
+        "facetHierarchy": "Material > Chemical",
+        "entityInfos": [
+          {
+            "id": "http://purl.obolibrary.org/obo/CHEBI_24431",
+            "start": -1,
+            "end": -1,
+            "category": "Material > Chemical"
+          }
+        ]
+      }
+    ],
+    "enhancedKeywords": [
+      {
+        "id": "http://sweet.jpl.nasa.gov/2.3/propFraction.owl#Reflectance",
+        "term": "Reflectance",
+        "category": "Property > Measure",
+        "hierarchyPath": "Property > Measure > Dimensionless Measures > Reflectance",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://sweet.jpl.nasa.gov/2.3/realmOcean.owl#OceanRegion",
+        "term": "Marine",
+        "category": "Realm > Ocean Region",
+        "hierarchyPath": "Realm > Ocean Region",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://purl.obolibrary.org/obo/CHEBI_15377",
+        "term": "Water",
+        "category": "Material > Environmental Material",
+        "hierarchyPath": "Material > Environmental Material > Water",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://sweet.jpl.nasa.gov/2.3/realmOceanFloor.owl#Reef",
+        "term": "Reef",
+        "category": "Feature > Marine Feature",
+        "hierarchyPath": "Feature > Marine Feature > Reef",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://yago-knowledge.org/resource/geoclass_coral_reef",
+        "term": "Coral Reef",
+        "category": "Feature > Marine Feature",
+        "hierarchyPath": "Feature > Marine Feature > Reef > Marine Reef > Coral Reef",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://edamontology.org/topic_3500",
+        "term": "Animal",
+        "category": "Science Domain > Biology",
+        "hierarchyPath": "Science Domain > Biology > Organisms > Eukaryotes > Animals",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://gcmdservices.gsfc.nasa.gov/kms/concept/3f9ee0b9-0c76-4506-a8a2-864dea646592",
+        "term": "CORAL",
+        "category": "Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS",
+        "hierarchyPath": "Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS > Coral Reef Alliance",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      },
+      {
+        "id": "http://purl.obolibrary.org/obo/CHEBI_79381",
+        "term": "Factor A",
+        "category": "Material > Chemical",
+        "hierarchyPath": "Material > Chemical > mixture > A-factor",
+        "type": "Keyword",
+        "lastChangedDate": "2017-01-14T07:08:32Z"
+      }
+    ]
+  },
+  "Processing": {
+    "status": "finished",
+    "docId": "015db253-9a15-4fdd-8515-a82d860d0f03"
+  },
+  "History": {
+    "batchId": "01142017-04:59",
+    "prov": {
+      "curVersion": "1.3",
+      "lastProcessedDate": "2017-01-14T07:08:32.440Z",
+      "events": [
+        {
+          "wasGeneratedBy": {
+            "_:wGB8356": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_2"
+            }
+          },
+          "entity": {
+            "foundry:en_1": {
+              "foundry:label": {
+                "type": "pre_0:string",
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693"
+              },
+              "foundry:creationTime": {
+                "type": "pre_0:string",
+                "_$": "2017-01-14T05:07:16Z"
+              },
+              "foundry:version": {
+                "type": "pre_0:string",
+                "_$": "1.0"
+              },
+              "foundry:sourceId": {
+                "type": "pre_0:string",
+                "_$": "cinergi-0001"
+              },
+              "foundry:UUID": {
+                "type": "pre_0:string",
+                "_$": "a8cb28cf-69db-4bae-9a73-b6c14e296789"
+              }
+            },
+            "foundry:en_2": {
+              "foundry:label": {
+                "type": "pre_0:string",
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693"
+              },
+              "foundry:creationTime": {
+                "type": "pre_0:string",
+                "_$": "2017-01-14T05:07:16Z"
+              },
+              "foundry:version": {
+                "type": "pre_0:string",
+                "_$": "1.1"
+              },
+              "foundry:UUID": {
+                "type": "pre_0:string",
+                "_$": "5057848ae4b01ad7e0280693"
+              }
+            }
+          },
+          "prefix": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pre_0": "http://www.w3.org/2001/XMLSchema",
+            "prov": "http://www.w3.org/ns/prov#",
+            "foundry": "http://example.org"
+          },
+          "used": {
+            "_:u8356": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_1"
+            }
+          },
+          "activity": {
+            "foundry:ac_1": {
+              "prov:type": {
+                "type": "pre_0:string",
+                "_$": "ingestion"
+              },
+              "prov:startTime": "2017-01-14T05:07:16Z",
+              "prov:endTime": "2017-01-14T05:07:16Z",
+              "prov:how": {
+                "type": "pre_0:string",
+                "_$": "Added document with uuid 5057848ae4b01ad7e0280693"
+              }
+            }
+          }
+        },
+        {
+          "wasGeneratedBy": {
+            "_:wGB70899": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_2"
+            }
+          },
+          "entity": {
+            "foundry:en_1": {
+              "foundry:label": {
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              },
+              "foundry:creationTime": {
+                "_$": "2017-01-14T05:07:16Z",
+                "type": "pre_0:string"
+              },
+              "foundry:version": {
+                "_$": "1.1",
+                "type": "pre_0:string"
+              },
+              "foundry:sourceId": {
+                "_$": "cinergi-0001",
+                "type": "pre_0:string"
+              },
+              "foundry:UUID": {
+                "_$": "5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              }
+            },
+            "foundry:en_2": {
+              "foundry:label": {
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              },
+              "foundry:creationTime": {
+                "_$": "2017-01-14T07:08:32Z",
+                "type": "pre_0:string"
+              },
+              "foundry:version": {
+                "_$": "1.2",
+                "type": "pre_0:string"
+              },
+              "foundry:UUID": {
+                "_$": "5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              }
+            }
+          },
+          "prefix": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pre_0": "http://www.w3.org/2001/XMLSchema",
+            "prov": "http://www.w3.org/ns/prov#",
+            "foundry": "http://example.org"
+          },
+          "wasDerivedFrom": {
+            "_:wDF15740": {
+              "prov:activity": "foundry:ac_1",
+              "prov:generatedEntity": "foundry:en_2",
+              "prov:usedEntity": "foundry:en_1"
+            }
+          },
+          "used": {
+            "_:u70898": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_1"
+            }
+          },
+          "activity": {
+            "foundry:ac_1": {
+              "prov:type": {
+                "_$": "spatialEnhancer",
+                "type": "pre_0:string"
+              },
+              "prov:startTime": "2017-01-14T07:08:32Z",
+              "prov:endTime": "2017-01-14T07:08:32Z",
+              "prov:how": {
+                "_$": "No bounding box is added..",
+                "type": "pre_0:string"
+              }
+            }
+          }
+        },
+        {
+          "wasGeneratedBy": {
+            "_:wGB70902": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_2"
+            }
+          },
+          "entity": {
+            "foundry:en_1": {
+              "foundry:label": {
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              },
+              "foundry:creationTime": {
+                "_$": "2017-01-14T07:08:32Z",
+                "type": "pre_0:string"
+              },
+              "foundry:version": {
+                "_$": "1.2",
+                "type": "pre_0:string"
+              },
+              "foundry:sourceId": {
+                "_$": "cinergi-0001",
+                "type": "pre_0:string"
+              },
+              "foundry:UUID": {
+                "_$": "5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              }
+            },
+            "foundry:en_2": {
+              "foundry:label": {
+                "_$": "ScienceBase WAF:5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              },
+              "foundry:creationTime": {
+                "_$": "2017-01-14T07:08:32Z",
+                "type": "pre_0:string"
+              },
+              "foundry:version": {
+                "_$": "1.3",
+                "type": "pre_0:string"
+              },
+              "foundry:UUID": {
+                "_$": "5057848ae4b01ad7e0280693",
+                "type": "pre_0:string"
+              }
+            }
+          },
+          "prefix": {
+            "xsd": "http://www.w3.org/2001/XMLSchema#",
+            "pre_0": "http://www.w3.org/2001/XMLSchema",
+            "prov": "http://www.w3.org/ns/prov#",
+            "foundry": "http://example.org"
+          },
+          "wasDerivedFrom": {
+            "_:wDF15741": {
+              "prov:activity": "foundry:ac_1",
+              "prov:generatedEntity": "foundry:en_2",
+              "prov:usedEntity": "foundry:en_1"
+            }
+          },
+          "used": {
+            "_:u70901": {
+              "prov:activity": "foundry:ac_1",
+              "prov:entity": "foundry:en_1"
+            }
+          },
+          "activity": {
+            "foundry:ac_1": {
+              "prov:type": {
+                "_$": "keywordEnhancer",
+                "type": "pre_0:string"
+              },
+              "prov:startTime": "2017-01-14T07:08:32Z",
+              "prov:endTime": "2017-01-14T07:08:32Z",
+              "prov:how": {
+                "_$": "Added keywords Water for category Material > Environmental Material. Added keywords Marine for category Realm > Ocean Region. Added keywords Reflectance for category Property > Measure. Added keywords Reef,Coral Reef for category Feature > Marine Feature. Added keywords Animal for category Science Domain > Biology. Added keywords CORAL for category Organization > NON-GOVERNMENT/NON-PROFIT ORGANIZATIONS. Added keywords Factor A for category Material > Chemical.",
+                "type": "pre_0:string"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
