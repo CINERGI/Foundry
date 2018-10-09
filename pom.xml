@@ -20,6 +20,7 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <jackson.version>2.9.7</jackson.version>
     </properties>
 
     <profiles>

@@ -13,6 +13,8 @@
 
     <properties>
         <skipTests>true</skipTests>
+        <jackson.version>2.9.7</jackson.version>
+
     </properties>
     <build>
         <plugins>
@@ -67,23 +69,23 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>2.3.2</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <!-- note: typically only ".0" patch version exists for core annotations -->
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.3.0</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.3.3</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-json-org</artifactId>
-            <version>2.1.0</version>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
