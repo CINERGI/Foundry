@@ -1,0 +1,8 @@
+in src/main/webapp/index.html
+
+change url to
+
+url = "http://ec-pipe-stage.cloudapp.net:8080/foundry/api/api-docs";
+
+also update
+/home/cinergi/Foundry/ingestor-web/src/main/resources/prod/ingestor-web.properties

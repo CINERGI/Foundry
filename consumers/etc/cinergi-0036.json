@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0036",
+        "name": "NGDC NOS Hydrographic Survey Collection B",
+        "dataSource": "NGDC_NOS_Hydrographic_B"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/www.ngdc.noaa.gov/metadata/published/NOAA/NESDIS/NGDC/MGG/NOS/B00001-B02000/iso/xml/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

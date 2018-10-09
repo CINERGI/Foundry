@@ -26,7 +26,7 @@
     },
     
     "originalRecordIdentifierSpec": {
-      "fields": ["$.'gmd:MD_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"],
+      "fields": ["$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"],
       "delimiter": [":"],
       "method": "Value"
     },

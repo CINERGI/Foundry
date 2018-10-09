@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0037",
+        "name": "National Data Buoy Center",
+        "dataSource": "NDBC"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/ndbc",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

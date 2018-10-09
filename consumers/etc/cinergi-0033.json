@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0033",
+        "name": "NCEI",
+        "dataSource": "NCEI"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/www.nodc.noaa.gov/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",
