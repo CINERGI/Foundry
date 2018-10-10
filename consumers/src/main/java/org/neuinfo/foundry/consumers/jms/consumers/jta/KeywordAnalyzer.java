@@ -183,25 +183,24 @@ public class KeywordAnalyzer {
         } catch (Exception e) {
             vocabCache.put(input, nilVocab);
         }
-		
+
         if (urlOut == null) {
             if (input.contains("-")) {
                 // if there is a hyphen then separate it
                 int i = input.indexOf("-");
                 String[] substr = {input.substring(0, i), input.substring(i + 1)};
                 return vocabTerm(substr[0] + " " + substr[1]);
-            }
-            else {
+            } else {
                 // no hyphen or result, put nilVocab in cache
                 vocabCache.put(input, nilVocab);
                 return null;
             }
         }
-		
+
         System.out.println(urlOut);
         Concept[] concepts = gson.fromJson(urlOut, Concept[].class);
         ArrayList<Concept> conceptList = new ArrayList<Concept>(Arrays.asList(concepts));
- 		vocab = new Vocab(conceptList);
+        vocab = new Vocab(conceptList);
 
         // preliminary check
         if (stoplist.contains(vocab.concepts.get(0).labels.get(0).toLowerCase())) {
@@ -297,12 +296,12 @@ public class KeywordAnalyzer {
             Tokens tok = new Tokens(np.getText());
             tok.setStart(String.valueOf(np.getStart()));
             tok.setEnd(String.valueOf(np.getEnd()));
-            
-            int numKeywords = 0;            
+
+            int numKeywords = 0;
             if (processChunk(tok, keywords, visited) == true) {
                 continue;
             }
-            POS[] parts = np.getPosArr();          
+            POS[] parts = np.getPosArr();
             if (parts.length > 2) {
                 // try shorter phrases (IBO)
                 boolean found = false;
@@ -323,7 +322,7 @@ public class KeywordAnalyzer {
                         break;
                     }
                 }
-				
+
                 /* 
                 if (found) {
                     continue;
@@ -351,22 +350,21 @@ public class KeywordAnalyzer {
                     continue;
                 }
             }
-            
-            for (POS p : parts) { 
-                if (isEligibleTerm(p)) {					
+
+            for (POS p : parts) {
+                if (isEligibleTerm(p)) {
                     Tokens tempToken = new Tokens(tok);
                     tempToken.setToken(p.token);
-                    if (processChunk(tempToken, keywords, visited) == true) 
-                    {
+                    if (processChunk(tempToken, keywords, visited) == true) {
                         numKeywords++;
                         continue;
                     }
-                }            	
+                }
             }
-            
+
             // remove smaller keywords from the same phrase that derive from the same facet
             if (numKeywords > 1) {
-                for (int i = keywords.size()-numKeywords; i < keywords.size(); i++) {
+                for (int i = keywords.size() - numKeywords; i < keywords.size(); i++) {
                     for (int j = i + 1; j < keywords.size(); j++) {
                         Keyword temp_i = keywords.get(i);
                         Keyword temp_j = keywords.get(j);
@@ -375,8 +373,7 @@ public class KeywordAnalyzer {
                                 keywords.remove(j);
                                 j--;
                                 numKeywords--;
-                            }
-                            else {
+                            } else {
                                 System.out.println("removed " + temp_i.getTerm());
                                 keywords.remove(i);
                                 i--;
@@ -386,8 +383,8 @@ public class KeywordAnalyzer {
                         }
                     }
                 }
-            }       	
-        } 
+            }
+        }
         return keywords;
     }
 
