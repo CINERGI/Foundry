@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0032",
+        "name": "CUAHSI HIS Series",
+        "dataSource": "CUAHSI HIS Series"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/his_series/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

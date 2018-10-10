@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0034",
+        "name": "EarthCube Use Cases",
+        "dataSource": "EarthCubeUC"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/usecase/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

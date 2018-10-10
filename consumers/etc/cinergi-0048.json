@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0048",
+        "name": "DLESE",
+        "dataSource": "DLESES"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/uc.dls.ucar.edu/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",
@@ -31,7 +31,7 @@
     },
     "originalRecordIdentifierSpec": {
         "fields": [
-            "$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
+            "$.'gmd:MD_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
         ],
         "delimiter": [
             ":"

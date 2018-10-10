@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0046",
+        "name": "data1gmd",
+        "dataSource": "data1gmd"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/d1oldgmd/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

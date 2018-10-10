@@ -75,6 +75,38 @@ To serve the processed WAF files you need to copy the contents of the /data/waf 
 centos@132.249.238.151:/data/apache-tomcat-7.0.68/webapps/cinergi/waf 
 remote directory.
 
+Misc 
+----
+Stopword list location
+
+/var/data/cinergi/stoplist.txt
+
+This is read at startup by the consumer_head.
+
+Generating Source Description Files
+-----------------------------------
+A list of currently available source descriptor files is at 
+Foundry/consumers/etc directory (e.g. cinergi-0001.json)
+
+If the resource already exists you need first delete its data from 
+the mongodb running bin/manager.sh and executing delete data (dd) command
+
+dd cinergi-0001
+
+After that you need to remove the old source descriptor also via
+
+./ingest_src_cli.sh -j $HOME/Foundry/consumers/etc/cinergi-0001.json -d
+
+in $HOME/Foundry/bin directory. 
+
+Then save the new source descriptor the the mongodb via
+
+./ingest_src_cli.sh -j $HOME/Foundry/consumers/etc/cinergi-0001.json
+
+
+
+
+
 Cinergi Annotator
 =================
 
@@ -89,6 +121,7 @@ Deploy to Tomcat
 ./stop.sh
 ./deploy.sh
 ./start.sh
+
 
 
 

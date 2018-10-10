@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0029",
-        "name": "DataTurbine Streaming",
-        "dataSource": "DataTurbine Streaming"
+        "resourceID": "cinergi-0045",
+        "name": "CRESCYNT",
+        "dataSource": "CRESCYNT"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://hydro10.sdsc.edu/metadata/streaming/",
+        "ingestURL": "http://hydro10.sdsc.edu/metadata/crescynt/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

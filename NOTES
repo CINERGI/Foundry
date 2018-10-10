@@ -12,3 +12,8 @@ SimpleDateFormat sdf = new SimpleDateFormat('EEE MMM dd yyyy hh:mm:ssZ')
 
 Date d = sdf.parse('Wed Oct 14 2015 19:25:35 GMT+0000')
 println d.time / 1000
+
+--------------------
+to create Foundry configuration files for production profile from config spec YAML file
+
+./config_gen.sh -c config-spec.yml -p prod

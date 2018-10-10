@@ -47,6 +47,7 @@ public class ManagementService {
     }
 
     void showProcessingStats(String sourceID, PrintWriter out) {
+        System.out.println("showProcessingStats:: " + sourceID);
         List<DocProcessingStatsService.SourceStats> processingStats = this.helper.getProcessingStats(sourceID);
         Map<String, DocProcessingStatsService.WFStatusInfo> wfsiMap = this.helper.getWorkflowStatusInfo(sourceID, processingStats);
         for (DocProcessingStatsService.SourceStats ss : processingStats) {

@@ -7,7 +7,7 @@
     
     "ingestConfiguration": {
       "ingestMethod": "WAF",
-      "ingestURL": "http://hydro10.sdsc.edu/metadata/Geoscience_Australia/",
+      "ingestURL": "http://132.249.238.169:8080/metadata/ecat.ga.gov.au/",
       "allowDuplicates": "False",
       
       "crawlFrequency": {
@@ -26,7 +26,7 @@
     },
     
     "originalRecordIdentifierSpec": {
-      "fields": ["$.'MD_Metadata'.'fileIdentifier'.'gco:CharacterString'.'_$'"],
+      "fields": ["$.'gmd:MD_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"],
       "delimiter": [":"],
       "method": "Value"
     },

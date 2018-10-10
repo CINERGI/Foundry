@@ -529,7 +529,11 @@ public class KeywordAnalyzer {
 	if (t.getToken().equals(t.getToken().toUpperCase()))
 	    if (closestLabel.equals(t.getToken()) == false)
 	        return false;
-
+        // if label is upper case, only match if case matches
+        if (closestLabel.equals(closestLabel.toUpperCase()))
+            if (closestLabel.equals(t.getToken()) == false)
+                return false;
+                                             
         OWLClass cls = df.getOWLClass(IRI.create(toUse.uri));
         // check for repeated terms
         if (visited.contains(cls.getIRI().toString())) {
