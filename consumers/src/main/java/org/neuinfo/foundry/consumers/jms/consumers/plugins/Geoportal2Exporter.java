@@ -1,9 +1,11 @@
 package org.neuinfo.foundry.consumers.jms.consumers.plugins;
 
+import com.esri.geoportal.commons.gpt.client.Client;
+import com.esri.geoportal.commons.gpt.client.PublishRequest;
+import com.esri.geoportal.commons.gpt.client.PublishResponse;
 import com.esri.geoportal.commons.utils.SimpleCredentials;
 import com.mongodb.DBObject;
 import org.apache.log4j.Logger;
-;
 import org.jdom2.Element;
 import org.neuinfo.foundry.common.util.ISOXMLGenerator2;
 import org.neuinfo.foundry.common.util.Utils;
@@ -12,7 +14,8 @@ import org.neuinfo.foundry.consumers.plugin.Result;
 
 import java.net.URL;
 import java.util.Map;
-import com.esri.geoportal.commons.gpt.client.*;
+
+;
 
 
 /**
@@ -81,8 +84,12 @@ this.xmlGenerator = new ISOXMLGenerator2();
     private void publishEnhancedXmlFile(String fileIdentifier, Element docEl, PublishRequest pubRequest,
                                         String status) throws Exception {
         String xml = Utils.xmlAsString(docEl);
-        PublishResponse response =  this.gptClient.publish(pubRequest, fileIdentifier,
-              xml, null, true  );
+//        PublishResponse response =  this.gptClient.publish(pubRequest, fileIdentifier,
+//              xml, null, true  );
+        // do not add fileid. This can generate invalid URL's
+        // UUID is generated based on src_uri_s
+        PublishResponse response =  this.gptClient.publish(pubRequest, null ,
+                xml, null, true  );
         logger.info("publish enhancedXmlFile to " + this.gptURI);
     }
 
