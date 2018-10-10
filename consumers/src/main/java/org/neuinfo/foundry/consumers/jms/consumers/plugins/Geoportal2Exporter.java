@@ -89,7 +89,7 @@ this.xmlGenerator = new ISOXMLGenerator2();
         // do not add fileid. This can generate invalid URL's
         // UUID is generated based on src_uri_s
         PublishResponse response =  this.gptClient.publish(pubRequest, null ,
-                xml, null, true  );
+                xml, null, false  );
         logger.info("publish enhancedXmlFile to " + this.gptURI);
     }
 
