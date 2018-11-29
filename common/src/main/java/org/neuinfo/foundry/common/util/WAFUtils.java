@@ -52,10 +52,21 @@ public class WAFUtils {
         try {
             HttpResponse response = client.execute(httpGet);
             HttpEntity entity = response.getEntity();
+
+            ContentType ct = ContentType.get(entity);
+            String charset = null;
+            if (ct.getCharset() == null){
+                charset="utf8";
+            }
+            else {
+                charset=ct.getCharset().toString();
+            }
+
             if (entity != null) {
-                String xmlStr = EntityUtils.toString(entity);
+                String xmlStr = EntityUtils.toString(entity,charset);
                 return xmlStr;
             }
+
 
         } finally {
             if (httpGet != null) {
