@@ -22,6 +22,20 @@
                 <version>2.17</version>
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
+                    <systemProperties>
+                        <property>
+                            <name>user</name>
+                            <value>${user}</value>
+                        </property>
+                        <property>
+                            <name>password</name>
+                            <value>${password}</value>
+                        </property>
+                        <property>
+                            <name>gpturi</name>
+                            <value>${gpturi}</value>
+                        </property>
+                    </systemProperties>
                 </configuration>
             </plugin>
             <plugin>

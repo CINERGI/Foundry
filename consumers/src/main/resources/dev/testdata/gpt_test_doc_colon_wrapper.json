@@ -1,6 +1,6 @@
 {
   "_id": "5879b20431e4e13bdfa56c43",
-  "primaryKey": "5057848ae4b01ad7e0280693",
+  "primaryKey": "test:cinergi:ddh:usecase:ds:00000",
   "Version": 1,
   "CrawlDate": "2017-01-14T05:07:16.306Z",
   "OriginalDoc": {
@@ -8,7 +8,7 @@
       "@xsi:schemaLocation": "http://www.isotc211.org/2005/gmi http://ngdc.noaa.gov/metadata/published/xsd/schema.xsd",
       "gmd:fileIdentifier": {
         "gco:CharacterString": {
-          "_$": "5057848ae4b01ad7e0280693"
+          "_$": "test:cinergi:ddh:usecase:ds:00000"
         }
       },
       "gmd:language": {
@@ -98,7 +98,7 @@
             "gmd:CI_Citation": {
               "gmd:title": {
                 "gco:CharacterString": {
-                  "_$": "TEST: Hyperspectral Discrimination of Healthy Versus Stressed Corals Using In Situ Reflectance"
+                  "_$": " TEST. fileid has colons. Fileid query may have issues"
                 }
               },
               "gmd:date": [
