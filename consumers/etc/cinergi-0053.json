@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0051",
-        "name": "National Snow and Ice Data Center",
-        "dataSource": "NSIDC"
+        "resourceID": "cinergi-0053",
+        "name": "Rolling Deck Repository",
+        "dataSource": "R2R"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://132.249.238.169:8080/metadata/nsidc.org/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/api.rvdata.us/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

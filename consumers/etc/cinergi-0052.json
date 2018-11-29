@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0051",
-        "name": "National Snow and Ice Data Center",
-        "dataSource": "NSIDC"
+        "resourceID": "cinergi-0052",
+        "name": "IOOS",
+        "dataSource": "IOOS"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://132.249.238.169:8080/metadata/nsidc.org/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/data.ioos.us/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",

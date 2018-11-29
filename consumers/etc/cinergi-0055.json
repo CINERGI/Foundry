@@ -1,12 +1,12 @@
 {
     "sourceInformation": {
-        "resourceID": "cinergi-0051",
-        "name": "National Snow and Ice Data Center",
-        "dataSource": "NSIDC"
+        "resourceID": "cinergi-0055",
+        "name": "PANGAEA",
+        "dataSource": "PANGAEA_datacite"
     },
     "ingestConfiguration": {
         "ingestMethod": "WAF",
-        "ingestURL": "http://132.249.238.169:8080/metadata/nsidc.org/",
+        "ingestURL": "http://132.249.238.169:8080/metadata/pangaea_datacite/pangaea_iso/oai.datacite.org/",
         "allowDuplicates": "false",
         "crawlFrequency": {
             "crawlType": "Frequency",
@@ -31,7 +31,7 @@
     },
     "originalRecordIdentifierSpec": {
         "fields": [
-            "$.'gmi:MI_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
+            "$.'gmd:MD_Metadata'.'gmd:fileIdentifier'.'gco:CharacterString'.'_$'"
         ],
         "delimiter": [
             ":"
