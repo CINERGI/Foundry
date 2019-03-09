@@ -267,7 +267,7 @@
         </dependency>
         <dependency>
             <groupId>com.esri.geoportal</groupId>
-            <artifactId>geoportal-commons-gpt-client</artifactId>
+            <artifactId>geoportal-harvester-cli</artifactId>
            <version>2.6.1-SNAPSHOT</version>
 
         </dependency>
