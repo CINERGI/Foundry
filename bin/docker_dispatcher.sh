@@ -12,3 +12,5 @@ nohup mvn -q -f ../dispatcher/pom.xml exec:java -Dexec.mainClass="org.neuinfo.fo
 #java -cp foundry-dispatcher-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.jms.producer.OplogMessageDispatcher -c cinergi-dispatcher-cfg-pipe-stage.xml  $*
 #nohup java -cp foundry-dispatcher-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.jms.producer.OplogMessageDispatcher -c cinergi-dispatcher-cfg-pipe-stage.xml &> $log_file &
 
+#java -cp foundry-dispatcher-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.jms.producer.OplogMessageDispatcher -c cinergi-dispatcher-cfg-pipe-stage.xml  $*
+java -cp foundry-dispatcher-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.jms.producer.OplogMessageDispatcher   $*

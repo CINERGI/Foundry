@@ -6,7 +6,7 @@ echo $log_file
 #nohup mvn -q -f ../consumers/pom.xml exec:java -Dexec.mainClass="org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator" -Dexec.args="-i /home/cinergi/geo_time_include_list.txt -f $*" &> $log_file &
 
 
-nohup mvn -q -f ../consumers/pom.xml exec:java -Dexec.mainClass="org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator" -Dexec.args="-f $*" &> $log_file
+#nohup mvn -q -f ../consumers/pom.xml exec:java -Dexec.mainClass="org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator" -Dexec.args="-f $*" &> $log_file
 
 #mvn -f ../consumers/pom.xml exec:java -Dexec.mainClass="org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator" -Dexec.args="-c cinergi-consumers-cfg-pipe-stage.xml -n 20 $*" 
 
@@ -14,4 +14,6 @@ nohup mvn -q -f ../consumers/pom.xml exec:java -Dexec.mainClass="org.neuinfo.fou
 #java -cp foundry-consumers-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator -c cinergi-consumers-cfg-pipe-stage.xml $*
 #nohup java -cp foundry-consumers-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator -c cinergi-consumers-cfg-pipe-stage.xml -f &> $log_file &
 
+#java -cp foundry-consumers-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator -c cinergi-consumers-cfg-pipe-stage.xml $*
+java -cp foundry-consumers-1.0-SNAPSHOT-prod.jar org.neuinfo.foundry.consumers.coordinator.ConsumerCoordinator  $*
 
