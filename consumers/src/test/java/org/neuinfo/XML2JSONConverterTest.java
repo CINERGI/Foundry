@@ -79,4 +79,38 @@ public class XML2JSONConverterTest extends XMLTestCase {
 
         assertTrue("XML identical " + diff.toString(), diff.identical());
     }
+
+    // international characters.
+    //Stöbe, W
+    // working
+    public void testRoundtripWithNamespacesFromURL() throws Exception {
+        String xmlSource = "http://132.249.238.169:8080/metadata/pangaea_datacite/pangaea_iso/oai.datacite.org/00001/oai_oai.datacite.org_2423966.xml";
+
+        SAXBuilder builder = new SAXBuilder();
+        Document doc = builder.build(xmlSource);
+        Element rootEl = doc.getRootElement();
+
+        XML2JSONConverter converter = new XML2JSONConverter();
+        JSONObject json = converter.toJSON(rootEl);
+
+        Element docEl = converter.toXML(json);
+
+        XMLOutputter xmlOutputter = new XMLOutputter(Format.getPrettyFormat());
+
+        Document doc2 = new Document();
+        doc2.setRootElement(docEl);
+        StringWriter sw = new StringWriter(50000);
+        xmlOutputter.output(doc2, sw);
+
+        //Utils.saveXML(rootEl, "reconstructed_cinergi.xml");
+        StringWriter sw2 = new StringWriter(50000);
+        xmlOutputter.output(doc, sw2);
+        //  String origXml = Utils.loadAsString(xmlFile);
+        String origXml = sw2.toString();
+        String reconstructedXml = sw.toString();
+        XMLUnit.setIgnoreWhitespace(true);
+        Diff diff = new Diff(origXml, reconstructedXml);
+
+        assertTrue("XML identical " + diff.toString(), diff.identical());
+    }
 }

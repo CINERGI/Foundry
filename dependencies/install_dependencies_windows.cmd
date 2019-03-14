@@ -10,3 +10,4 @@ call mvn install:install-file -Dfile=lib/bnlpkit-cinergi-models-0.2.jar -DgroupI
 call mvn install:install-file -Dfile=lib/prov-json-0.5.1-SNAPSHOT.jar -DgroupId=org.openprovenance.prov -DartifactId=prov-json -Dversion=0.5.1-SNAPSHOT -Dpackaging=jar
 call mvn install:install-file -Dfile=lib/prov-model-0.5.1-SNAPSHOT.jar -DgroupId=org.openprovenance.prov -DartifactId=prov-model -Dversion=0.5.1-SNAPSHOT -Dpackaging=jar
 call mvn install:install-file -Dfile=lib/prov-xml-0.5.1-SNAPSHOT.jar -DgroupId=org.openprovenance.prov -DartifactId=prov-xml -Dversion=0.5.1-SNAPSHOT -Dpackaging=jar
+call mvn install:install-file -Dfile=$PWD/lib/geoportal-commons-gpt-client-2.6.2-SNAPSHOT.jar -DgroupId=com.esri.geoportal -DartifactId=geoportal-harvester-cli -Dversion=2.6.2-SNAPSHOT -Dpackaging=jar

@@ -55,16 +55,16 @@ public class DocWrapperTest extends TestCase {
 
     public void testGetDocWrapper() {
         DB db = mongoClient.getDB(this.mongoDbName);
-        DBCollection collection = db.getCollection("nifRecords");
+        DBCollection collection = db.getCollection("records");
         String primaryKey = "4"; //
         String nifId = "nif-0000-00241";
-        primaryKey = "http://www.wired.com/?p=1622077";
+        primaryKey = "urn:datacite:metadata:Meteorological-measurements-in-the-upper-air-during-METEOR-cruises--ERA-CLIM-ID-0047";
         nifId = "nlx_144196";
 
         primaryKey = "40";
         nifId = "nlx_152590";
 
-        primaryKey = "oai:datadryad.org:10255/dryad.180";
+        primaryKey = "urn:datacite:metadata:Meteorological-measurements-in-the-upper-air-during-METEOR-cruises--ERA-CLIM-ID-0047";
         nifId = "nlx_149486";
         BasicDBObject query = new BasicDBObject("primaryKey", primaryKey)
                 .append("SourceInfo.SourceID", nifId);

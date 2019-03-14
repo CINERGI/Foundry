@@ -7,6 +7,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import org.apache.log4j.Logger;
 
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 
@@ -17,7 +18,14 @@ public class StanfordNEDLocationFinder {
     private static String serializedClassifier = "english.all.3class.distsim.crf.ser.gz";
 
     public void startup() throws Exception {
-        classifier = CRFClassifier.getClassifier(serializedClassifier);
+        // classifier = CRFClassifier.getClassifier(serializedClassifier);
+        // try using model jar
+        Properties props = new Properties();
+//        props.put("pos.model", "edu/stanford/nlp/models/pos-tagger/english-caseless-left3words-distsim.tagger");
+//        props.put("parse.model", "edu/stanford/nlp/models/lexparser/englishPCFG.caseless.ser.gz");
+//        props.put("ner.model", "edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz edu/stanford/nlp/models/ner/english.muc.7class.caseless.distsim.crf.ser.gz edu/stanford/nlp/models/ner/english.conll.4class.caseless.distsim.crf.ser.gz");
+ //       classifier =  CRFClassifier.getJarClassifier("edu/stanford/nlp/models/ner/english.all.3class.caseless.distsim.crf.ser.gz", null);
+        classifier =  CRFClassifier.getDefaultClassifier();
     }
 
     public Set<String> getLocationsFromText(String text) throws Exception {

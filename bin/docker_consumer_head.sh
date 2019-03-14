@@ -1,4 +1,6 @@
 #!/bin/bash
+mkdir -p /data/logs/
+mkdir -p /data/waf/
 today=$(date +"%b_%d_%Y")
 log_file="/data/logs/ch_nohup_${today}.log"
 echo $log_file
