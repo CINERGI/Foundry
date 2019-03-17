@@ -16,7 +16,7 @@ import java.util.*;
 public class ConfigGenerator {
     public static String HOME = System.getProperty("user.home");
 
-    public static void loadConfigSpec(String configSpecFile, String srcCodeRoot, String profile) throws Exception {
+    public static void loadConfigSpec(String configSpecFile, String srcCodeRoot, String profile, String prefix) throws Exception {
         SystemCfg systemCfg = new SystemCfg();
         WFCfg wfCfg;
         List<ConsumerCfg> ccList = new ArrayList<ConsumerCfg>();
@@ -83,26 +83,26 @@ public class ConfigGenerator {
             //System.out.println(systemCfg);
 
             Element rootEL = createConsumerConfigXML(systemCfg, ccList, wfCfg);
-            String configFile = srcCodeRoot + "/consumers/src/main/resources/" + profile + "/consumers-cfg.xml";
+            String configFile = srcCodeRoot + "/consumers/src/main/resources/" + profile + "/"+prefix + "consumers-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createDispatcherConfig(wfCfg, systemCfg, ccList);
-            configFile = srcCodeRoot + "/dispatcher/src/main/resources/" + profile + "/dispatcher-cfg.xml";
+            configFile = srcCodeRoot + "/dispatcher/src/main/resources/" + profile + "/"+prefix +"dispatcher-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createCommonConfigXml(systemCfg);
-            configFile = srcCodeRoot + "/common/src/main/resources/" + profile + "/common-cfg.xml";
+            configFile = srcCodeRoot + "/common/src/main/resources/" + profile + "/"+prefix +"common-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createIngestorConfigXml(systemCfg);
-            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/ingestor-cfg.xml";
+            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/"+prefix +"ingestor-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
-            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/ingestor-cfg.xml";
+            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/"+prefix +"ingestor-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
         } finally {
@@ -341,6 +341,8 @@ public class ConfigGenerator {
         Option help = new Option("h", "print this message");
         Option configFileOption = Option.builder("c").argName("cfg-spec-file").hasArg()
                 .desc("Full path to the Foundry config spec YAML file").build();
+        Option prefixFileOption = Option.builder("F").argName("filename-prefix").hasArg()
+                .desc("prefix for file names").build();
         Option foundryRootOption = Option.builder("f").argName("foundry-root-dir").hasArg().build();
         Option profileOption = Option.builder("p").argName("profile")
                 .desc("Maven profile ([dev]|prod)").hasArg().build();
@@ -348,6 +350,7 @@ public class ConfigGenerator {
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
+        options.addOption(prefixFileOption);
         options.addOption(foundryRootOption);
         options.addOption(profileOption);
         CommandLineParser cli = new DefaultParser();
@@ -382,8 +385,16 @@ public class ConfigGenerator {
             }
 
         }
+        String prefix = "";
+        if (line.hasOption('F')) {
+            String s = line.getOptionValue('F');
+            if (s.length()>0 ) {
+                prefix = s+"-";
+            }
+
+        }
         //ConfigGenerator.loadConfigSpec(HOME + "/dev/java/Foundry-ES/bin/config.yml", foundryRootDir);
-        ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile);
+        ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile, prefix);
     }
 
 
