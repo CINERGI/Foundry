@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import opennlp.tools.namefind.NameFinderME;
 import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +14,6 @@ import org.neuinfo.foundry.consumers.jms.consumers.jta.Keyword;
 import org.neuinfo.foundry.consumers.jms.consumers.jta.KeywordAnalyzer;
 import org.neuinfo.foundry.consumers.plugin.IPlugin;
 import org.neuinfo.foundry.consumers.plugin.Result;
-import org.neuinfo.foundry.consumers.util.NLPUtils;
-import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -25,7 +22,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -36,38 +32,50 @@ import java.util.*;
  * Created by bozyurt on 6/9/16.
  */
 public class KeywordEnhancer2 implements IPlugin {
-    String serviceURL;
+    private String serviceURL;
     List<String> jsonPaths = new ArrayList<String>(5);
-    static String stopListFile = "/var/data/cinergi/stoplist.txt";
-    static String nullIRIsFile = "/var/data/cinergi/nulliris.txt";
-    static String defaultKeywordRulesFile = "/var/data/cinergi/keyword_rules.yml";
+     private String configFileDir = "/data/cinergi/";
+     private String stopListFile = "/data/cinergi/"+"stoplist.txt";
+     private String nullIRIsFile = "/data/cinergi/"+"nulliris.txt";
+     private String defaultKeywordRulesFile = "/data/cinergi/"+"keyword_rules.yml";
     KeywordAnalyzer keywordAnalyzer;
     Map<String, DefaultKeywords> defaultKeywordsMap;
 
 
+
     @Override
     public void initialize(Map<String, String> options) throws Exception {
-        this.serviceURL = options.get("serviceURL");
+        this.setServiceURL(options.get("serviceURL"));
         jsonPaths.add("$..'gmd:abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'gmd:citation'.'gmd:CI_Citation'.'gmd:title'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'abstract'.'gco:CharacterString'.'_$'");
         jsonPaths.add("$..'title'.'gco:CharacterString'.'_$'");
+
+
 
         OntologyHandler handler = OntologyHandler.getInstance();
         OWLOntologyManager manager = handler.getManager();
         OWLDataFactory df = handler.getDf();
         OWLOntology extensions = handler.getExtensions();
         OWLOntology cinergi_ont = handler.getCinergi_ont();
-        List<String> stoplist = Files.readAllLines(Paths.get(stopListFile), StandardCharsets.UTF_8);
-        List<String> nullIRIs = Files.readAllLines(Paths.get(nullIRIsFile), StandardCharsets.UTF_8);
+        if (options.containsKey("serviceURL")) {
+            this.setServiceURL(options.get("serviceURL"));
+        }
+        if (options.containsKey("configFileDir")) {
+            this.setServiceURL(options.get("configFileDir"));
+        }
+
+
+        List<String> stoplist = Files.readAllLines(Paths.get(getStopListFile()), StandardCharsets.UTF_8);
+        List<String> nullIRIs = Files.readAllLines(Paths.get(getNullIRIsFile()), StandardCharsets.UTF_8);
         LinkedHashMap<String, IRI> exceptionMap = null; // Create this using label duplicates spreadsheet
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         this.keywordAnalyzer = new KeywordAnalyzer(manager, df, cinergi_ont, extensions, gson,
-                stoplist, exceptionMap, nullIRIs, serviceURL);
+                stoplist, exceptionMap, nullIRIs, getServiceURL());
 
-        if (new File(defaultKeywordRulesFile).isFile()) {
-            this.defaultKeywordsMap = loadDefaultKeywordRules(defaultKeywordRulesFile);
+        if (new File(getDefaultKeywordRulesFile()).isFile()) {
+            this.defaultKeywordsMap = loadDefaultKeywordRules(getDefaultKeywordRulesFile());
         }
     }
 
@@ -218,6 +226,46 @@ public class KeywordEnhancer2 implements IPlugin {
         } finally {
             Utils.close(in);
         }
+    }
+
+    public String getServiceURL() {
+        return serviceURL;
+    }
+
+    public void setServiceURL(String serviceURL) {
+        this.serviceURL = serviceURL;
+    }
+
+    public String getConfigFileDir() {
+        return configFileDir;
+    }
+
+    public void setConfigFileDir(String configFileDir) {
+        this.configFileDir = configFileDir;
+    }
+
+    public String getStopListFile() {
+        return stopListFile;
+    }
+
+    public void setStopListFile(String stopListFile) {
+        this.stopListFile = stopListFile;
+    }
+
+    public String getNullIRIsFile() {
+        return nullIRIsFile;
+    }
+
+    public void setNullIRIsFile(String nullIRIsFile) {
+        this.nullIRIsFile = nullIRIsFile;
+    }
+
+    public String getDefaultKeywordRulesFile() {
+        return defaultKeywordRulesFile;
+    }
+
+    public void setDefaultKeywordRulesFile(String defaultKeywordRulesFile) {
+        this.defaultKeywordRulesFile = defaultKeywordRulesFile;
     }
 
     public static class DefaultKeywords {
