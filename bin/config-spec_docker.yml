@@ -1,11 +1,11 @@
-pluginDir: ${f_pluginDir:"/data/foundry/consumer_plugins/plugins"}
+pluginDir: "/data/foundry/consumer_plugins/plugins"
 database:
-    host: ${f_mongodb_host:localhost}
-    port: ${f_mongodb_port:27017}
-    db: ${f_mongodb_db:discotest}
-    collection: ${f_mongodb_collection:records}
-    user: ${f_mongodb_L:user}
-    pwd: ${f_mongodb_pwd:"password"}
+    host: localhost
+    port: 27017
+    db: discotest
+    collection: records
+    user: user
+    pwd: "password"
 mq:
     brokerURL: ${f_brokerURL:"tcp://localhost:61616?wireFormat.maxInactivityDuration=0"}
 
@@ -27,8 +27,8 @@ consumers:
     - keyword:
          class: org.neuinfo.foundry.consumers.jms.consumers.plugins.KeywordEnhancer2
          status: keyword_enhanced
-         serviceURL: ${f_scigraph_serviceURL:"http://ec-scigraph.sdsc.edu:9000" }
-         stopwordsUrl: ${f_scigraph_stopwordsUrl:"file:///data/cinergi/stopwords.txt"}
+         serviceURL: "http://ec-scigraph.sdsc.edu:9000"
+         stopwordsUrl: "file:///data/cinergi/stopwords.txt"
          useNER: false
     - org:
          class: "org.neuinfo.foundry.consumers.jms.consumers.plugins.OrganizationEnhancer2"
@@ -36,14 +36,14 @@ consumers:
     - export:
          class: "org.neuinfo.foundry.consumers.jms.consumers.plugins.WAFExporter"
          status: finished  
-         outDirectory: ${f_waf_outDirectory:"/tmp/waf"}
+         outDirectory: "/tmp/waf"
     - geoportal:
          class: "org.neuinfo.foundry.consumers.jms.consumers.plugins.Geoportal2Exporter"
          status: finished
-         gptURI: ${f_gpt_gptURI:"http://geoportal:8080/geoportal/"}
-         elasticsearchIndex: ${f_gpt_elasticsearchIndex:metadata}
-         user:  ${f_gpt_user:"admin"}
-         password: ${f_gpt_password:"pass"}
+         gptURI: "http://geoportal:8080/geoportal/"
+         elasticsearchIndex: metadata
+         user: "gptadmin"
+         password: "gptadmin"
 
 
 

@@ -1,28 +1,56 @@
 package org.neuinfo.foundry.common.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.input.SAXBuilder;
 import org.neuinfo.foundry.common.util.Utils;
 
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by bozyurt on 5/1/14.
  */
 public class ConfigLoader {
 
-    public static Configuration load(String xmlFile) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
 
-        Configuration conf = new Configuration();
+    public static Configuration loadFromFile(String xmlFile) throws Exception {
+
+        InputStream in = null;
+
+            try {
+             in =  new FileInputStream(
+                        xmlFile);
+                return   build(in);
+    } finally {
+        Utils.close(in);
+    }
+    }
+    public static Configuration load(String xmlFile) throws Exception {
+
         InputStream in = null;
         try {
             in = ConfigLoader.class.getClassLoader().getResourceAsStream(xmlFile); // "dispatcher-cfg.xml");
+           return   build(in);
+
+        }  finally {
+        Utils.close(in);
+    }
+    }
+
+    private static Configuration build(InputStream in) throws Exception {
+        SAXBuilder builder = new SAXBuilder();
+
+        Configuration conf = new Configuration();
+        // InputStream in = null;
+        try {
+          //  in = ConfigLoader.class.getClassLoader().getResourceAsStream(xmlFile); // "dispatcher-cfg.xml");
 
             Document doc = builder.build(in);
             Element docRoot = doc.getRootElement();
@@ -33,7 +61,8 @@ public class ConfigLoader {
             List<Element> children = mcEl.getChild("servers").getChildren("server");
             for (Element c : children) {
                 String host = c.getAttributeValue("host");
-                int port = Utils.getIntValue(c.getAttributeValue("port"), -1);
+              //  int port = Utils.getIntValue(c.getAttributeValue("port"), -1);
+                String port = c.getAttributeValue("port");
                 String user = null;
                 String pwd = null;
                 if (c.getAttribute("user") != null) {
@@ -75,10 +104,35 @@ public class ConfigLoader {
             //conf.setCheckpointXmlFile(new File(cpEl.getTextTrim()));
             Element amqEl = docRoot.getChild("activemq-config");
             String brokerURL = amqEl.getChildTextTrim("brokerURL");
-            conf.setBrokerURL(brokerURL);
+            conf.setBrokerURL(envVarParser(brokerURL));
             return conf;
         } finally {
             Utils.close(in);
         }
+    }
+    public static String envVarParser (String value) {
+        String defValue  =null;
+        String envVar = "";
+        value = value.trim();
+        if (value.startsWith("${") && value.endsWith("}")) {
+            String[] split = value.substring(2, value.length()-1 ).split("\\:");
+
+            if (split.length >1){
+                envVar = split[0].trim();
+                defValue = split[1].trim();
+            } else {
+                envVar = split [0];
+            }
+            if (!StringUtils.isBlank(envVar)){
+                value = System.getenv(envVar);
+                if (StringUtils.isBlank(value)) {
+                    return defValue;
+                }
+            } else {
+                return defValue;
+            }
+
+        }
+        return value;
     }
 }

@@ -9,11 +9,11 @@ public class ServerInfo {
     private final String user;
     private final String pwd;
 
-    public ServerInfo(String host, int port, String user, String pwd) {
-        this.host = host;
-        this.port = port;
-        this.pwd = pwd;
-        this.user = user;
+    public ServerInfo(String host, String port, String user, String pwd) {
+        this.host = ConfigLoader.envVarParser(host);
+        this.port = Integer.parseInt(ConfigLoader.envVarParser(port));
+        this.pwd = ConfigLoader.envVarParser(pwd);
+        this.user = ConfigLoader.envVarParser(user);
     }
 
 

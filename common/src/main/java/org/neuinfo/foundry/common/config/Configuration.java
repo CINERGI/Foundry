@@ -26,7 +26,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setBrokerURL(String brokerURL) {
-        this.brokerURL = brokerURL;
+        this.brokerURL = ConfigLoader.envVarParser(brokerURL);
     }
 
     public List<Workflow> getWorkflows() {
@@ -55,7 +55,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setMongoDBName(String mongoDBName) {
-        this.mongoDBName = mongoDBName;
+        this.mongoDBName = ConfigLoader.envVarParser(mongoDBName);
     }
 
     public String getCollectionName() {
@@ -63,7 +63,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
+        this.collectionName = ConfigLoader.envVarParser(collectionName);
     }
 
     @Override

@@ -24,8 +24,8 @@ public class ConsumerConfig {
 
 
     public ConsumerConfig(String name, String type) {
-        this.name = name;
-        this.type = type;
+        this.name =  ConfigLoader.envVarParser(name);
+        this.type =  ConfigLoader.envVarParser(type);
     }
 
     public static ConsumerConfig fromXml(Element elem, String collectionName) throws Exception {
@@ -123,7 +123,7 @@ public class ConsumerConfig {
     }
 
     public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
+        this.collectionName =  ConfigLoader.envVarParser(collectionName);
     }
 
     public String getVersion() {
@@ -131,7 +131,7 @@ public class ConsumerConfig {
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.version =  ConfigLoader.envVarParser(version);
     }
 
     public String getListeningQueueName() {
@@ -139,7 +139,7 @@ public class ConsumerConfig {
     }
 
     public void setListeningQueueName(String listeningQueueName) {
-        this.listeningQueueName = listeningQueueName;
+        this.listeningQueueName =  ConfigLoader.envVarParser(listeningQueueName);
     }
 
     public String getSuccessMessageQueueName() {
@@ -147,7 +147,7 @@ public class ConsumerConfig {
     }
 
     public void setSuccessMessageQueueName(String successMessageQueueName) {
-        this.successMessageQueueName = successMessageQueueName;
+        this.successMessageQueueName =  ConfigLoader.envVarParser(successMessageQueueName);
     }
 
     public String getFailureMessageQueueName() {
@@ -155,7 +155,7 @@ public class ConsumerConfig {
     }
 
     public void setFailureMessageQueueName(String failureMessageQueueName) {
-        this.failureMessageQueueName = failureMessageQueueName;
+        this.failureMessageQueueName =  ConfigLoader.envVarParser(failureMessageQueueName);
     }
 
     public String getOutStatus() {
@@ -163,7 +163,7 @@ public class ConsumerConfig {
     }
 
     public void setOutStatus(String outStatus) {
-        this.outStatus = outStatus;
+        this.outStatus =  ConfigLoader.envVarParser(outStatus);
     }
 
     public String getInStatus() {
@@ -171,7 +171,7 @@ public class ConsumerConfig {
     }
 
     public void setInStatus(String inStatus) {
-        this.inStatus = inStatus;
+        this.inStatus =  ConfigLoader.envVarParser(inStatus);
     }
 
     public List<HandlerConfig> getHandlerConfigs() {
@@ -233,7 +233,7 @@ public class ConsumerConfig {
                     Element pEl = new Element("param");
                     pEls.addContent(pEl);
                     pEl.setAttribute("name", name);
-                    pEl.setAttribute("value", paramMap.get(name));
+                    pEl.setAttribute("value",  ConfigLoader.envVarParser(paramMap.get(name)));
                 }
             }
             return el;
@@ -280,7 +280,7 @@ public class ConsumerConfig {
         }
 
         public void setVersion(String version) {
-            this.version = version;
+            this.version =  ConfigLoader.envVarParser(version);
         }
 
         public String getDescription() {
@@ -288,7 +288,7 @@ public class ConsumerConfig {
         }
 
         public void setDescription(String description) {
-            this.description = description;
+            this.description =  ConfigLoader.envVarParser(description);
         }
 
         public String getParam(String name) {
@@ -306,7 +306,7 @@ public class ConsumerConfig {
 
         public Parameter(String name, String value) {
             this.name = name;
-            this.value = value;
+            this.value =  ConfigLoader.envVarParser(value);
         }
 
         public String getName() {
