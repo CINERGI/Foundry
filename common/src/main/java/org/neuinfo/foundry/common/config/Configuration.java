@@ -42,7 +42,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public String getMongoDBName() {
-        return mongoDBName;
+        return ConfigLoader.envVarParser(mongoDBName);
     }
 
     @Override

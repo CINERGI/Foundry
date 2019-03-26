@@ -61,7 +61,7 @@ public class ISOXMLFileHandler {
 
     public static List<String> getIngestURLs4Sources() throws Exception {
         Configuration conf = new Configuration("discotest");
-        ServerInfo si = new ServerInfo("132.249.238.128", "27017", null, null);
+        ServerInfo si = new ServerInfo("132.249.238.128", 27017, null, null);
         conf.addServer(si);
         SourceIngestionService sis = new SourceIngestionService();
         List<String> ingestURLs = new ArrayList<String>();
