@@ -7,7 +7,11 @@ import java.util.List;
 
 /**
  * Created by bozyurt on 4/24/14.
- */
+ * dwv 2019-03-26. Environment Variables can be used in configuration
+ * ${envVar:defaultValue}
+ * not all properties support this, at present. No int values (aka ports).
+ * only params in workflows
+ * */
 public class Configuration implements IMongoConfig {
     List<Workflow> workflows = new ArrayList<Workflow>(5);
     List<WorkflowMapping> workflowMappings = new ArrayList<WorkflowMapping>(5);

@@ -1,6 +1,7 @@
 package org.neuinfo.foundry.common.config;
 
 import org.apache.commons.cli.*;
+import org.jdom2.Comment;
 import org.jdom2.Element;
 import org.neuinfo.foundry.common.util.Assertion;
 import org.neuinfo.foundry.common.util.Utils;
@@ -12,6 +13,10 @@ import java.util.*;
 
 /**
  * Created by bozyurt on 8/11/16.
+ * dwv 2019-03-26. Environment Variables can be used in configuration
+ * ${envVar:defaultValue}
+ * not all properties support this, at present. No int values (aka ports).
+ * only params in workflows
  */
 public class ConfigGenerator {
     public static String HOME = System.getProperty("user.home");
@@ -197,8 +202,8 @@ public class ConfigGenerator {
         rootEl.addContent(new Element("pluginDir").setText(cfg.pluginDir));
 //        File libDir = new File(new File(cfg.pluginDir).getParent(), "lib");
 //        rootEl.addContent(new Element("libDir").setText(libDir.getAbsolutePath()));
-
-        rootEl.addContent(cfg.pluginDir);
+        rootEl.addContent(new Comment("libDir Will be  pluginDir + lib "));
+        rootEl.addContent(new Element("libDir").setText(cfg.pluginDir));
 
         Map<String, ConsumerCfg> ccMap = new HashMap<String, ConsumerCfg>();
         for (ConsumerCfg cc : ccList) {

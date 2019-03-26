@@ -12,7 +12,10 @@ import java.util.Map;
 
 /**
  * Created by bozyurt on 4/24/14.
- */
+ * dwv 2019-03-26. Environment Variables can be used in configuration
+ * ${envVar:defaultValue}
+ * not all properties support this, at present. No int values (aka ports).
+ * only params in workflows*/
 public class Configuration implements IMongoConfig {
     Map<String, Object> mongoListenerSettings;
     String brokerURL;

@@ -4,7 +4,11 @@ import org.neuinfo.foundry.common.util.ConfigUtils;
 
 /**
 * Created by bozyurt on 10/2/14.
-*/
+ * dwv 2019-03-26. Environment Variables can be used in configuration
+ * ${envVar:defaultValue}
+ * not all properties support this, at present. No int values (aka ports).
+ * only params in workflows
+ * */
 public class ServerInfo {
     private final String host;
     private final int port;

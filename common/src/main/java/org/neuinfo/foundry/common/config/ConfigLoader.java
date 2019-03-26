@@ -16,6 +16,11 @@ import java.util.Map;
 
 /**
  * Created by bozyurt on 5/1/14.
+ * Note there is another configloader in consumers
+ *  dwv 2019-03-26. Environment Variables can be used in configuration
+ *  ${envVar:defaultValue}
+ *  not all properties support this, at present. No int values (aka ports).
+ *   only params in workflows
  */
 public class ConfigLoader {
     public static Configuration loadFromFile(String filename) throws Exception {
