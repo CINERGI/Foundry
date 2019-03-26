@@ -3,6 +3,7 @@ import org.junit.Rule;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.Test;
+import org.neuinfo.foundry.common.util.ConfigUtils;
 import org.neuinfo.foundry.common.util.Utils;
 import org.junit.contrib.java.lang.system.EnvironmentVariables;
 
@@ -20,7 +21,7 @@ public class ConfigLoaderTests {
  @ValueSource(strings = { "home",
          "${nohome:home}" })
  public void testEnvParser(String value) {
-  String result = ConfigLoader.envVarParser(value);
+  String result = ConfigUtils.envVarParser(value);
   assertTrue  (result.equals("home"));
  }
  @ParameterizedTest
@@ -28,7 +29,7 @@ public class ConfigLoaderTests {
          "${HOME:home}" })
  public void testEnvParser2(String value){
 
-  String result =ConfigLoader.envVarParser(value);
+  String result =ConfigUtils.envVarParser(value);
   assertFalse(result.equals("home"));
  }
  @Test

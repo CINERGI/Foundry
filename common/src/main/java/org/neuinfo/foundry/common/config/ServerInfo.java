@@ -1,5 +1,7 @@
 package org.neuinfo.foundry.common.config;
 
+import org.neuinfo.foundry.common.util.ConfigUtils;
+
 /**
 * Created by bozyurt on 10/2/14.
 */
@@ -10,10 +12,10 @@ public class ServerInfo {
     private final String pwd;
 
     public ServerInfo(String host, int port, String user, String pwd) {
-        this.host = ConfigLoader.envVarParser(host);
+        this.host = ConfigUtils.envVarParser(host);
         this.port = port;
-        this.pwd = ConfigLoader.envVarParser(pwd);
-        this.user = ConfigLoader.envVarParser(user);
+        this.pwd = ConfigUtils.envVarParser(pwd);
+        this.user = ConfigUtils.envVarParser(user);
     }
 
 

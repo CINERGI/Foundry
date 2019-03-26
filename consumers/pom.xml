@@ -309,5 +309,11 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.17.2</version> <!-- not latest 1.18 and 1.19 mucked up for env vars -->
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

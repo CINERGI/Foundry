@@ -1,6 +1,7 @@
 package org.neuinfo.foundry.common.config;
 
 import org.jdom2.Element;
+import org.neuinfo.foundry.common.util.ConfigUtils;
 
 import java.util.*;
 
@@ -24,8 +25,8 @@ public class ConsumerConfig {
 
 
     public ConsumerConfig(String name, String type) {
-        this.name = ConfigLoader.envVarParser(name);
-        this.type = ConfigLoader.envVarParser(type);
+        this.name = ConfigUtils.envVarParser(name);
+        this.type = ConfigUtils.envVarParser(type);
     }
 
     public static ConsumerConfig fromXml(Element elem, String collectionName) throws Exception {
@@ -123,7 +124,7 @@ public class ConsumerConfig {
     }
 
     public void setCollectionName(String collectionName) {
-        this.collectionName = ConfigLoader.envVarParser(collectionName);
+        this.collectionName = ConfigUtils.envVarParser(collectionName);
     }
 
     public String getVersion() {
@@ -139,7 +140,7 @@ public class ConsumerConfig {
     }
 
     public void setListeningQueueName(String listeningQueueName) {
-        this.listeningQueueName = ConfigLoader.envVarParser(listeningQueueName);
+        this.listeningQueueName = ConfigUtils.envVarParser(listeningQueueName);
     }
 
     public String getSuccessMessageQueueName() {
@@ -147,7 +148,7 @@ public class ConsumerConfig {
     }
 
     public void setSuccessMessageQueueName(String successMessageQueueName) {
-        this.successMessageQueueName = ConfigLoader.envVarParser(successMessageQueueName);
+        this.successMessageQueueName = ConfigUtils.envVarParser(successMessageQueueName);
     }
 
     public String getFailureMessageQueueName() {
@@ -155,7 +156,7 @@ public class ConsumerConfig {
     }
 
     public void setFailureMessageQueueName(String failureMessageQueueName) {
-        this.failureMessageQueueName = ConfigLoader.envVarParser(failureMessageQueueName);
+        this.failureMessageQueueName = ConfigUtils.envVarParser(failureMessageQueueName);
     }
 
     public String getOutStatus() {
@@ -288,7 +289,7 @@ public class ConsumerConfig {
         }
 
         public void setDescription(String description) {
-            this.description = description;
+            this.description = ConfigUtils.envVarParser(description);
         }
 
         public String getParam(String name) {
@@ -306,7 +307,7 @@ public class ConsumerConfig {
 
         public Parameter(String name, String value) {
             this.name = name;
-            this.value = ConfigLoader.envVarParser(value);
+            this.value = ConfigUtils.envVarParser(value);
         }
 
         public String getName() {

@@ -195,8 +195,10 @@ public class ConfigGenerator {
         prepDBMQ(cfg, rootEl);
 
         rootEl.addContent(new Element("pluginDir").setText(cfg.pluginDir));
-        File libDir = new File(new File(cfg.pluginDir).getParent(), "lib");
-        rootEl.addContent(new Element("libDir").setText(libDir.getAbsolutePath()));
+//        File libDir = new File(new File(cfg.pluginDir).getParent(), "lib");
+//        rootEl.addContent(new Element("libDir").setText(libDir.getAbsolutePath()));
+
+        rootEl.addContent(cfg.pluginDir);
 
         Map<String, ConsumerCfg> ccMap = new HashMap<String, ConsumerCfg>();
         for (ConsumerCfg cc : ccList) {

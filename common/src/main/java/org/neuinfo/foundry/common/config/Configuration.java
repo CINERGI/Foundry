@@ -1,5 +1,7 @@
 package org.neuinfo.foundry.common.config;
 
+import org.neuinfo.foundry.common.util.ConfigUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setBrokerURL(String brokerURL) {
-        this.brokerURL = ConfigLoader.envVarParser(brokerURL);
+        this.brokerURL = ConfigUtils.envVarParser(brokerURL);
     }
 
     public List<Workflow> getWorkflows() {
@@ -42,7 +44,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public String getMongoDBName() {
-        return ConfigLoader.envVarParser(mongoDBName);
+        return ConfigUtils.envVarParser(mongoDBName);
     }
 
     @Override
@@ -55,7 +57,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setMongoDBName(String mongoDBName) {
-        this.mongoDBName = ConfigLoader.envVarParser(mongoDBName);
+        this.mongoDBName = ConfigUtils.envVarParser(mongoDBName);
     }
 
     public String getCollectionName() {
@@ -63,7 +65,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setCollectionName(String collectionName) {
-        this.collectionName = ConfigLoader.envVarParser(collectionName);
+        this.collectionName = ConfigUtils.envVarParser(collectionName);
     }
 
     @Override

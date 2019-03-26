@@ -3,7 +3,9 @@ package org.neuinfo.foundry.consumers.common;
 import org.neuinfo.foundry.common.config.ConsumerConfig;
 import org.neuinfo.foundry.common.config.IMongoConfig;
 import org.neuinfo.foundry.common.config.ServerInfo;
+import org.neuinfo.foundry.common.util.ConfigUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setBrokerURL(String brokerURL) {
-        this.brokerURL = brokerURL;
+        this.brokerURL = ConfigUtils.envVarParser(brokerURL);
     }
 
     public String getPluginDir() {
@@ -54,11 +56,11 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setPluginDir(String pluginDir) {
-        this.pluginDir = pluginDir;
+        this.pluginDir = ConfigUtils.envVarParser(pluginDir);
     }
 
     public void setLibDir(String libDir) {
-        this.libDir = libDir;
+        this.libDir = ConfigUtils.envVarParser(libDir)+ File.pathSeparator + "lib";
     }
 
     public String getCollectionName() {
@@ -66,7 +68,7 @@ public class Configuration implements IMongoConfig {
     }
 
     public void setCollectionName(String collectionName) {
-        this.collectionName = collectionName;
+        this.collectionName = ConfigUtils.envVarParser(collectionName);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class Configuration implements IMongoConfig {
 
 
     public void setMongoDBName(String mongoDBName) {
-        this.mongoDBName = mongoDBName;
+        this.mongoDBName = ConfigUtils.envVarParser(mongoDBName);
     }
 
     public void addServerInfo(ServerInfo si) {

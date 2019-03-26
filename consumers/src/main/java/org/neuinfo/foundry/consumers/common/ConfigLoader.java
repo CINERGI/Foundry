@@ -6,9 +6,11 @@ import org.jdom2.input.SAXBuilder;
 import org.neuinfo.foundry.common.config.ConsumerConfig;
 import org.neuinfo.foundry.common.config.ServerInfo;
 import org.neuinfo.foundry.common.util.Assertion;
+import org.neuinfo.foundry.common.util.ConfigUtils;
 import org.neuinfo.foundry.consumers.river.MongoDBRiverDefinition;
 import org.neuinfo.foundry.common.util.Utils;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,13 +22,24 @@ import java.util.Map;
  */
 public class ConfigLoader {
 
+    public static Configuration loadFromFile(String filename) throws Exception {
+        InputStream in = null;
+        in =  new FileInputStream(
+                filename) ; // "dispatcher-cfg.xml");
+        return build(in);
+    }
+
     public static Configuration load(String xmlFile) throws Exception {
+
+        InputStream in = null;
+        in = ConfigLoader.class.getClassLoader().getResourceAsStream(xmlFile); // "dispatcher-cfg.xml");
+        return build(in);
+    }
+    public static Configuration build(InputStream in) throws Exception {
         SAXBuilder builder = new SAXBuilder();
 
         Configuration conf = new Configuration();
-        InputStream in = null;
         try {
-            in = ConfigLoader.class.getClassLoader().getResourceAsStream(xmlFile); // "dispatcher-cfg.xml");
 
             Document doc = builder.build(in);
             Element docRoot = doc.getRootElement();
@@ -78,13 +91,13 @@ public class ConfigLoader {
 
         Map<String, Object> typeMap = new HashMap<String, Object>(17);
         settings.put(Constants.TYPE, typeMap);
-        String db = mcEl.getAttributeValue("db");
-        String collectionName = mcEl.getAttributeValue("collection");
+        String db = ConfigUtils.envVarParser(mcEl.getAttributeValue("db"));
+        String collectionName = ConfigUtils.envVarParser(mcEl.getAttributeValue("collection"));
 
 
         List<Element> children = mcEl.getChild("servers").getChildren("server");
         for (Element child : children) {
-            String hostName = child.getAttributeValue("host");
+            String hostName = ConfigUtils.envVarParser(child.getAttributeValue("host"));
             int port = Utils.getIntValue(child.getAttributeValue("port"), -1);
             assert port != -1;
             Map<String, Object> serverMap = new HashMap<String, Object>(7);
