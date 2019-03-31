@@ -21,7 +21,7 @@ import java.util.*;
 public class ConfigGenerator {
     public static String HOME = System.getProperty("user.home");
 
-    public static void loadConfigSpec(String configSpecFile, String srcCodeRoot, String profile, String prefix) throws Exception {
+    public static void loadConfigSpec(String configSpecFile, String srcCodeRoot, String profile, String basefilename, String suffix) throws Exception {
         SystemCfg systemCfg = new SystemCfg();
         WFCfg wfCfg;
         List<ConsumerCfg> ccList = new ArrayList<ConsumerCfg>();
@@ -88,26 +88,26 @@ public class ConfigGenerator {
             //System.out.println(systemCfg);
 
             Element rootEL = createConsumerConfigXML(systemCfg, ccList, wfCfg);
-            String configFile = srcCodeRoot + "/consumers/src/main/resources/" + profile + "/"+prefix + "consumers-cfg.xml";
+            String configFile = srcCodeRoot + "/consumers/src/main/resources/" + profile + "/"+ "consumers"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createDispatcherConfig(wfCfg, systemCfg, ccList);
-            configFile = srcCodeRoot + "/dispatcher/src/main/resources/" + profile + "/"+prefix +"dispatcher-cfg.xml";
+            configFile = srcCodeRoot + "/dispatcher/src/main/resources/" + profile + "/" +"dispatcher"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createCommonConfigXml(systemCfg);
-            configFile = srcCodeRoot + "/common/src/main/resources/" + profile + "/"+prefix +"common-cfg.xml";
+            configFile = srcCodeRoot + "/common/src/main/resources/" + profile + "/"+"common"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
             rootEL = createIngestorConfigXml(systemCfg);
-            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/"+prefix +"ingestor-cfg.xml";
+            configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/"+"ingestor"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
 
-            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/"+prefix +"ingestor-cfg.xml";
+            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/"+ "ingestor"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
         } finally {
@@ -348,8 +348,10 @@ public class ConfigGenerator {
         Option help = new Option("h", "print this message");
         Option configFileOption = Option.builder("c").argName("cfg-spec-file").hasArg()
                 .desc("Full path to the Foundry config spec YAML file").build();
-        Option prefixFileOption = Option.builder("F").argName("filename-prefix").hasArg()
-                .desc("prefix for file names").build();
+        Option baseFileNameOption = Option.builder("F").argName("base-filename").hasArg()
+                .desc("base filename for YML file. cfg is default").build();
+        Option suffixFileOption = Option.builder("s").argName("filename-suffix").hasArg()
+                .desc("suffix for filename for YML file. none is default").build();
         Option foundryRootOption = Option.builder("f").argName("foundry-root-dir").hasArg().build();
         Option profileOption = Option.builder("p").argName("profile")
                 .desc("Maven profile ([dev]|prod)").hasArg().build();
@@ -357,7 +359,8 @@ public class ConfigGenerator {
         Options options = new Options();
         options.addOption(help);
         options.addOption(configFileOption);
-        options.addOption(prefixFileOption);
+        options.addOption(baseFileNameOption);
+        options.addOption(suffixFileOption);
         options.addOption(foundryRootOption);
         options.addOption(profileOption);
         CommandLineParser cli = new DefaultParser();
@@ -392,16 +395,24 @@ public class ConfigGenerator {
             }
 
         }
-        String prefix = "";
+        String basefilename = "-cfg";
         if (line.hasOption('F')) {
-            String s = line.getOptionValue('F');
+            String s = line.getOptionValue('F').trim();
             if (s.length()>0 ) {
-                prefix = s+"-";
+                basefilename = "-"+s;
+            }
+
+        }
+        String suffix = "";
+        if (line.hasOption('s')) {
+            String s = line.getOptionValue('s').trim();
+            if (s.length()>0 ) {
+                suffix = "-"+s;
             }
 
         }
         //ConfigGenerator.loadConfigSpec(HOME + "/dev/java/Foundry-ES/bin/config.yml", foundryRootDir);
-        ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile, prefix);
+        ConfigGenerator.loadConfigSpec(configFile, foundryRootDir, profile, basefilename, suffix);
     }
 
 
