@@ -106,8 +106,8 @@ public class ConfigGenerator {
             configFile = srcCodeRoot + "/ingestor/src/main/resources/" + profile + "/"+"ingestor"+basefilename+suffix +".xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
-
-            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/"+ "ingestor"+basefilename+suffix +".xml";
+// web is basically calls to mongo... use env variables
+            configFile = srcCodeRoot + "/ingestor-web/src/main/resources/" + profile + "/"+ "ingestor-cfg.xml";
             Utils.saveXML(rootEL, configFile);
             System.out.println("wrote " + configFile);
         } finally {
