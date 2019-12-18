@@ -5,6 +5,7 @@ import edu.stanford.nlp.ie.AbstractSequenceClassifier;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreLabel;
 import org.apache.log4j.Logger;
+import org.cinergi.sdsc.metadata.TextPosition;
 
 import java.util.HashSet;
 import java.util.Properties;
@@ -53,7 +54,37 @@ public class StanfordNEDLocationFinder {
         }
         return locations;
     }
+    public Set<TextPosition> getLocationsWithPositionsFromText(String text) throws Exception {
+        Set<TextPosition> locations = new HashSet<TextPosition>();
 
+        String[] example = new String[1];
+        example[0] = text;
+
+
+        String xml = classifier.classifyWithInlineXML(text);
+        String start = "<LOCATION>";
+        String end = "</LOCATION>";
+
+        int p = xml.indexOf(start);
+        int q = xml.indexOf(end);
+
+        while (p != -1 && q != -1) {
+
+            String loc = xml.substring(p + 10, q);
+            TextPosition tp = new TextPosition();
+            tp.setText(loc);
+            int s = text.indexOf(loc);
+            tp.setBegin(s);
+            tp.setEnd(s + loc.length());
+            locations.add(tp);
+
+            xml = xml.substring(q + 11);
+            p = xml.indexOf(start);
+            q = xml.indexOf(end);
+
+        }
+        return locations;
+    }
 
     private static String parseLocation(String line) {
         return line.split(",")[0];

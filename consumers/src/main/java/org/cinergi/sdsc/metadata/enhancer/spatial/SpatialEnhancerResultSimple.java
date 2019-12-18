@@ -1,24 +1,17 @@
 
 package org.cinergi.sdsc.metadata.enhancer.spatial;
 
-import bsh.commands.dir;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.code.geocoder.model.LatLng;
 import com.google.code.geocoder.model.LatLngBounds;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.cinergi.sdsc.metadata.TextPosition;
 import org.neuinfo.foundry.common.util.Utils;
 import ucar.unidata.geoloc.LatLonPoint;
 import ucar.unidata.geoloc.LatLonPointImpl;
 import ucar.unidata.geoloc.LatLonRect;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.math.BigDecimal;
 import java.util.*;
 
 public class SpatialEnhancerResultSimple {
@@ -26,9 +19,11 @@ public class SpatialEnhancerResultSimple {
 
     @JsonProperty("text")
     private String text;
+    @JsonProperty("externalDocumentId")
+    private String externalDocumentId;
 
     @JsonProperty("derived_place_from_text")
-    private List<String> extractedPlaces = new ArrayList<String>();
+    private List<TextPosition> extractedPlaces = new ArrayList<TextPosition>();
 
     @JsonProperty("derived_bounding_boxes_from_derived_place")
     private Map<String, LatLngBounds> extractedPlace2Bounds = new HashMap<String, LatLngBounds>();
@@ -43,8 +38,9 @@ public class SpatialEnhancerResultSimple {
     }
 
 
-    public SpatialEnhancerResultSimple(String textInput, StanfordNEDLocationFinder finder) {
+    public SpatialEnhancerResultSimple(String textInput, StanfordNEDLocationFinder finder, String externalDocId) {
         this.stanfordNEDLocationFinder = finder;
+        this.externalDocumentId = externalDocId;
         try {
 
             log.info("Text from WebService");
@@ -72,7 +68,7 @@ public class SpatialEnhancerResultSimple {
         log.info("-----------------------------------");
 
                 log.info("Using text to find bounding boxes (NER) ...");
-                this.extractedPlaces.addAll(this.stanfordNEDLocationFinder.getLocationsFromText(this.text));
+                this.extractedPlaces.addAll(this.stanfordNEDLocationFinder.getLocationsWithPositionsFromText(this.text));
                 //this.extractedPlaces.addAll(SpatialTextLocationFinder.getLocationsFromText(this.text));
         if (this.extractedPlaces.isEmpty()) {
             log.info("Found no place from the text. ");
@@ -83,9 +79,10 @@ public class SpatialEnhancerResultSimple {
     }
 
 
-    private static void getBounds(List<String> locations, Map<String, LatLngBounds> extractedPlace2Bounds, String text) throws Exception {
+    private static void getBounds(List<TextPosition> locations, Map<String, LatLngBounds> extractedPlace2Bounds, String text) throws Exception {
 
-        for (String location : locations) {
+        for (TextPosition tp : locations) {
+            String location = tp.getText();
             log.info("Found a location: " + location);
             // orig
             // List<LatLngBounds> bounds = GoogleGeocoder.getBounds(location);
@@ -194,7 +191,7 @@ public class SpatialEnhancerResultSimple {
             log.info("=============================================================");
             log.info("Processing: " + inputText);
 
-            SpatialEnhancerResultSimple result = new SpatialEnhancerResultSimple(inputText, finder);
+            SpatialEnhancerResultSimple result = new SpatialEnhancerResultSimple(inputText, finder, "test");
             String resultStr = new ObjectMapper().writeValueAsString(result);
             System.out.println(resultStr);
 

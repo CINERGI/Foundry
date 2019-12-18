@@ -1,0 +1,10 @@
+<ingestor-cfg>
+    <mongo-config db="cinergiStage">
+       <servers>
+         <server host="localhost" port="27017"/>
+         </servers>
+    </mongo-config>
+    <source nifId="nlx_152590">
+       <xml-file path="/home/bozyurt/etc/foundry/open_source_brain_projects.xml" rootEl="projects" docEl="project"/>
+    </source>
+</ingestor-cfg>

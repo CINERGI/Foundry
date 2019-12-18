@@ -58,7 +58,11 @@ public class SpatialEnhancer2Resource {
     @ApiResponses(value = {@ApiResponse(code = 400, message = "no  document is supplied"),
             @ApiResponse(code = 500, message = "An internal error occurred during spatial enhancement")})
     public Response post(@ApiParam(value = "Text for spatial enhancements", required = true)
-                         String textInput ) {
+                         String textInput ,
+                         @ApiParam(value = "External Document ID", required = false)
+                         @QueryParam("externalId")
+                                 String documentID
+    ) {
 
         if (textInput == null) {
             throw new WebApplicationException(Response.status(Response.Status.BAD_REQUEST).build());
@@ -67,9 +71,8 @@ public class SpatialEnhancer2Resource {
 //            finder = new StanfordNEDLocationFinder();
 //            finder.startup();
 
-            SpatialEnhancerResultSimple sp = new SpatialEnhancerResultSimple(textInput, finder);
+            SpatialEnhancerResultSimple sp = new SpatialEnhancerResultSimple(textInput, finder, documentID );
             ObjectMapper Obj = new ObjectMapper();
-          //  Object value = Obj.writeValue(jsonTarget, sp);
             GenericEntity entity = new GenericEntity<SpatialEnhancerResultSimple>(sp){};
             return Response.ok().entity(Obj.writeValueAsString(sp)).build();
         } catch (Exception e) {
