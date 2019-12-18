@@ -8,19 +8,21 @@ import org.apache.log4j.Logger;
 import org.neuinfo.foundry.common.util.LRUCache;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class GoogleGeocoder {
     private final static Logger log = Logger.getLogger("GoogleGeocoder");
-    static LRUCache<String, List<LatLngBounds>> locationCache = new LRUCache<String, List<LatLngBounds>>(5000);
+    static LRUCache<String, Map<String, LatLngBounds>>  locationCache = new LRUCache<String, Map<String, LatLngBounds>>(5000);
 
-    static public List<LatLngBounds> getBounds(String location) throws Exception {
+    static public Map<String, LatLngBounds> getBounds(String location) throws Exception {
         if (locationCache.containsKey(location)) {
-            return locationCache.get(location);
+             locationCache.get(location);
         }
         final Geocoder geocoder = new Geocoder();
-        List<LatLngBounds> result = new ArrayList<LatLngBounds>();
+        Map<String, LatLngBounds> result = new LinkedHashMap<String, LatLngBounds>(11);
         GeocoderRequest geocoderRequest = new GeocoderRequestBuilder().setAddress(location).setLanguage("en").getGeocoderRequest();
         GeocodeResponse geocoderResponse = geocoder.geocode(geocoderRequest);
         if (geocoderResponse != null) {
@@ -44,7 +46,8 @@ public class GoogleGeocoder {
 
             for (GeocoderResult geocoderResult : geocoderResponse.getResults()) {
                 LatLngBounds bounds = geocoderResult.getGeometry().getViewport();
-                result.add(bounds);
+                result.put(location,bounds);
+                break; // first one for this coder
             }
         }
         locationCache.put(location, result);

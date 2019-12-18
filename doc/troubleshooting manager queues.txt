@@ -1,0 +1,51 @@
+Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='new.1', op=EQ}]}]}, queueNames=[QueueInfo{name='foundry.uuidGen.1'}]]
+        Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='id_assigned.1', op=EQ}]}]},
+		queueNames=[QueueInfo{name='foundry.spatial.1'}]]
+        Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='spatially_enhanced.1', op=EQ}]}]},
+		queueNames=[QueueInfo{name='foundry.keyword.1'}]]
+        Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='keyword_enhanced.1', op=EQ}]}]},
+		queueNames=[QueueInfo{name='foundry.org.1'}]]
+        Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='org_enhanced.1', op=EQ}]}]},
+		queueNames=[QueueInfo{name='foundry.export.1'}]]
+        Route::[condition=Condition{groups=[LogicalGroup{orGroup=false, predicates=[Predicate{name='processing.status', value='exported_waf.1', op=EQ}]}]}, queueNames=[QueueInfo{name='foundry.geoportal.1'}]]
+		
+Foundry:>> help
+Available commands
+        help - shows this message.
+        ingest <sourceID>
+        h - show all command history
+        dd <sourceID>  - delete docs for a sourceID
+        trigger <sourceID> <status-2-match> <queue-2-send> [<new-status> [<new-out-status>]] (e.g. trigger nif-0000-00135 new.1 foundry.uuid.1)
+        run <sourceID> status:<status-2-match> step:<step-name> [on|to_end] (e.g. run nif-0000-00135 status:new.1 step:transform)
+        list - lists all of the existing sources.
+        status [<sourceID>] - show processing status of data source(s)
+        ws - show configured workflow(s)
+        exit - exits the management client.
+
+
+		
+		run cinergi-0056 status:new.1 step:uuidGen to_end
+		
+status2Match:id_assigned.1 stepName:uuidGen run2TheEnd:false
+status2Match:id_assigned.1 queue2Send:foundry.uuidGen.1 newStatus:new.1 newOutStatus:finished
+[2019-05-21 00:07:04,191] [INFO ] [producer.PipelineTriggerHelper] updating status of 2 records to new.1
+[2019-05-21 00:07:05,280] [INFO ] [producer.PipelineTriggerHelper] sending user JMS message with payload:{
+  "oid": "5c6f434cc0808508b2a01f5b",
+  "status": "new.1",
+  "outStatus": "finished"
+} to queue:foundry.uuidGen.1
+[2019-05-21 00:07:05,323] [INFO ] [producer.PipelineTriggerHelper] sending user JMS message with payload:{
+  "oid": "5c6f4331c0808508b2a01d78",
+  "status": "new.1",
+  "outStatus": "finished"
+} to queue:foundry.uuidGen.1
+
+		trigger cinergi-0056 new.1 foundry.uuid.1 
+		
+		run cinergi-0056 status:id_assigned.1 step:spatial to_end
+		
+		run cinergi-0056 status:spatially_enhanced.1 step:keyword to_end
+		run cinergi-0056 status:keyword_enhanced.1 step:org to_end
+		run cinergi-0056 status:org_enhanced.1 step:export to_end
+		
+		run cinergi-0055 status:id_assigned.1 step:spatial to_end

@@ -26,8 +26,8 @@ import java.net.URI;
 /**
  * Created by bozyurt on 1/16/15.
  */
-@Path("cinergi/enhancers/spatial")
-@Api(value = "cinergi/enhancers/spatial", description = "Spatial enhancement of ISO XML Metadata documents")
+@Path("cinergi/enhancers/spatial/1")
+@Api(value = "cinergi/enhancers/spatial/1", description = "Spatial enhancement of ISO XML Metadata documents")
 public class SpatialEnhancerResource {
     private static String serverURL = "http://photon.sdsc.edu:8080/cinergi/SpatialEnhancer";
 
