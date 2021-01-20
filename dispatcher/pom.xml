@@ -13,7 +13,7 @@
 
     <properties>
         <skipTests>true</skipTests>
-        <jackson.version>2.9.8</jackson.version>
+        <jackson.version>2.12.1</jackson.version>
     </properties>
     <build>
         <plugins>
